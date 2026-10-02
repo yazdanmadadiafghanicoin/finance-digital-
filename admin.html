@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#070b12">
+
+<title>Digital Finance Admin</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Tahoma,sans-serif;
+  background:#070b12;
+  color:#fff;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:bold;
+}
+
+.logo span{
+  color:#d6a84f;
+}
+
+.logout{
+  background:#252e39;
+  color:white;
+  border:0;
+  padding:11px 18px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.card{
+  background:#101721;
+  border:1px solid #222e3b;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:16px;
+}
+
+.title{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.muted{
+  color:#8995a4;
+  font-size:13px;
+}
+
+.price{
+  font-size:32px;
+  color:#d6a84f;
+  font-weight:bold;
+  margin:12px 0;
+}
+
+.input{
+  width:100%;
+  background:#080e15;
+  color:#fff;
+  border:1px solid #2b3948;
+  border-radius:10px;
+  padding:13px;
+  outline:none;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 18px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.gold{
+  background:#d6a84f;
+  color:#111;
+}
+
+.danger{
+  background:#6e2025;
+  color:#fff;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.stat{
+  background:#0a1018;
+  border:1px solid #202b38;
+  border-radius:13px;
+  padding:16px;
+}
+
+.stat-number{
+  font-size:24px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th,td{
+  padding:13px 8px;
+  border-bottom:1px solid #222d39;
+  text-align:right;
+}
+
+th{
+  color:#d6a84f;
+}
+
+.search{
+  margin-top:12px;
+  margin-bottom:10px;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.login{
+  max-width:420px;
+  margin:70px auto;
+}
+
+.login h1{
+  text-align:center;
+}
+
+.login input{
+  margin-bottom:10px;
+}
+
+.notice{
+  background:#19150d;
+  border:1px solid #5a4520;
+  color:#d6b875;
+  padding:12px;
+  border-radius:10px;
+  font-size:12px;
+  margin-bottom:15px;
+}
+
+@media(max-width:700px){
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  table{
+    font-size:12px;
+  }
+
+  th,td{
+    padding:9px 5px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loginPage" class="login">
+
+  <div class="card">
+
+    <h1>🔐 پنل مدیریت</h1>
+
+    <div class="notice">
+      این پنل در حال حاضر نسخه آزمایشی است.
+    </div>
+
+    <input
+      id="adminPassword"
+      class="input"
+      type="password"
+      placeholder="رمز مدیریت"
+    >
+
+    <button
+      class="gold"
+      style="width:100%"
+      onclick="adminLogin()"
+    >
+      ورود به پنل
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="adminPanel" style="display:none">
+
+<div class="container">
+
+  <div class="header">
+
+    <div class="logo">
+      Digital <span>Finance</span> Admin
+    </div>
+
+    <button
+      class="logout"
+      onclick="adminLogout()"
+    >
+      خروج
+    </button>
+
+  </div>
+
+
+  <div class="notice">
+    ⚠️ نسخه آزمایشی: اطلاعات کاربران در localStorage مرورگر ذخیره می‌شود.
+  </div>
+
+
+  <!-- STATISTICS -->
+
+  <div class="grid">
+
+    <div class="stat">
+
+      <div class="muted">
+        تعداد کاربران
+      </div>
+
+      <div
+        class="stat-number"
+        id="totalUsers"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="muted">
+        مجموع موجودی نقدی
+      </div>
+
+      <div
+        class="stat-number"
+        id="totalCash"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="muted">
+        مجموع طلای کاربران
+      </div>
+
+      <div
+        class="stat-number"
+        id="totalGold"
+      >
+        0 g
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="muted">
+        قیمت فعلی طلا
+      </div>
+
+      <div
+        class="stat-number"
+        id="currentPrice"
+        style="color:#d6a84f"
+      >
+        6,850
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PRICE -->
+
+  <div class="card">
+
+    <div class="title">
+      🪙 مدیریت قیمت طلا
+    </div>
+
+    <div class="muted">
+      قیمت هر گرم طلای 24 عیار به افغانی
+    </div>
+
+    <div
+      class="price"
+      id="priceDisplay"
+    >
+      6,850 AFN
+    </div>
+
+    <input
+      id="newPrice"
+      class="input"
+      type="number"
+      placeholder="قیمت جدید"
+    >
+
+    <button
+      class="gold"
+      style="margin-top:10px"
+      onclick="changePrice()"
+    >
+      💾 ذخیره قیمت جدید
+    </button>
+
+  </div>
+
+
+  <!-- USERS -->
+
+  <div class="card">
+
+    <div class="title">
+      👥 مدیریت کاربران
+    </div>
+
+    <div class="muted">
+      فهرست کاربران Digital Finance
+    </div>
+
+    <input
+      id="searchUser"
+      class="input search"
+      placeholder="🔎 جستجو بر اساس نام یا ایمیل"
+      oninput="renderUsers()"
+    >
+
+
+    <div style="overflow-x:auto">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>نام</th>
+
+            <th>ایمیل</th>
+
+            <th>نقدی</th>
+
+            <th>طلا</th>
+
+            <th>عملیات</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="usersTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   ADMIN PASSWORD
+========================= */
+
+const ADMIN_PASSWORD = "AFC2026";
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function adminLogin(){
+
+  const password =
+    document
+      .getElementById("adminPassword")
+      .value;
+
+  if(password !== ADMIN_PASSWORD){
+
+    alert("رمز مدیریت اشتباه است.");
+
+    return;
+  }
+
+  sessionStorage.setItem(
+    "digitalFinanceAdmin",
+    "true"
+  );
+
+  showAdmin();
+
+}
+
+
+/* =========================
+   SHOW ADMIN
+========================= */
+
+function showAdmin(){
+
+  document
+    .getElementById("loginPage")
+    .style.display = "none";
+
+  document
+    .getElementById("adminPanel")
+    .style.display = "block";
+
+  renderAll();
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+function adminLogout(){
+
+  sessionStorage.removeItem(
+    "digitalFinanceAdmin"
+  );
+
+  location.reload();
+
+}
+
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+if(
+  sessionStorage.getItem(
+    "digitalFinanceAdmin"
+  ) === "true"
+){
+
+  showAdmin();
+
+}
+
+
+/* =========================
+   USERS
+========================= */
+
+function getUsers(){
+
+  return JSON.parse(
+    localStorage.getItem(
+      "digitalFinanceUsers"
+    ) || "[]"
+  );
+
+}
+
+
+/* =========================
+   PRICE
+========================= */
+
+function getPrice(){
+
+  return Number(
+    localStorage.getItem(
+      "digitalFinanceGoldPrice"
+    ) || 6850
+  );
+
+}
+
+
+function savePrice(price){
+
+  localStorage.setItem(
+    "digitalFinanceGoldPrice",
+    price
+  );
+
+}
+
+
+/* =========================
+   MONEY
+========================= */
+
+function money(value){
+
+  return Number(value).toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:2
+    }
+  ) + " AFN";
+
+}
+
+
+/* =========================
+   CHANGE PRICE
+========================= */
+
+function changePrice(){
+
+  const input =
+    document.getElementById("newPrice");
+
+  const price =
+    Number(input.value);
+
+
+  if(!price || price <= 0){
+
+    alert("قیمت معتبر وارد کنید.");
+
+    return;
+  }
+
+
+  savePrice(price);
+
+  input.value = "";
+
+  renderAll();
+
+  alert(
+    "قیمت طلا با موفقیت تغییر کرد."
+  );
+
+}
+
+
+/* =========================
+   RENDER USERS
+========================= */
+
+function renderUsers(){
+
+  const users =
+    getUsers();
+
+  const search =
+    document
+      .getElementById("searchUser")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const table =
+    document
+      .getElementById("usersTable");
+
+
+  const filtered =
+    users.filter(user =>
+
+      user.name
+        .toLowerCase()
+        .includes(search)
+
+      ||
+
+      user.email
+        .toLowerCase()
+        .includes(search)
+
+    );
+
+
+  if(filtered.length === 0){
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="6"
+          style="text-align:center;color:#8995a4">
+          کاربری پیدا نشد.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  table.innerHTML =
+    filtered.map(user => `
+
+      <tr>
+
+        <td>
+          ${user.id}
+        </td>
+
+        <td>
+          ${escapeHtml(user.name)}
+        </td>
+
+        <td>
+          ${escapeHtml(user.email)}
+        </td>
+
+        <td>
+          ${money(user.cash)}
+        </td>
+
+        <td>
+          ${Number(user.gold).toFixed(2)} g
+        </td>
+
+        <td>
+
+          <div class="actions">
+
+            <button
+              class="gold"
+              onclick="editUser(${user.id})"
+            >
+              ویرایش
+            </button>
+
+            <button
+              class="danger"
+              onclick="deleteUser(${user.id})"
+            >
+              حذف
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+/* =========================
+   EDIT USER
+========================= */
+
+function editUser(id){
+
+  const users =
+    getUsers();
+
+  const user =
+    users.find(
+      u => Number(u.id) === Number(id)
+    );
+
+
+  if(!user){
+
+    alert("کاربر پیدا نشد.");
+
+    return;
+  }
+
+
+  const cash =
+    prompt(
+      "موجودی نقدی جدید:",
+      user.cash
+    );
+
+
+  if(cash === null){
+
+    return;
+  }
+
+
+  const gold =
+    prompt(
+      "مقدار طلای جدید به گرم:",
+      user.gold
+    );
+
+
+  if(gold === null){
+
+    return;
+  }
+
+
+  const newCash =
+    Number(cash);
+
+  const newGold =
+    Number(gold);
+
+
+  if(
+    isNaN(newCash) ||
+    newCash < 0 ||
+    isNaN(newGold) ||
+    newGold < 0
+  ){
+
+    alert("مقدار واردشده معتبر نیست.");
+
+    return;
+  }
+
+
+  user.cash =
+    newCash;
+
+  user.gold =
+    newGold;
+
+
+  localStorage.setItem(
+    "digitalFinanceUsers",
+    JSON.stringify(users)
+  );
+
+
+  renderAll();
+
+  alert(
+    "اطلاعات کاربر به‌روزرسانی شد."
+  );
+
+}
+
+
+/* =========================
+   DELETE USER
+========================= */
+
+function deleteUser(id){
+
+  const users =
+    getUsers();
+
+
+  const user =
+    users.find(
+      u => Number(u.id) === Number(id)
+    );
+
+
+  if(!user){
+
+    return;
+  }
+
+
+  const confirmDelete =
+    confirm(
+      "آیا از حذف کاربر " +
+      user.name +
+      " مطمئن هستید؟"
+    );
+
+
+  if(!confirmDelete){
+
+    return;
+  }
+
+
+  const newUsers =
+    users.filter(
+      u => Number(u.id) !== Number(id)
+    );
+
+
+  localStorage.setItem(
+    "digitalFinanceUsers",
+    JSON.stringify(newUsers)
+  );
+
+
+  if(
+    localStorage.getItem(
+      "digitalFinanceCurrentUser"
+    ) == id
+  ){
+
+    localStorage.removeItem(
+      "digitalFinanceCurrentUser"
+    );
+
+  }
+
+
+  renderAll();
+
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+function renderStats(){
+
+  const users =
+    getUsers();
+
+  const price =
+    getPrice();
+
+
+  let totalCash = 0;
+
+  let totalGold = 0;
+
+
+  users.forEach(user => {
+
+    totalCash +=
+      Number(user.cash || 0);
+
+    totalGold +=
+      Number(user.gold || 0);
+
+  });
+
+
+  document
+    .getElementById("totalUsers")
+    .textContent =
+    users.length;
+
+
+  document
+    .getElementById("totalCash")
+    .textContent =
+    money(totalCash);
+
+
+  document
+    .getElementById("totalGold")
+    .textContent =
+    totalGold.toFixed(2) + " g";
+
+
+  document
+    .getElementById("currentPrice")
+    .textContent =
+    money(price);
+
+
+  document
+    .getElementById("priceDisplay")
+    .textContent =
+    money(price);
+
+}
+
+
+/* =========================
+   RENDER ALL
+========================= */
+
+function renderAll(){
+
+  renderStats();
+
+  renderUsers();
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
