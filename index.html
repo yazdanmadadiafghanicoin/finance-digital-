@@ -12,6 +12,10 @@
   box-sizing:border-box;
 }
 
+html{
+  scroll-behavior:smooth;
+}
+
 body{
   margin:0;
   font-family:Arial,Tahoma,sans-serif;
@@ -24,14 +28,19 @@ button,input{
   font-family:inherit;
 }
 
+button{
+  cursor:pointer;
+}
+
 .app{
   max-width:500px;
   margin:auto;
   min-height:100vh;
-  padding-bottom:85px;
+  padding-bottom:90px;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
+
 .header{
   padding:20px 18px 10px;
   display:flex;
@@ -54,9 +63,14 @@ button,input{
   border-radius:20px;
   font-size:12px;
   color:#dce7f5;
+  max-width:130px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
-/* LOGIN */
+/* ================= AUTH ================= */
+
 .auth-screen{
   min-height:100vh;
   display:flex;
@@ -108,7 +122,6 @@ button,input{
   color:#8fa4bc;
   padding:11px;
   border-radius:10px;
-  cursor:pointer;
 }
 
 .auth-tabs button.active{
@@ -150,7 +163,6 @@ button,input{
   font-weight:bold;
   padding:14px;
   border-radius:13px;
-  cursor:pointer;
   margin-top:5px;
 }
 
@@ -162,7 +174,8 @@ button,input{
   margin:8px 0;
 }
 
-/* CARDS */
+/* ================= CARDS ================= */
+
 .card{
   margin:12px 15px;
   background:rgba(15,31,50,.95);
@@ -210,7 +223,8 @@ button,input{
   font-weight:bold;
 }
 
-/* GOLD */
+/* ================= GOLD ================= */
+
 .gold-card{
   text-align:center;
   padding:25px 18px;
@@ -224,7 +238,7 @@ button,input{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:40px;
+  font-size:35px;
   font-weight:bold;
   background:linear-gradient(145deg,#ffe889,#c89515);
   color:#533d00;
@@ -260,7 +274,6 @@ button,input{
   padding:13px;
   border-radius:12px;
   font-weight:bold;
-  cursor:pointer;
 }
 
 .buy{
@@ -273,7 +286,8 @@ button,input{
   color:#fff;
 }
 
-/* SECTIONS */
+/* ================= SECTION ================= */
+
 .section-title{
   padding:18px 17px 6px;
   font-size:16px;
@@ -305,6 +319,8 @@ button,input{
   text-align:left;
   font-weight:bold;
 }
+
+/* ================= HISTORY ================= */
 
 .history-item{
   background:#0d1b2d;
@@ -344,7 +360,8 @@ button,input{
   font-size:13px;
 }
 
-/* ACCOUNT */
+/* ================= ACCOUNT ================= */
+
 .account-card{
   text-align:center;
 }
@@ -383,10 +400,10 @@ button,input{
   border:1px solid #703636;
   background:#281517;
   color:#ff8585;
-  cursor:pointer;
 }
 
-/* NAV */
+/* ================= NAV ================= */
+
 .bottom-nav{
   position:fixed;
   bottom:0;
@@ -407,7 +424,6 @@ button,input{
   background:transparent;
   color:#70859c;
   padding:5px 2px;
-  cursor:pointer;
   font-size:10px;
 }
 
@@ -421,7 +437,8 @@ button,input{
   color:#f5c542;
 }
 
-/* MODAL */
+/* ================= MODAL ================= */
+
 .modal-bg{
   display:none;
   position:fixed;
@@ -455,7 +472,6 @@ button,input{
   width:32px;
   height:32px;
   border-radius:50%;
-  cursor:pointer;
 }
 
 .amount-input{
@@ -486,15 +502,22 @@ button,input{
   padding:14px;
   border-radius:12px;
   font-weight:bold;
-  cursor:pointer;
 }
 
-/* HIDDEN */
+.trade-error{
+  color:#ff7b7b;
+  font-size:12px;
+  text-align:center;
+  min-height:18px;
+  margin-bottom:8px;
+}
+
+/* ================= OTHER ================= */
+
 .hidden{
   display:none !important;
 }
 
-/* NOTICE */
 .demo-notice{
   margin:12px 15px;
   background:#151b23;
@@ -505,12 +528,51 @@ button,input{
   color:#9ba8b6;
   font-size:10px;
 }
+
+.price-box{
+  text-align:center;
+  padding:25px;
+}
+
+.price-number{
+  font-size:30px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.price-unit{
+  color:#f5c542;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:15px;
+}
+
+.quick-box{
+  background:#091525;
+  border-radius:14px;
+  padding:14px;
+}
+
+.quick-label{
+  font-size:11px;
+  color:#8196ad;
+}
+
+.quick-value{
+  margin-top:6px;
+  font-weight:bold;
+}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN / REGISTER -->
+<!-- ================= AUTH SCREEN ================= -->
+
 <div id="authScreen" class="auth-screen">
 
   <div class="auth-box">
@@ -524,65 +586,105 @@ button,input{
     </div>
 
     <div class="auth-tabs">
-      <button id="loginTab" class="active" onclick="showLogin()">ورود</button>
-      <button id="registerTab" onclick="showRegister()">ثبت‌نام</button>
+
+      <button
+        id="loginTab"
+        class="active"
+        onclick="showLogin()">
+        ورود
+      </button>
+
+      <button
+        id="registerTab"
+        onclick="showRegister()">
+        ثبت‌نام
+      </button>
+
     </div>
 
+
     <!-- LOGIN -->
+
     <div id="loginForm">
 
       <div class="field">
         <label>ایمیل</label>
-        <input id="loginEmail" type="email" placeholder="example@email.com">
+        <input
+          id="loginEmail"
+          type="email"
+          placeholder="example@email.com">
       </div>
 
       <div class="field">
         <label>رمز عبور</label>
-        <input id="loginPassword" type="password" placeholder="رمز عبور">
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="رمز عبور">
       </div>
 
       <div id="loginError" class="auth-error"></div>
 
-      <button class="main-btn" onclick="login()">
+      <button
+        class="main-btn"
+        onclick="login()">
         ورود به حساب
       </button>
 
     </div>
 
+
     <!-- REGISTER -->
+
     <div id="registerForm" class="hidden">
 
       <div class="field">
         <label>نام کاربری</label>
-        <input id="registerName" type="text" placeholder="نام شما">
+        <input
+          id="registerName"
+          type="text"
+          placeholder="نام شما">
       </div>
 
       <div class="field">
         <label>ایمیل</label>
-        <input id="registerEmail" type="email" placeholder="example@email.com">
+        <input
+          id="registerEmail"
+          type="email"
+          placeholder="example@email.com">
       </div>
 
       <div class="field">
         <label>رمز عبور</label>
-        <input id="registerPassword" type="password" placeholder="حداقل 6 حرف">
+        <input
+          id="registerPassword"
+          type="password"
+          placeholder="حداقل 6 حرف">
       </div>
 
       <div id="registerError" class="auth-error"></div>
 
-      <button class="main-btn" onclick="register()">
+      <button
+        class="main-btn"
+        onclick="register()">
         ساخت حساب
       </button>
 
     </div>
 
   </div>
+
 </div>
 
 
-<!-- MAIN APP -->
+<!-- ================= MAIN APP ================= -->
+
 <div id="mainApp" class="app hidden">
 
+  <!-- HEADER -->
+
   <header class="header">
+
     <div class="logo">
       Digital <span>Finance</span>
     </div>
@@ -590,10 +692,12 @@ button,input{
     <div id="miniUser" class="user-mini">
       کاربر
     </div>
+
   </header>
 
 
-  <!-- HOME -->
+  <!-- ================= HOME ================= -->
+
   <section id="homeSection">
 
     <div class="card">
@@ -603,24 +707,38 @@ button,input{
       </div>
 
       <div class="balance">
-        <span id="cashBalance">100,000</span>
+        <span id="cashBalance">0</span>
         <small>؋</small>
       </div>
+
 
       <div class="stats">
 
         <div class="stat">
-          <div class="stat-title">طلای شما</div>
-          <div class="stat-value">
-            <span id="goldBalance">2.35</span> گرم
+
+          <div class="stat-title">
+            طلای شما
           </div>
+
+          <div class="stat-value">
+            <span id="goldBalance">0</span>
+            گرم
+          </div>
+
         </div>
 
+
         <div class="stat">
-          <div class="stat-title">ارزش طلا</div>
-          <div class="stat-value">
-            <span id="goldValue">16,097</span> ؋
+
+          <div class="stat-title">
+            ارزش طلا
           </div>
+
+          <div class="stat-value">
+            <span id="goldValue">0</span>
+            ؋
+          </div>
+
         </div>
 
       </div>
@@ -646,13 +764,18 @@ button,input{
         قیمت آزمایشی
       </div>
 
+
       <div class="trade-buttons">
 
-        <button class="buy" onclick="openTrade('buy')">
+        <button
+          class="buy"
+          onclick="openTrade('buy')">
           خرید طلا
         </button>
 
-        <button class="sell" onclick="openTrade('sell')">
+        <button
+          class="sell"
+          onclick="openTrade('sell')">
           فروش طلا
         </button>
 
@@ -662,40 +785,80 @@ button,input{
 
 
     <div class="demo-notice">
-      ⚠️ این برنامه فعلاً نسخه آزمایشی است و هیچ پول واقعی در آن جابه‌جا نمی‌شود.
+      ⚠️ این برنامه فعلاً نسخه آزمایشی است و هیچ پول واقعی جابه‌جا نمی‌شود.
     </div>
 
   </section>
 
 
-  <!-- MARKET -->
+  <!-- ================= MARKET ================= -->
+
   <section id="marketSection" class="hidden">
 
     <div class="section-title">
       بازار
     </div>
 
-    <div class="card">
+
+    <div class="card price-box">
 
       <div style="color:#8298af;font-size:12px">
-        طلای ۲۴ عیار
+        قیمت طلای ۲۴ عیار
       </div>
 
-      <div style="font-size:28px;font-weight:bold;margin-top:8px">
-        6,850 ؋
+      <div class="price-number">
+        6,850
+        <span class="price-unit">؋</span>
       </div>
 
-      <div style="color:#8298af;font-size:11px;margin-top:5px">
+      <div style="color:#8298af;font-size:11px">
         قیمت آزمایشی هر گرم
       </div>
 
+
+      <div class="quick-grid">
+
+        <div class="quick-box">
+
+          <div class="quick-label">
+            دارایی طلا
+          </div>
+
+          <div class="quick-value">
+            <span id="marketGold">0</span>
+            گرم
+          </div>
+
+        </div>
+
+
+        <div class="quick-box">
+
+          <div class="quick-label">
+            ارزش طلا
+          </div>
+
+          <div class="quick-value">
+            <span id="marketGoldValue">0</span>
+            ؋
+          </div>
+
+        </div>
+
+      </div>
+
+
       <div class="trade-buttons">
 
-        <button class="buy" onclick="openTrade('buy')">
+        <button
+          class="buy"
+          onclick="openTrade('buy')">
           خرید
         </button>
 
-        <button class="sell" onclick="openTrade('sell')">
+        <button
+          class="sell"
+          onclick="openTrade('sell')">
           فروش
         </button>
 
@@ -706,44 +869,140 @@ button,input{
   </section>
 
 
-  <!-- ASSETS -->
+  <!-- ================= WALLET ================= -->
+
   <section id="assetsSection" class="hidden">
 
     <div class="section-title">
-      دارایی‌های من
+      کیف پول من
     </div>
+
+
+    <div class="card">
+
+      <div class="balance-title">
+        ارزش کل دارایی
+      </div>
+
+      <div class="balance">
+        <span id="walletTotal">0</span>
+        <small>؋</small>
+      </div>
+
+    </div>
+
+
+    <!-- CASH -->
 
     <div class="asset-row">
 
       <div>
-        <div class="asset-name">افغانی</div>
-        <div class="asset-sub">موجودی نقدی</div>
+
+        <div class="asset-name">
+          💵 افغانی
+        </div>
+
+        <div class="asset-sub">
+          موجودی نقدی
+        </div>
+
       </div>
 
       <div class="asset-value">
-        <span id="assetCash">100,000</span> ؋
+        <span id="assetCash">0</span>
+        ؋
       </div>
 
     </div>
 
 
+    <!-- GOLD -->
+
     <div class="asset-row">
 
       <div>
-        <div class="asset-name">طلا</div>
-        <div class="asset-sub">طلای ۲۴ عیار</div>
+
+        <div class="asset-name">
+          🪙 طلا
+        </div>
+
+        <div class="asset-sub">
+          طلای ۲۴ عیار
+        </div>
+
       </div>
 
       <div class="asset-value">
-        <span id="assetGold">2.35</span> گرم
+        <span id="assetGold">0</span>
+        گرم
       </div>
 
+    </div>
+
+
+    <!-- GOLD VALUE -->
+
+    <div class="asset-row">
+
+      <div>
+
+        <div class="asset-name">
+          📊 ارزش طلا
+        </div>
+
+        <div class="asset-sub">
+          بر اساس قیمت فعلی
+        </div>
+
+      </div>
+
+      <div class="asset-value">
+        <span id="walletGoldValue">0</span>
+        ؋
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div style="
+        font-size:15px;
+        font-weight:bold;
+        margin-bottom:12px;
+      ">
+        عملیات کیف پول
+      </div>
+
+
+      <div class="trade-buttons">
+
+        <button
+          class="buy"
+          onclick="openTrade('buy')">
+          🪙 خرید طلا
+        </button>
+
+        <button
+          class="sell"
+          onclick="openTrade('sell')">
+          💰 فروش طلا
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="demo-notice">
+      ⚠️ کیف پول فعلاً آزمایشی است. هیچ پول واقعی جابه‌جا نمی‌شود.
     </div>
 
   </section>
 
 
-  <!-- HISTORY -->
+  <!-- ================= HISTORY ================= -->
+
   <section id="historySection" class="hidden">
 
     <div class="section-title">
@@ -755,12 +1014,14 @@ button,input{
   </section>
 
 
-  <!-- ACCOUNT -->
+  <!-- ================= ACCOUNT ================= -->
+
   <section id="accountSection" class="hidden">
 
     <div class="section-title">
       حساب کاربری
     </div>
+
 
     <div class="card account-card">
 
@@ -776,41 +1037,110 @@ button,input{
         email
       </div>
 
-      <button class="logout" onclick="logout()">
+
+      <button
+        class="logout"
+        onclick="logout()">
         خروج از حساب
       </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <div style="
+        font-weight:bold;
+        margin-bottom:10px;
+      ">
+        خلاصه حساب
+      </div>
+
+      <div class="quick-grid">
+
+        <div class="quick-box">
+
+          <div class="quick-label">
+            افغانی
+          </div>
+
+          <div class="quick-value">
+            <span id="accountCash">0</span> ؋
+          </div>
+
+        </div>
+
+
+        <div class="quick-box">
+
+          <div class="quick-label">
+            طلا
+          </div>
+
+          <div class="quick-value">
+            <span id="accountGold">0</span> گرم
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
   </section>
 
 
-  <!-- BOTTOM NAV -->
+  <!-- ================= NAVIGATION ================= -->
+
   <nav class="bottom-nav">
 
-    <button class="nav-btn active" onclick="showSection('home',this)">
+    <button
+      class="nav-btn active"
+      onclick="showSection('home',this)">
+
       <span class="nav-icon">⌂</span>
       خانه
+
     </button>
 
-    <button class="nav-btn" onclick="showSection('market',this)">
+
+    <button
+      class="nav-btn"
+      onclick="showSection('market',this)">
+
       <span class="nav-icon">📈</span>
       بازار
+
     </button>
 
-    <button class="nav-btn" onclick="showSection('assets',this)">
+
+    <button
+      class="nav-btn"
+      onclick="showSection('assets',this)">
+
       <span class="nav-icon">💰</span>
-      دارایی
+      کیف پول
+
     </button>
 
-    <button class="nav-btn" onclick="showSection('history',this)">
+
+    <button
+      class="nav-btn"
+      onclick="showSection('history',this)">
+
       <span class="nav-icon">🧾</span>
       تاریخچه
+
     </button>
 
-    <button class="nav-btn" onclick="showSection('account',this)">
+
+    <button
+      class="nav-btn"
+      onclick="showSection('account',this)">
+
       <span class="nav-icon">👤</span>
       حساب
+
     </button>
 
   </nav>
@@ -818,18 +1148,23 @@ button,input{
 </div>
 
 
-<!-- TRADE MODAL -->
+<!-- ================= TRADE MODAL ================= -->
+
 <div id="tradeModal" class="modal-bg">
 
   <div class="modal">
 
-    <button class="close" onclick="closeTrade()">
+    <button
+      class="close"
+      onclick="closeTrade()">
       ×
     </button>
+
 
     <div id="modalTitle" class="modal-title">
       خرید طلا
     </div>
+
 
     <div class="field">
 
@@ -844,24 +1179,34 @@ button,input{
         min="0"
         step="0.01"
         placeholder="مثلاً 0.50"
-        oninput="calculateTotal()"
-      >
+        oninput="calculateTotal()">
 
     </div>
+
 
     <div class="total-box">
+
       مبلغ:
       <strong>
-        <span id="tradeTotal">0</span> ؋
+        <span id="tradeTotal">0</span>
+        ؋
       </strong>
+
     </div>
 
-    <div id="tradeError"
-         style="color:#ff7b7b;font-size:12px;text-align:center;margin-bottom:10px">
+
+    <div
+      id="tradeError"
+      class="trade-error">
     </div>
 
-    <button class="modal-action" onclick="executeTrade()">
+
+    <button
+      class="modal-action"
+      onclick="executeTrade()">
+
       تأیید معامله
+
     </button>
 
   </div>
@@ -871,65 +1216,122 @@ button,input{
 
 <script>
 
+/* ================= CONFIG ================= */
+
 const GOLD_PRICE = 6850;
 
 let currentTrade = "buy";
+
 let currentUser = null;
 
 
-/* =========================
-   AUTH
-========================= */
+/* ================= USERS ================= */
 
 function getUsers(){
-  return JSON.parse(localStorage.getItem("digitalFinanceUsers") || "[]");
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        "digitalFinanceUsers"
+      ) || "[]"
+    );
+
+  }catch(e){
+
+    return [];
+
+  }
+
 }
 
+
 function saveUsers(users){
+
   localStorage.setItem(
     "digitalFinanceUsers",
     JSON.stringify(users)
   );
+
 }
 
 
+/* ================= AUTH TABS ================= */
+
 function showLogin(){
 
-  document.getElementById("loginForm").classList.remove("hidden");
-  document.getElementById("registerForm").classList.add("hidden");
+  document
+    .getElementById("loginForm")
+    .classList.remove("hidden");
 
-  document.getElementById("loginTab").classList.add("active");
-  document.getElementById("registerTab").classList.remove("active");
+  document
+    .getElementById("registerForm")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("loginTab")
+    .classList.add("active");
+
+  document
+    .getElementById("registerTab")
+    .classList.remove("active");
 
 }
 
 
 function showRegister(){
 
-  document.getElementById("loginForm").classList.add("hidden");
-  document.getElementById("registerForm").classList.remove("hidden");
+  document
+    .getElementById("loginForm")
+    .classList.add("hidden");
 
-  document.getElementById("loginTab").classList.remove("active");
-  document.getElementById("registerTab").classList.add("active");
+  document
+    .getElementById("registerForm")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("loginTab")
+    .classList.remove("active");
+
+  document
+    .getElementById("registerTab")
+    .classList.add("active");
 
 }
 
 
+/* ================= REGISTER ================= */
+
 function register(){
 
   const name =
-    document.getElementById("registerName").value.trim();
+    document
+      .getElementById("registerName")
+      .value
+      .trim();
 
   const email =
-    document.getElementById("registerEmail").value.trim().toLowerCase();
+    document
+      .getElementById("registerEmail")
+      .value
+      .trim()
+      .toLowerCase();
 
   const password =
-    document.getElementById("registerPassword").value;
+    document
+      .getElementById("registerPassword")
+      .value;
+
 
   const error =
-    document.getElementById("registerError");
+    document.getElementById(
+      "registerError"
+    );
 
   error.textContent = "";
+
 
   if(!name || !email || !password){
 
@@ -937,7 +1339,9 @@ function register(){
       "لطفاً تمام قسمت‌ها را پر کنید.";
 
     return;
+
   }
+
 
   if(password.length < 6){
 
@@ -945,22 +1349,30 @@ function register(){
       "رمز عبور باید حداقل ۶ حرف باشد.";
 
     return;
+
   }
+
 
   const users = getUsers();
 
-  if(users.some(u => u.email === email)){
+
+  if(
+    users.some(
+      u => u.email === email
+    )
+  ){
 
     error.textContent =
       "این ایمیل قبلاً ثبت شده است.";
 
     return;
+
   }
 
 
   const newUser = {
 
-    id: Date.now(),
+    id:Date.now(),
 
     name:name,
 
@@ -981,10 +1393,12 @@ function register(){
 
   saveUsers(users);
 
+
   localStorage.setItem(
     "digitalFinanceCurrentUser",
     String(newUser.id)
   );
+
 
   currentUser = newUser;
 
@@ -993,26 +1407,41 @@ function register(){
 }
 
 
+/* ================= LOGIN ================= */
+
 function login(){
 
   const email =
-    document.getElementById("loginEmail").value.trim().toLowerCase();
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim()
+      .toLowerCase();
 
   const password =
-    document.getElementById("loginPassword").value;
+    document
+      .getElementById("loginPassword")
+      .value;
+
 
   const error =
-    document.getElementById("loginError");
+    document.getElementById(
+      "loginError"
+    );
 
   error.textContent = "";
 
+
   const users = getUsers();
 
-  const user = users.find(
-    u =>
-      u.email === email &&
-      u.password === password
-  );
+
+  const user =
+    users.find(
+      u =>
+        u.email === email &&
+        u.password === password
+    );
+
 
   if(!user){
 
@@ -1020,12 +1449,15 @@ function login(){
       "ایمیل یا رمز عبور اشتباه است.";
 
     return;
+
   }
+
 
   localStorage.setItem(
     "digitalFinanceCurrentUser",
     String(user.id)
   );
+
 
   currentUser = user;
 
@@ -1033,6 +1465,8 @@ function login(){
 
 }
 
+
+/* ================= LOGOUT ================= */
 
 function logout(){
 
@@ -1042,16 +1476,36 @@ function logout(){
 
   currentUser = null;
 
-  document.getElementById("mainApp")
+
+  document
+    .getElementById("mainApp")
     .classList.add("hidden");
 
-  document.getElementById("authScreen")
+
+  document
+    .getElementById("authScreen")
     .classList.remove("hidden");
+
+
+  document
+    .getElementById("loginEmail")
+    .value = "";
+
+  document
+    .getElementById("loginPassword")
+    .value = "";
+
+  document
+    .getElementById("loginError")
+    .textContent = "";
+
 
   showLogin();
 
 }
 
+
+/* ================= LOAD USER ================= */
 
 function loadCurrentUser(){
 
@@ -1060,33 +1514,58 @@ function loadCurrentUser(){
       "digitalFinanceCurrentUser"
     );
 
+
   if(!id){
     return false;
   }
 
+
   const users = getUsers();
 
-  const user = users.find(
-    u => String(u.id) === String(id)
-  );
+
+  const user =
+    users.find(
+      u =>
+        String(u.id) === String(id)
+    );
+
 
   if(!user){
     return false;
   }
 
+
+  if(!Array.isArray(user.history)){
+    user.history = [];
+  }
+
+
   currentUser = user;
 
   return true;
+
 }
 
 
+/* ================= SAVE USER ================= */
+
 function saveCurrentUser(){
+
+  if(!currentUser){
+    return;
+  }
+
 
   const users = getUsers();
 
-  const index = users.findIndex(
-    u => String(u.id) === String(currentUser.id)
-  );
+
+  const index =
+    users.findIndex(
+      u =>
+        String(u.id) ===
+        String(currentUser.id)
+    );
+
 
   if(index !== -1){
 
@@ -1099,68 +1578,137 @@ function saveCurrentUser(){
 }
 
 
-/* =========================
-   APP
-========================= */
+/* ================= APP ================= */
 
 function showApp(){
 
-  document.getElementById("authScreen")
+  document
+    .getElementById("authScreen")
     .classList.add("hidden");
 
-  document.getElementById("mainApp")
+
+  document
+    .getElementById("mainApp")
     .classList.remove("hidden");
+
 
   updateUI();
 
 }
 
 
+/* ================= UPDATE UI ================= */
+
 function updateUI(){
 
-  if(!currentUser) return;
+  if(!currentUser){
+    return;
+  }
 
 
-  document.getElementById("cashBalance")
-    .textContent =
-    formatNumber(currentUser.cash);
+  const cash =
+    Number(currentUser.cash) || 0;
 
-
-  document.getElementById("goldBalance")
-    .textContent =
-    Number(currentUser.gold).toFixed(2);
+  const gold =
+    Number(currentUser.gold) || 0;
 
 
   const goldValue =
-    currentUser.gold * GOLD_PRICE;
+    gold * GOLD_PRICE;
 
 
-  document.getElementById("goldValue")
+  const total =
+    cash + goldValue;
+
+
+  /* HOME */
+
+  document
+    .getElementById("cashBalance")
+    .textContent =
+    formatNumber(cash);
+
+
+  document
+    .getElementById("goldBalance")
+    .textContent =
+    gold.toFixed(2);
+
+
+  document
+    .getElementById("goldValue")
     .textContent =
     formatNumber(goldValue);
 
 
-  document.getElementById("assetCash")
+  /* WALLET */
+
+  document
+    .getElementById("walletTotal")
     .textContent =
-    formatNumber(currentUser.cash);
+    formatNumber(total);
 
 
-  document.getElementById("assetGold")
+  document
+    .getElementById("assetCash")
     .textContent =
-    Number(currentUser.gold).toFixed(2);
+    formatNumber(cash);
 
 
-  document.getElementById("miniUser")
+  document
+    .getElementById("assetGold")
+    .textContent =
+    gold.toFixed(2);
+
+
+  document
+    .getElementById("walletGoldValue")
+    .textContent =
+    formatNumber(goldValue);
+
+
+  /* MARKET */
+
+  document
+    .getElementById("marketGold")
+    .textContent =
+    gold.toFixed(2);
+
+
+  document
+    .getElementById("marketGoldValue")
+    .textContent =
+    formatNumber(goldValue);
+
+
+  /* ACCOUNT */
+
+  document
+    .getElementById("accountCash")
+    .textContent =
+    formatNumber(cash);
+
+
+  document
+    .getElementById("accountGold")
+    .textContent =
+    gold.toFixed(2);
+
+
+  document
+    .getElementById("miniUser")
     .textContent =
     currentUser.name;
 
 
-  document.getElementById("accountName")
+  document
+    .getElementById("accountName")
     .textContent =
     currentUser.name;
 
 
-  document.getElementById("accountEmail")
+  document
+    .getElementById("accountEmail")
     .textContent =
     currentUser.email;
 
@@ -1171,7 +1719,8 @@ function updateUI(){
       .toUpperCase();
 
 
-  document.getElementById("avatar")
+  document
+    .getElementById("avatar")
     .textContent =
     first || "DF";
 
@@ -1181,20 +1730,21 @@ function updateUI(){
 }
 
 
+/* ================= FORMAT ================= */
+
 function formatNumber(number){
 
-  return Number(number).toLocaleString("en-US",{
-    maximumFractionDigits:2
-  });
+  return Number(number)
+    .toLocaleString("en-US",{
+      maximumFractionDigits:2
+    });
 
 }
 
 
-/* =========================
-   NAVIGATION
-========================= */
+/* ================= NAVIGATION ================= */
 
-function showSection(section, button){
+function showSection(section,button){
 
   const sections = [
     "home",
@@ -1204,28 +1754,39 @@ function showSection(section, button){
     "account"
   ];
 
-  sections.forEach(s => {
 
-    document.getElementById(
-      s + "Section"
-    ).classList.add("hidden");
+  sections.forEach(
+    s => {
 
-  });
+      document
+        .getElementById(
+          s + "Section"
+        )
+        .classList.add("hidden");
+
+    }
+  );
 
 
-  document.getElementById(
-    section + "Section"
-  ).classList.remove("hidden");
+  document
+    .getElementById(
+      section + "Section"
+    )
+    .classList.remove("hidden");
 
 
-  document.querySelectorAll(".nav-btn")
-    .forEach(btn =>
-      btn.classList.remove("active")
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(
+      btn =>
+        btn.classList.remove("active")
     );
 
 
   if(button){
+
     button.classList.add("active");
+
   }
 
 
@@ -1237,31 +1798,40 @@ function showSection(section, button){
 }
 
 
-/* =========================
-   TRADE
-========================= */
+/* ================= TRADE OPEN ================= */
 
 function openTrade(type){
 
+  if(!currentUser){
+    return;
+  }
+
+
   currentTrade = type;
 
-  document.getElementById("tradeModal")
+
+  document
+    .getElementById("tradeModal")
     .style.display = "flex";
 
 
-  document.getElementById("goldAmount")
+  document
+    .getElementById("goldAmount")
     .value = "";
 
 
-  document.getElementById("tradeTotal")
+  document
+    .getElementById("tradeTotal")
     .textContent = "0";
 
 
-  document.getElementById("tradeError")
+  document
+    .getElementById("tradeError")
     .textContent = "";
 
 
-  document.getElementById("modalTitle")
+  document
+    .getElementById("modalTitle")
     .textContent =
     type === "buy"
       ? "خرید طلا"
@@ -1270,19 +1840,26 @@ function openTrade(type){
 }
 
 
+/* ================= TRADE CLOSE ================= */
+
 function closeTrade(){
 
-  document.getElementById("tradeModal")
+  document
+    .getElementById("tradeModal")
     .style.display = "none";
 
 }
 
 
+/* ================= CALCULATE ================= */
+
 function calculateTotal(){
 
   const amount =
     Number(
-      document.getElementById("goldAmount").value
+      document
+        .getElementById("goldAmount")
+        .value
     ) || 0;
 
 
@@ -1290,37 +1867,60 @@ function calculateTotal(){
     amount * GOLD_PRICE;
 
 
-  document.getElementById("tradeTotal")
+  document
+    .getElementById("tradeTotal")
     .textContent =
     formatNumber(total);
 
 }
 
 
+/* ================= EXECUTE TRADE ================= */
+
 function executeTrade(){
 
-  if(!currentUser) return;
+  if(!currentUser){
+    return;
+  }
 
 
   const amount =
     Number(
-      document.getElementById("goldAmount").value
+      document
+        .getElementById("goldAmount")
+        .value
     );
 
 
   const error =
-    document.getElementById("tradeError");
+    document.getElementById(
+      "tradeError"
+    );
 
 
   error.textContent = "";
 
 
-  if(!amount || amount <= 0){
+  if(
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ){
 
     error.textContent =
-      "مقدار طلا را وارد کنید.";
+      "مقدار طلا را درست وارد کنید.";
 
     return;
+
+  }
+
+
+  if(amount > 1000000){
+
+    error.textContent =
+      "مقدار واردشده بیش از حد است.";
+
+    return;
+
   }
 
 
@@ -1336,12 +1936,16 @@ function executeTrade(){
         "موجودی افغانی شما کافی نیست.";
 
       return;
+
     }
 
 
-    currentUser.cash -= total;
+    currentUser.cash =
+      Number(currentUser.cash) - total;
 
-    currentUser.gold += amount;
+
+    currentUser.gold =
+      Number(currentUser.gold) + amount;
 
 
     currentUser.history.unshift({
@@ -1352,9 +1956,10 @@ function executeTrade(){
 
       total:total,
 
-      date:new Date().toLocaleString(
-        "fa-AF"
-      )
+      price:GOLD_PRICE,
+
+      date:new Date()
+        .toLocaleString("fa-AF")
 
     });
 
@@ -1369,12 +1974,16 @@ function executeTrade(){
         "موجودی طلای شما کافی نیست.";
 
       return;
+
     }
 
 
-    currentUser.gold -= amount;
+    currentUser.gold =
+      Number(currentUser.gold) - amount;
 
-    currentUser.cash += total;
+
+    currentUser.cash =
+      Number(currentUser.cash) + total;
 
 
     currentUser.history.unshift({
@@ -1385,9 +1994,10 @@ function executeTrade(){
 
       total:total,
 
-      date:new Date().toLocaleString(
-        "fa-AF"
-      )
+      price:GOLD_PRICE,
+
+      date:new Date()
+        .toLocaleString("fa-AF")
 
     });
 
@@ -1407,74 +2017,107 @@ function executeTrade(){
 }
 
 
-/* =========================
-   HISTORY
-========================= */
+/* ================= HISTORY ================= */
 
 function renderHistory(){
 
   const list =
-    document.getElementById("historyList");
+    document.getElementById(
+      "historyList"
+    );
 
 
-  if(!currentUser ||
-     !currentUser.history ||
-     currentUser.history.length === 0){
+  if(
+    !currentUser ||
+    !Array.isArray(
+      currentUser.history
+    ) ||
+    currentUser.history.length === 0
+  ){
 
     list.innerHTML =
       '<div class="empty">هنوز معامله‌ای انجام نشده است.</div>';
 
     return;
+
   }
 
 
   list.innerHTML =
-    currentUser.history.map(item => {
+    currentUser.history
+      .map(
+        item => {
 
-      const isBuy =
-        item.type === "خرید";
+          const isBuy =
+            item.type === "خرید";
 
 
-      return `
+          return `
 
-        <div class="history-item">
+          <div class="history-item">
 
-          <div class="history-left">
+            <div class="history-left">
 
-            <div class="history-type">
-              ${isBuy ? "🟡 خرید طلا" : "🔵 فروش طلا"}
+              <div class="history-type">
+                ${isBuy
+                  ? "🟡 خرید طلا"
+                  : "🔵 فروش طلا"}
+              </div>
+
+              <div class="history-date">
+                ${item.date}
+              </div>
+
             </div>
 
-            <div class="history-date">
-              ${item.date}
+
+            <div class="history-right">
+
+              <div>
+                ${Number(item.amount).toFixed(2)}
+                گرم
+              </div>
+
+              <div style="
+                color:#f5c542;
+                margin-top:4px;
+              ">
+                ${formatNumber(item.total)}
+                ؋
+              </div>
+
             </div>
 
           </div>
 
-          <div class="history-right">
+          `;
 
-            <div>
-              ${Number(item.amount).toFixed(2)} گرم
-            </div>
-
-            <div style="color:#f5c542;margin-top:4px">
-              ${formatNumber(item.total)} ؋
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-    }).join("");
+        }
+      )
+      .join("");
 
 }
 
 
-/* =========================
-   START
-========================= */
+/* ================= MODAL CLICK OUTSIDE ================= */
+
+document
+  .getElementById("tradeModal")
+  .addEventListener(
+    "click",
+    function(e){
+
+      if(e.target === this){
+
+        closeTrade();
+
+      }
+
+    }
+  );
+
+
+/* ================= START ================= */
 
 if(loadCurrentUser()){
 
@@ -1482,10 +2125,12 @@ if(loadCurrentUser()){
 
 }else{
 
-  document.getElementById("authScreen")
+  document
+    .getElementById("authScreen")
     .classList.remove("hidden");
 
-  document.getElementById("mainApp")
+  document
+    .getElementById("mainApp")
     .classList.add("hidden");
 
 }
