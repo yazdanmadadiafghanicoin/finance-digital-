@@ -28,8 +28,6 @@ body{
   padding-bottom:90px;
 }
 
-/* Header */
-
 .header{
   padding:22px 18px 12px;
   display:flex;
@@ -57,8 +55,6 @@ body{
   font-size:20px;
 }
 
-/* Balance */
-
 .balance-card{
   margin:10px 16px;
   padding:22px;
@@ -73,7 +69,7 @@ body{
 }
 
 .balance{
-  font-size:34px;
+  font-size:30px;
   font-weight:bold;
   margin:8px 0;
 }
@@ -82,14 +78,6 @@ body{
   color:#d9a441;
   font-size:14px;
 }
-
-.profit{
-  margin-top:10px;
-  color:#43d17b;
-  font-size:13px;
-}
-
-/* Gold price */
 
 .section-title{
   padding:18px 18px 10px;
@@ -154,13 +142,9 @@ body{
   margin-top:4px;
 }
 
-/* Chart */
-
 .chart{
   height:100px;
   margin-top:18px;
-  position:relative;
-  overflow:hidden;
 }
 
 .chart svg{
@@ -174,8 +158,6 @@ body{
   stroke-width:3;
   stroke-linecap:round;
 }
-
-/* Buttons */
 
 .actions{
   display:flex;
@@ -203,8 +185,6 @@ body{
   color:white;
 }
 
-/* Holdings */
-
 .holding{
   margin:0 16px;
   padding:18px;
@@ -222,8 +202,6 @@ body{
   color:#91a1b2;
   font-size:12px;
 }
-
-/* Bottom navigation */
 
 .bottom{
   position:fixed;
@@ -255,8 +233,6 @@ body{
   color:#d9a441;
 }
 
-/* Modal */
-
 .modal{
   display:none;
   position:fixed;
@@ -277,7 +253,13 @@ body{
 .modal-title{
   font-size:20px;
   font-weight:bold;
-  margin-bottom:20px;
+  margin-bottom:8px;
+}
+
+.modal-info{
+  color:#91a1b2;
+  font-size:13px;
+  margin-bottom:18px;
 }
 
 .input{
@@ -288,7 +270,16 @@ body{
   border:1px solid #26394d;
   border-radius:13px;
   font-size:16px;
+  margin-bottom:12px;
+}
+
+.total{
+  background:#07111f;
+  border-radius:13px;
+  padding:14px;
   margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
 }
 
 .confirm{
@@ -299,6 +290,7 @@ body{
   border-radius:13px;
   font-size:16px;
   font-weight:bold;
+  cursor:pointer;
 }
 
 .close{
@@ -314,89 +306,111 @@ body{
   font-size:11px;
   margin:15px;
 }
+
+.message{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:430px;
+  padding:14px;
+  border-radius:13px;
+  background:#16283b;
+  text-align:center;
+  display:none;
+  z-index:20;
+}
 </style>
 </head>
 
 <body>
 
+<div id="message" class="message"></div>
+
 <div class="app">
 
-  <header class="header">
-    <div class="logo">Digital <span>Finance</span></div>
-    <div class="profile">👤</div>
-  </header>
+<header class="header">
+  <div class="logo">Digital <span>Finance</span></div>
+  <div class="profile">👤</div>
+</header>
 
-  <section class="balance-card">
-    <div class="small">ارزش کل دارایی</div>
-    <div class="balance" id="balance">100,000</div>
-    <div class="currency">افغانی</div>
-    <div class="profit">▲ +2.45% امروز</div>
-  </section>
+<section class="balance-card">
+  <div class="small">موجودی افغانی</div>
 
-  <div class="section-title">قیمت طلا</div>
-
-  <section class="gold-card">
-
-    <div class="gold-top">
-
-      <div class="gold-icon">₳</div>
-
-      <div class="gold-name">
-        <b>طلای ۲۴ عیار</b>
-        <span>هر گرم</span>
-      </div>
-
-      <div class="price">
-        <b id="goldPrice">6,850</b>
-        <div class="change">▲ 1.25%</div>
-      </div>
-
-    </div>
-
-    <div class="chart">
-      <svg viewBox="0 0 400 100" preserveAspectRatio="none">
-        <polyline
-          class="chart-line"
-          points="0,80 35,72 70,76 105,55 140,62 175,42 210,48 245,35 280,40 315,22 350,30 400,10"
-        />
-      </svg>
-    </div>
-
-  </section>
-
-  <div class="actions">
-    <button class="action buy" onclick="openModal('buy')">
-      🟢 خرید طلا
-    </button>
-
-    <button class="action sell" onclick="openModal('sell')">
-      🔴 فروش طلا
-    </button>
+  <div class="balance" id="cashBalance">
+    100,000
   </div>
 
-  <div class="section-title">دارایی طلای من</div>
+  <div class="currency">افغانی</div>
+</section>
 
-  <section class="holding">
-    <div>
-      <span>مقدار طلا</span>
-      <br>
-      <b id="goldAmount">2.35 گرم</b>
+<div class="section-title">قیمت طلا</div>
+
+<section class="gold-card">
+
+  <div class="gold-top">
+
+    <div class="gold-icon">Au</div>
+
+    <div class="gold-name">
+      <b>طلای ۲۴ عیار</b>
+      <span>قیمت آزمایشی هر گرم</span>
     </div>
 
-    <div style="text-align:left">
-      <span>ارزش تقریبی</span>
-      <br>
-      <b id="goldValue">16,097</b>
+    <div class="price">
+      <b id="goldPrice">6,850</b>
+      <div class="change">▲ 1.25%</div>
     </div>
-  </section>
 
-  <div class="note">
-    نسخه آزمایشی Digital Finance — معاملات واقعی فعال نیست
   </div>
+
+  <div class="chart">
+    <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+      <polyline
+        class="chart-line"
+        points="0,80 35,72 70,76 105,55 140,62 175,42 210,48 245,35 280,40 315,22 350,30 400,10"
+      />
+    </svg>
+  </div>
+
+</section>
+
+<div class="actions">
+
+  <button class="action buy" onclick="openTrade('buy')">
+    🟢 خرید طلا
+  </button>
+
+  <button class="action sell" onclick="openTrade('sell')">
+    🔴 فروش طلا
+  </button>
 
 </div>
 
-<!-- Bottom navigation -->
+<div class="section-title">دارایی طلای من</div>
+
+<section class="holding">
+
+  <div>
+    <span>مقدار طلا</span>
+    <br>
+    <b id="goldAmount">2.35 گرم</b>
+  </div>
+
+  <div style="text-align:left">
+    <span>ارزش تقریبی</span>
+    <br>
+    <b id="goldValue">16,097</b>
+  </div>
+
+</section>
+
+<div class="note">
+  نسخه آزمایشی — هیچ پول واقعی جابه‌جا نمی‌شود
+</div>
+
+</div>
 
 <nav class="bottom">
 
@@ -427,14 +441,17 @@ body{
 
 </nav>
 
-<!-- Buy/Sell Modal -->
-
-<div class="modal" id="modal">
+<div class="modal" id="tradeModal">
 
   <div class="modal-box">
 
     <div class="modal-title" id="modalTitle">
       خرید طلا
+    </div>
+
+    <div class="modal-info">
+      قیمت هر گرم:
+      <b id="modalPrice">6,850</b> افغانی
     </div>
 
     <input
@@ -444,13 +461,19 @@ body{
       placeholder="مقدار طلا به گرم"
       min="0.01"
       step="0.01"
+      oninput="calculateTotal()"
     >
+
+    <div class="total">
+      <span>مبلغ معامله</span>
+      <b id="tradeTotal">0 افغانی</b>
+    </div>
 
     <button class="confirm" onclick="confirmTrade()">
       تأیید معامله آزمایشی
     </button>
 
-    <div class="close" onclick="closeModal()">
+    <div class="close" onclick="closeTrade()">
       بستن
     </div>
 
@@ -460,77 +483,183 @@ body{
 
 <script>
 
+const GOLD_PRICE = 6850;
+
+let cashBalance =
+  Number(localStorage.getItem("df_cash")) || 100000;
+
+let goldAmount =
+  Number(localStorage.getItem("df_gold")) || 2.35;
+
 let tradeType = "buy";
 
-let goldAmount = 2.35;
+function formatNumber(number){
 
-const goldPrice = 6850;
-
-function openModal(type){
-
-  tradeType = type;
-
-  document.getElementById("modal").style.display = "flex";
-
-  document.getElementById("modalTitle").innerText =
-    type === "buy" ? "خرید طلا" : "فروش طلا";
+  return Math.round(number).toLocaleString("en-US");
 
 }
 
-function closeModal(){
+function updateScreen(){
 
-  document.getElementById("modal").style.display = "none";
-
-}
-
-function confirmTrade(){
-
-  const input =
-    parseFloat(document.getElementById("goldInput").value);
-
-  if(!input || input <= 0){
-
-    alert("لطفاً مقدار طلا را وارد کنید.");
-
-    return;
-
-  }
-
-  if(tradeType === "buy"){
-
-    goldAmount += input;
-
-  }else{
-
-    if(input > goldAmount){
-
-      alert("موجودی طلای شما کافی نیست.");
-
-      return;
-
-    }
-
-    goldAmount -= input;
-
-  }
+  document.getElementById("cashBalance").innerText =
+    formatNumber(cashBalance);
 
   document.getElementById("goldAmount").innerText =
     goldAmount.toFixed(2) + " گرم";
 
   document.getElementById("goldValue").innerText =
-    Math.round(goldAmount * goldPrice).toLocaleString();
+    formatNumber(goldAmount * GOLD_PRICE);
 
-  document.getElementById("goldInput").value = "";
+  document.getElementById("goldPrice").innerText =
+    formatNumber(GOLD_PRICE);
 
-  closeModal();
+}
 
-  alert(
-    tradeType === "buy"
-    ? "خرید آزمایشی با موفقیت انجام شد."
-    : "فروش آزمایشی با موفقیت انجام شد."
+function saveData(){
+
+  localStorage.setItem(
+    "df_cash",
+    cashBalance
+  );
+
+  localStorage.setItem(
+    "df_gold",
+    goldAmount
   );
 
 }
+
+function openTrade(type){
+
+  tradeType = type;
+
+  document.getElementById("tradeModal").style.display =
+    "flex";
+
+  document.getElementById("modalTitle").innerText =
+    type === "buy"
+    ? "🟢 خرید طلا"
+    : "🔴 فروش طلا";
+
+  document.getElementById("modalPrice").innerText =
+    formatNumber(GOLD_PRICE);
+
+  document.getElementById("goldInput").value = "";
+
+  document.getElementById("tradeTotal").innerText =
+    "0 افغانی";
+
+}
+
+function closeTrade(){
+
+  document.getElementById("tradeModal").style.display =
+    "none";
+
+}
+
+function calculateTotal(){
+
+  const amount =
+    Number(document.getElementById("goldInput").value);
+
+  if(!amount){
+
+    document.getElementById("tradeTotal").innerText =
+      "0 افغانی";
+
+    return;
+  }
+
+  const total =
+    amount * GOLD_PRICE;
+
+  document.getElementById("tradeTotal").innerText =
+    formatNumber(total) + " افغانی";
+
+}
+
+function showMessage(text){
+
+  const box =
+    document.getElementById("message");
+
+  box.innerText = text;
+
+  box.style.display = "block";
+
+  setTimeout(function(){
+
+    box.style.display = "none";
+
+  },2500);
+
+}
+
+function confirmTrade(){
+
+  const amount =
+    Number(document.getElementById("goldInput").value);
+
+  if(!amount || amount <= 0){
+
+    showMessage("لطفاً مقدار طلا را وارد کنید.");
+
+    return;
+  }
+
+  const total =
+    amount * GOLD_PRICE;
+
+  if(tradeType === "buy"){
+
+    if(total > cashBalance){
+
+      showMessage(
+        "موجودی افغانی شما برای خرید کافی نیست."
+      );
+
+      return;
+    }
+
+    cashBalance -= total;
+
+    goldAmount += amount;
+
+    showMessage(
+      "خرید آزمایشی با موفقیت انجام شد."
+    );
+
+  }else{
+
+    if(amount > goldAmount){
+
+      showMessage(
+        "موجودی طلای شما کافی نیست."
+      );
+
+      return;
+    }
+
+    goldAmount -= amount;
+
+    cashBalance += total;
+
+    showMessage(
+      "فروش آزمایشی با موفقیت انجام شد."
+    );
+
+  }
+
+  saveData();
+
+  updateScreen();
+
+  closeTrade();
+
+}
+
+updateScreen();
 
 </script>
 
