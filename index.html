@@ -107,7 +107,7 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:24px;
+  font-size:20px;
   font-weight:bold;
 }
 
@@ -203,6 +203,76 @@ body{
   font-size:12px;
 }
 
+.history{
+  margin:0 16px;
+}
+
+.history-empty{
+  padding:25px;
+  background:#101f30;
+  border-radius:18px;
+  text-align:center;
+  color:#718397;
+}
+
+.trade{
+  background:#101f30;
+  border-radius:17px;
+  padding:15px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.trade-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.trade-icon{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+
+.trade-buy{
+  background:#173b2a;
+}
+
+.trade-sell{
+  background:#3b2024;
+}
+
+.trade-info b{
+  display:block;
+  font-size:14px;
+}
+
+.trade-info span{
+  color:#718397;
+  font-size:11px;
+}
+
+.trade-right{
+  text-align:left;
+}
+
+.trade-right b{
+  display:block;
+  font-size:14px;
+}
+
+.trade-right span{
+  color:#91a1b2;
+  font-size:11px;
+}
+
 .bottom{
   position:fixed;
   bottom:0;
@@ -216,12 +286,14 @@ body{
   display:flex;
   justify-content:space-around;
   align-items:center;
+  z-index:10;
 }
 
 .nav{
   color:#718397;
   text-align:center;
   font-size:11px;
+  cursor:pointer;
 }
 
 .nav div{
@@ -240,6 +312,7 @@ body{
   background:rgba(0,0,0,.72);
   align-items:flex-end;
   justify-content:center;
+  z-index:15;
 }
 
 .modal-box{
@@ -406,6 +479,11 @@ body{
 
 </section>
 
+<div class="section-title">📜 تاریخچه معاملات</div>
+
+<section class="history" id="history">
+</section>
+
 <div class="note">
   نسخه آزمایشی — هیچ پول واقعی جابه‌جا نمی‌شود
 </div>
@@ -414,7 +492,7 @@ body{
 
 <nav class="bottom">
 
-  <div class="nav active">
+  <div class="nav active" onclick="goHome()">
     <div>🏠</div>
     خانه
   </div>
@@ -424,12 +502,12 @@ body{
     بازار
   </div>
 
-  <div class="nav">
+  <div class="nav" onclick="scrollToHoldings()">
     <div>💰</div>
     دارایی
   </div>
 
-  <div class="nav">
+  <div class="nav" onclick="scrollToHistory()">
     <div>📜</div>
     تاریخچه
   </div>
@@ -491,13 +569,18 @@ let cashBalance =
 let goldAmount =
   Number(localStorage.getItem("df_gold")) || 2.35;
 
+let history =
+  JSON.parse(localStorage.getItem("df_history") || "[]");
+
 let tradeType = "buy";
+
 
 function formatNumber(number){
 
   return Math.round(number).toLocaleString("en-US");
 
 }
+
 
 function updateScreen(){
 
@@ -513,7 +596,10 @@ function updateScreen(){
   document.getElementById("goldPrice").innerText =
     formatNumber(GOLD_PRICE);
 
+  renderHistory();
+
 }
+
 
 function saveData(){
 
@@ -527,7 +613,13 @@ function saveData(){
     goldAmount
   );
 
+  localStorage.setItem(
+    "df_history",
+    JSON.stringify(history)
+  );
+
 }
+
 
 function openTrade(type){
 
@@ -551,12 +643,14 @@ function openTrade(type){
 
 }
 
+
 function closeTrade(){
 
   document.getElementById("tradeModal").style.display =
     "none";
 
 }
+
 
 function calculateTotal(){
 
@@ -579,22 +673,105 @@ function calculateTotal(){
 
 }
 
-function showMessage(text){
 
-  const box =
-    document.getElementById("message");
+function addHistory(type, amount, total){
 
-  box.innerText = text;
+  const now = new Date();
 
-  box.style.display = "block";
+  const date =
+    now.toLocaleDateString("fa-IR");
 
-  setTimeout(function(){
+  const time =
+    now.toLocaleTimeString("fa-IR", {
+      hour:"2-digit",
+      minute:"2-digit"
+    });
 
-    box.style.display = "none";
+  history.unshift({
+    type:type,
+    amount:amount,
+    total:total,
+    date:date,
+    time:time
+  });
 
-  },2500);
+  if(history.length > 20){
+
+    history =
+      history.slice(0,20);
+
+  }
 
 }
+
+
+function renderHistory(){
+
+  const box =
+    document.getElementById("history");
+
+  if(history.length === 0){
+
+    box.innerHTML =
+      '<div class="history-empty">هنوز معامله‌ای انجام نشده است.</div>';
+
+    return;
+  }
+
+  box.innerHTML = "";
+
+  history.forEach(function(item){
+
+    const isBuy =
+      item.type === "buy";
+
+    const div =
+      document.createElement("div");
+
+    div.className = "trade";
+
+    div.innerHTML = `
+
+      <div class="trade-left">
+
+        <div class="trade-icon ${isBuy ? "trade-buy" : "trade-sell"}">
+          ${isBuy ? "🟢" : "🔴"}
+        </div>
+
+        <div class="trade-info">
+
+          <b>
+            ${isBuy ? "خرید طلا" : "فروش طلا"}
+          </b>
+
+          <span>
+            ${item.date} — ${item.time}
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="trade-right">
+
+        <b>
+          ${item.amount.toFixed(2)} گرم
+        </b>
+
+        <span>
+          ${formatNumber(item.total)} افغانی
+        </span>
+
+      </div>
+
+    `;
+
+    box.appendChild(div);
+
+  });
+
+}
+
 
 function confirmTrade(){
 
@@ -611,6 +788,7 @@ function confirmTrade(){
   const total =
     amount * GOLD_PRICE;
 
+
   if(tradeType === "buy"){
 
     if(total > cashBalance){
@@ -625,6 +803,12 @@ function confirmTrade(){
     cashBalance -= total;
 
     goldAmount += amount;
+
+    addHistory(
+      "buy",
+      amount,
+      total
+    );
 
     showMessage(
       "خرید آزمایشی با موفقیت انجام شد."
@@ -645,11 +829,18 @@ function confirmTrade(){
 
     cashBalance += total;
 
+    addHistory(
+      "sell",
+      amount,
+      total
+    );
+
     showMessage(
       "فروش آزمایشی با موفقیت انجام شد."
     );
 
   }
+
 
   saveData();
 
@@ -658,6 +849,55 @@ function confirmTrade(){
   closeTrade();
 
 }
+
+
+function showMessage(text){
+
+  const box =
+    document.getElementById("message");
+
+  box.innerText = text;
+
+  box.style.display = "block";
+
+  setTimeout(function(){
+
+    box.style.display = "none";
+
+  },2500);
+
+}
+
+
+function scrollToHistory(){
+
+  document.getElementById("history")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
+}
+
+
+function scrollToHoldings(){
+
+  document.querySelector(".holding")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
+}
+
+
+function goHome(){
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
 
 updateScreen();
 
