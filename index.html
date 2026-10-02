@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+
+<title>Digital Finance</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#07111f;
+  color:white;
+  min-height:100vh;
+}
+
+.app{
+  max-width:480px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:90px;
+}
+
+/* Header */
+
+.header{
+  padding:22px 18px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.logo span{
+  color:#d9a441;
+}
+
+.profile{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#17283b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+
+/* Balance */
+
+.balance-card{
+  margin:10px 16px;
+  padding:22px;
+  border-radius:22px;
+  background:linear-gradient(145deg,#14283b,#0c1a29);
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.small{
+  color:#91a1b2;
+  font-size:13px;
+}
+
+.balance{
+  font-size:34px;
+  font-weight:bold;
+  margin:8px 0;
+}
+
+.currency{
+  color:#d9a441;
+  font-size:14px;
+}
+
+.profit{
+  margin-top:10px;
+  color:#43d17b;
+  font-size:13px;
+}
+
+/* Gold price */
+
+.section-title{
+  padding:18px 18px 10px;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.gold-card{
+  margin:0 16px;
+  padding:18px;
+  background:#101f30;
+  border-radius:20px;
+}
+
+.gold-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.gold-icon{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#f3c969,#a8791c);
+  color:#302208;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  font-weight:bold;
+}
+
+.gold-name{
+  flex:1;
+  margin-right:12px;
+}
+
+.gold-name b{
+  display:block;
+  font-size:16px;
+}
+
+.gold-name span{
+  display:block;
+  color:#91a1b2;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.price{
+  text-align:left;
+}
+
+.price b{
+  font-size:17px;
+}
+
+.change{
+  color:#43d17b;
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* Chart */
+
+.chart{
+  height:100px;
+  margin-top:18px;
+  position:relative;
+  overflow:hidden;
+}
+
+.chart svg{
+  width:100%;
+  height:100%;
+}
+
+.chart-line{
+  fill:none;
+  stroke:#d9a441;
+  stroke-width:3;
+  stroke-linecap:round;
+}
+
+/* Buttons */
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin:16px;
+}
+
+.action{
+  flex:1;
+  border:0;
+  padding:15px;
+  border-radius:15px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.buy{
+  background:#d9a441;
+  color:#111;
+}
+
+.sell{
+  background:#26394d;
+  color:white;
+}
+
+/* Holdings */
+
+.holding{
+  margin:0 16px;
+  padding:18px;
+  border-radius:20px;
+  background:#101f30;
+  display:flex;
+  justify-content:space-between;
+}
+
+.holding b{
+  font-size:20px;
+}
+
+.holding span{
+  color:#91a1b2;
+  font-size:12px;
+}
+
+/* Bottom navigation */
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:480px;
+  height:72px;
+  background:#0c1826;
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+
+.nav{
+  color:#718397;
+  text-align:center;
+  font-size:11px;
+}
+
+.nav div{
+  font-size:22px;
+  margin-bottom:4px;
+}
+
+.nav.active{
+  color:#d9a441;
+}
+
+/* Modal */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal-box{
+  width:100%;
+  max-width:480px;
+  background:#102033;
+  border-radius:25px 25px 0 0;
+  padding:24px;
+}
+
+.modal-title{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.input{
+  width:100%;
+  padding:15px;
+  background:#07111f;
+  color:white;
+  border:1px solid #26394d;
+  border-radius:13px;
+  font-size:16px;
+  margin-bottom:14px;
+}
+
+.confirm{
+  width:100%;
+  padding:15px;
+  background:#d9a441;
+  border:0;
+  border-radius:13px;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.close{
+  text-align:center;
+  margin-top:15px;
+  color:#91a1b2;
+  cursor:pointer;
+}
+
+.note{
+  text-align:center;
+  color:#718397;
+  font-size:11px;
+  margin:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="logo">Digital <span>Finance</span></div>
+    <div class="profile">👤</div>
+  </header>
+
+  <section class="balance-card">
+    <div class="small">ارزش کل دارایی</div>
+    <div class="balance" id="balance">100,000</div>
+    <div class="currency">افغانی</div>
+    <div class="profit">▲ +2.45% امروز</div>
+  </section>
+
+  <div class="section-title">قیمت طلا</div>
+
+  <section class="gold-card">
+
+    <div class="gold-top">
+
+      <div class="gold-icon">₳</div>
+
+      <div class="gold-name">
+        <b>طلای ۲۴ عیار</b>
+        <span>هر گرم</span>
+      </div>
+
+      <div class="price">
+        <b id="goldPrice">6,850</b>
+        <div class="change">▲ 1.25%</div>
+      </div>
+
+    </div>
+
+    <div class="chart">
+      <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+        <polyline
+          class="chart-line"
+          points="0,80 35,72 70,76 105,55 140,62 175,42 210,48 245,35 280,40 315,22 350,30 400,10"
+        />
+      </svg>
+    </div>
+
+  </section>
+
+  <div class="actions">
+    <button class="action buy" onclick="openModal('buy')">
+      🟢 خرید طلا
+    </button>
+
+    <button class="action sell" onclick="openModal('sell')">
+      🔴 فروش طلا
+    </button>
+  </div>
+
+  <div class="section-title">دارایی طلای من</div>
+
+  <section class="holding">
+    <div>
+      <span>مقدار طلا</span>
+      <br>
+      <b id="goldAmount">2.35 گرم</b>
+    </div>
+
+    <div style="text-align:left">
+      <span>ارزش تقریبی</span>
+      <br>
+      <b id="goldValue">16,097</b>
+    </div>
+  </section>
+
+  <div class="note">
+    نسخه آزمایشی Digital Finance — معاملات واقعی فعال نیست
+  </div>
+
+</div>
+
+<!-- Bottom navigation -->
+
+<nav class="bottom">
+
+  <div class="nav active">
+    <div>🏠</div>
+    خانه
+  </div>
+
+  <div class="nav">
+    <div>📊</div>
+    بازار
+  </div>
+
+  <div class="nav">
+    <div>💰</div>
+    دارایی
+  </div>
+
+  <div class="nav">
+    <div>📜</div>
+    تاریخچه
+  </div>
+
+  <div class="nav">
+    <div>👤</div>
+    حساب
+  </div>
+
+</nav>
+
+<!-- Buy/Sell Modal -->
+
+<div class="modal" id="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-title" id="modalTitle">
+      خرید طلا
+    </div>
+
+    <input
+      class="input"
+      id="goldInput"
+      type="number"
+      placeholder="مقدار طلا به گرم"
+      min="0.01"
+      step="0.01"
+    >
+
+    <button class="confirm" onclick="confirmTrade()">
+      تأیید معامله آزمایشی
+    </button>
+
+    <div class="close" onclick="closeModal()">
+      بستن
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+let tradeType = "buy";
+
+let goldAmount = 2.35;
+
+const goldPrice = 6850;
+
+function openModal(type){
+
+  tradeType = type;
+
+  document.getElementById("modal").style.display = "flex";
+
+  document.getElementById("modalTitle").innerText =
+    type === "buy" ? "خرید طلا" : "فروش طلا";
+
+}
+
+function closeModal(){
+
+  document.getElementById("modal").style.display = "none";
+
+}
+
+function confirmTrade(){
+
+  const input =
+    parseFloat(document.getElementById("goldInput").value);
+
+  if(!input || input <= 0){
+
+    alert("لطفاً مقدار طلا را وارد کنید.");
+
+    return;
+
+  }
+
+  if(tradeType === "buy"){
+
+    goldAmount += input;
+
+  }else{
+
+    if(input > goldAmount){
+
+      alert("موجودی طلای شما کافی نیست.");
+
+      return;
+
+    }
+
+    goldAmount -= input;
+
+  }
+
+  document.getElementById("goldAmount").innerText =
+    goldAmount.toFixed(2) + " گرم";
+
+  document.getElementById("goldValue").innerText =
+    Math.round(goldAmount * goldPrice).toLocaleString();
+
+  document.getElementById("goldInput").value = "";
+
+  closeModal();
+
+  alert(
+    tradeType === "buy"
+    ? "خرید آزمایشی با موفقیت انجام شد."
+    : "فروش آزمایشی با موفقیت انجام شد."
+  );
+
+}
+
+</script>
+
+</body>
+</html>
