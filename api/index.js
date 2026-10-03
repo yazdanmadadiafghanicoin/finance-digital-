@@ -1,35 +1,48 @@
 const { neon } = require("@neondatabase/serverless");
 const crypto = require("crypto");
 
-const sql = neon(process.env.DATABASE_URL);
+const FRONTEND_ORIGIN =
+  "https://yazdanmadadiafghanicoin.github.io";
 
-const START_GOLD_PRICE = 6850;
-const DEFAULT_CASH = 100000;
-const DEFAULT_GOLD = 2.35;
+function setCors(req, res) {
+  const origin = req.headers.origin || "";
 
-// =========================
-// CORS
-// =========================
-function setCors(res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (
+    origin === FRONTEND_ORIGIN ||
+    origin === "https://finance-digital-eta.vercel.app"
+  ) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
+  }
+
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS"
+  );
 }
 
-// =========================
-// JSON RESPONSE
-// =========================
-function send(res, status, data) {
-  setCors(res);
-  res.statusCode = status;
+function json(res, status, data) {
+  res.status(status);
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.end(JSON.stringify(data));
 }
 
-// =========================
-// REQUEST BODY
-// =========================
-async function getBody(req) {
+function getDB() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is not configured");
+  }
+
+  return neon(process.env.DATABASE_URL);
+}
+
+function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
 
@@ -38,14 +51,9 @@ async function getBody(req) {
     });
 
     req.on("end", () => {
-      if (!body) {
-        resolve({});
-        return;
-      }
-
       try {
-        resolve(JSON.parse(body));
-      } catch (error) {
+        resolve(body ? JSON.parse(body) : {});
+      } catch {
         reject(new Error("Invalid JSON"));
       }
     });
@@ -54,9 +62,6 @@ async function getBody(req) {
   });
 }
 
-// =========================
-// PASSWORD HASH
-// =========================
 function hashPassword(password) {
   return crypto
     .createHash("sha256")
@@ -64,100 +69,87 @@ function hashPassword(password) {
     .digest("hex");
 }
 
-// =========================
-// TOKEN
-// =========================
 function createToken(user) {
-  const secret =
-    process.env.AUTH_SECRET ||
-    "digital-finance-demo-secret-change-this";
+  const secret = process.env.AUTH_SECRET;
 
-  const payload = {
-    id: user.id,
-    email: user.email,
-    role: user.role || "user",
-    time: Date.now()
-  };
+  if (!secret) {
+    throw new Error("AUTH_SECRET is not configured");
+  }
 
-  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const payload = Buffer.from(
+    JSON.stringify({
+      id: user.id,
+      email: user.email
+    })
+  ).toString("base64url");
 
   const signature = crypto
     .createHmac("sha256", secret)
-    .update(encoded)
+    .update(payload)
     .digest("base64url");
 
-  return `${encoded}.${signature}`;
+  return `${payload}.${signature}`;
 }
 
 function verifyToken(token) {
+  const secret = process.env.AUTH_SECRET;
+
+  if (!secret || !token) return null;
+
+  const parts = token.split(".");
+
+  if (parts.length !== 2) return null;
+
+  const [payload, signature] = parts;
+
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("base64url");
+
+  if (signature !== expected) return null;
+
   try {
-    if (!token) return null;
-
-    const secret =
-      process.env.AUTH_SECRET ||
-      "digital-finance-demo-secret-change-this";
-
-    const parts = token.split(".");
-
-    if (parts.length !== 2) return null;
-
-    const [encoded, signature] = parts;
-
-    const expected = crypto
-      .createHmac("sha256", secret)
-      .update(encoded)
-      .digest("base64url");
-
-    if (signature !== expected) return null;
-
-    const payload = JSON.parse(
-      Buffer.from(encoded, "base64url").toString()
+    return JSON.parse(
+      Buffer.from(payload, "base64url").toString()
     );
-
-    return payload;
   } catch {
     return null;
   }
 }
 
-// =========================
-// AUTH
-// =========================
-function getAuth(req) {
-  const header = req.headers.authorization || "";
+function getToken(req) {
+  const auth = req.headers.authorization || "";
 
-  if (!header.startsWith("Bearer ")) {
-    return null;
+  if (auth.startsWith("Bearer ")) {
+    return auth.slice(7);
   }
 
-  return verifyToken(header.substring(7));
+  return null;
 }
 
-// =========================
-// DATABASE SETUP
-// =========================
-async function setupDatabase() {
+async function setupDatabase(sql) {
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
-      cash NUMERIC(20,2) NOT NULL DEFAULT 100000,
-      gold NUMERIC(20,6) NOT NULL DEFAULT 2.35,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      cash NUMERIC DEFAULT 100000,
+      gold NUMERIC DEFAULT 2.35,
+      created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
   await sql`
     CREATE TABLE IF NOT EXISTS trades (
       id SERIAL PRIMARY KEY,
-      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
       type TEXT NOT NULL,
-      gold_amount NUMERIC(20,6) NOT NULL,
-      price NUMERIC(20,2) NOT NULL,
-      total NUMERIC(20,2) NOT NULL,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      gold_amount NUMERIC NOT NULL,
+      price NUMERIC NOT NULL,
+      total NUMERIC NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
@@ -170,17 +162,12 @@ async function setupDatabase() {
 
   await sql`
     INSERT INTO settings (key, value)
-    VALUES ('gold_price', ${String(START_GOLD_PRICE)})
+    VALUES ('gold_price', '6850')
     ON CONFLICT (key) DO NOTHING
   `;
-
-  return true;
 }
 
-// =========================
-// GET GOLD PRICE
-// =========================
-async function getGoldPrice() {
+async function getGoldPrice(sql) {
   const result = await sql`
     SELECT value
     FROM settings
@@ -188,45 +175,34 @@ async function getGoldPrice() {
     LIMIT 1
   `;
 
-  if (!result.length) {
-    await sql`
-      INSERT INTO settings (key, value)
-      VALUES ('gold_price', ${String(START_GOLD_PRICE)})
-      ON CONFLICT (key) DO NOTHING
-    `;
-
-    return START_GOLD_PRICE;
-  }
+  if (!result.length) return 6850;
 
   return Number(result[0].value);
 }
 
-// =========================
-// MAIN HANDLER
-// =========================
 module.exports = async (req, res) => {
-  setCors(res);
+  setCors(req, res);
 
-  // OPTIONS
   if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
-    return;
+    res.status(204);
+    return res.end();
   }
 
   const url = new URL(
     req.url,
-    `https://${req.headers.host || "localhost"}`
+    `https://${req.headers.host || "finance-digital-eta.vercel.app"}`
   );
 
-  const path = url.pathname.replace(/\/+$/, "") || "/";
+  const path = url.pathname;
 
   try {
-    // =========================
-    // HEALTH
-    // =========================
-    if (path === "/api" || path === "/api/health") {
-      return send(res, 200, {
+    const sql = getDB();
+
+    /*
+     * HEALTH
+     */
+    if (path === "/api" && req.method === "GET") {
+      return json(res, 200, {
         success: true,
         message: "Digital Finance Backend is running!",
         service: "Digital Finance",
@@ -235,62 +211,57 @@ module.exports = async (req, res) => {
       });
     }
 
-    // =========================
-    // DATABASE SETUP
-    // =========================
-    if (path === "/api/setup" && req.method === "POST") {
-      const setupKey =
-        req.headers["x-setup-key"] ||
-        url.searchParams.get("key");
+    /*
+     * SETUP
+     */
+    if (path === "/api/setup") {
+      const key =
+        url.searchParams.get("key") ||
+        req.headers["x-setup-key"];
 
-      const requiredKey = process.env.SETUP_SECRET;
-
-      if (!requiredKey) {
-        return send(res, 500, {
+      if (!process.env.SETUP_SECRET) {
+        return json(res, 500, {
           success: false,
-          message: "SETUP_SECRET is not configured in Vercel."
+          message: "SETUP_SECRET is not configured"
         });
       }
 
-      if (setupKey !== requiredKey) {
-        return send(res, 401, {
+      if (key !== process.env.SETUP_SECRET) {
+        return json(res, 401, {
           success: false,
-          message: "Invalid setup key."
+          message: "Invalid setup key"
         });
       }
 
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        message: "Digital Finance database is ready!"
+        message: "Database setup completed successfully"
       });
     }
 
-    // =========================
-    // PRICE
-    // =========================
+    /*
+     * PRICE
+     */
     if (path === "/api/price" && req.method === "GET") {
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      const price = await getGoldPrice();
+      const price = await getGoldPrice(sql);
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        goldPrice: price,
-        currency: "AFN",
-        unit: "gram",
-        karat: "24K"
+        price
       });
     }
 
-    // =========================
-    // REGISTER
-    // =========================
+    /*
+     * REGISTER
+     */
     if (path === "/api/register" && req.method === "POST") {
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      const body = await getBody(req);
+      const body = await readBody(req);
 
       const name = String(body.name || "").trim();
       const email = String(body.email || "")
@@ -299,16 +270,16 @@ module.exports = async (req, res) => {
       const password = String(body.password || "");
 
       if (!name || !email || !password) {
-        return send(res, 400, {
+        return json(res, 400, {
           success: false,
-          message: "Name, email and password are required."
+          message: "نام، ایمیل و رمز عبور الزامی است"
         });
       }
 
-      if (password.length < 6) {
-        return send(res, 400, {
+      if (password.length < 4) {
+        return json(res, 400, {
           success: false,
-          message: "Password must be at least 6 characters."
+          message: "رمز عبور باید حداقل ۴ کاراکتر باشد"
         });
       }
 
@@ -320,30 +291,24 @@ module.exports = async (req, res) => {
       `;
 
       if (existing.length) {
-        return send(res, 409, {
+        return json(res, 409, {
           success: false,
-          message: "This email is already registered."
+          message: "این ایمیل قبلاً ثبت شده است"
         });
       }
 
       const passwordHash = hashPassword(password);
 
       const result = await sql`
-        INSERT INTO users
-        (
+        INSERT INTO users (
           name,
           email,
-          password_hash,
-          cash,
-          gold
+          password_hash
         )
-        VALUES
-        (
+        VALUES (
           ${name},
           ${email},
-          ${passwordHash},
-          ${DEFAULT_CASH},
-          ${DEFAULT_GOLD}
+          ${passwordHash}
         )
         RETURNING
           id,
@@ -356,26 +321,23 @@ module.exports = async (req, res) => {
 
       const user = result[0];
 
-      const token = createToken({
-        ...user,
-        role: "user"
-      });
+      const token = createToken(user);
 
-      return send(res, 201, {
+      return json(res, 201, {
         success: true,
-        message: "Account created successfully.",
+        message: "ثبت‌نام با موفقیت انجام شد",
         token,
         user
       });
     }
 
-    // =========================
-    // LOGIN
-    // =========================
+    /*
+     * LOGIN
+     */
     if (path === "/api/login" && req.method === "POST") {
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      const body = await getBody(req);
+      const body = await readBody(req);
 
       const email = String(body.email || "")
         .trim()
@@ -384,9 +346,9 @@ module.exports = async (req, res) => {
       const password = String(body.password || "");
 
       if (!email || !password) {
-        return send(res, 400, {
+        return json(res, 400, {
           success: false,
-          message: "Email and password are required."
+          message: "ایمیل و رمز عبور را وارد کنید"
         });
       }
 
@@ -405,9 +367,9 @@ module.exports = async (req, res) => {
       `;
 
       if (!result.length) {
-        return send(res, 401, {
+        return json(res, 401, {
           success: false,
-          message: "Email or password is incorrect."
+          message: "ایمیل یا رمز عبور اشتباه است"
         });
       }
 
@@ -416,39 +378,37 @@ module.exports = async (req, res) => {
       const passwordHash = hashPassword(password);
 
       if (passwordHash !== user.password_hash) {
-        return send(res, 401, {
+        return json(res, 401, {
           success: false,
-          message: "Email or password is incorrect."
+          message: "ایمیل یا رمز عبور اشتباه است"
         });
       }
 
       delete user.password_hash;
 
-      const token = createToken({
-        ...user,
-        role: "user"
-      });
+      const token = createToken(user);
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        message: "Login successful.",
+        message: "ورود موفق بود",
         token,
         user
       });
     }
 
-    // =========================
-    // CURRENT USER
-    // =========================
+    /*
+     * CURRENT USER
+     */
     if (path === "/api/user" && req.method === "GET") {
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      const auth = getAuth(req);
+      const token = getToken(req);
+      const auth = verifyToken(token);
 
       if (!auth) {
-        return send(res, 401, {
+        return json(res, 401, {
           success: false,
-          message: "Authentication required."
+          message: "Unauthorized"
         });
       }
 
@@ -466,103 +426,93 @@ module.exports = async (req, res) => {
       `;
 
       if (!result.length) {
-        return send(res, 404, {
+        return json(res, 404, {
           success: false,
-          message: "User not found."
+          message: "User not found"
         });
       }
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
         user: result[0]
       });
     }
 
-    // =========================
-    // TRADE
-    // =========================
+    /*
+     * TRADE
+     */
     if (path === "/api/trade" && req.method === "POST") {
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      const auth = getAuth(req);
+      const token = getToken(req);
+      const auth = verifyToken(token);
 
       if (!auth) {
-        return send(res, 401, {
+        return json(res, 401, {
           success: false,
-          message: "Authentication required."
+          message: "Unauthorized"
         });
       }
 
-      const body = await getBody(req);
+      const body = await readBody(req);
 
-      const type = String(body.type || "").toLowerCase();
-      const goldAmount = Number(body.goldAmount);
-
-      if (type !== "buy" && type !== "sell") {
-        return send(res, 400, {
-          success: false,
-          message: "Trade type must be buy or sell."
-        });
-      }
+      const type = body.type;
+      const amount = Number(body.gold_amount);
 
       if (
-        !Number.isFinite(goldAmount) ||
-        goldAmount <= 0
+        (type !== "buy" && type !== "sell") ||
+        !Number.isFinite(amount) ||
+        amount <= 0
       ) {
-        return send(res, 400, {
+        return json(res, 400, {
           success: false,
-          message: "Invalid gold amount."
+          message: "اطلاعات معامله نادرست است"
         });
       }
 
-      const price = await getGoldPrice();
-      const total = goldAmount * price;
+      const price = await getGoldPrice(sql);
+      const total = amount * price;
 
-      const userResult = await sql`
-        SELECT
-          id,
-          cash,
-          gold
+      const users = await sql`
+        SELECT id, cash, gold
         FROM users
         WHERE id = ${auth.id}
         LIMIT 1
       `;
 
-      if (!userResult.length) {
-        return send(res, 404, {
+      if (!users.length) {
+        return json(res, 404, {
           success: false,
-          message: "User not found."
+          message: "کاربر پیدا نشد"
         });
       }
 
-      const user = userResult[0];
+      const user = users[0];
 
       let newCash = Number(user.cash);
       let newGold = Number(user.gold);
 
-      // BUY
       if (type === "buy") {
         if (newCash < total) {
-          return send(res, 400, {
+          return json(res, 400, {
             success: false,
-            message: "Not enough AFN balance."
+            message: "موجودی نقدی کافی نیست"
           });
         }
 
         newCash -= total;
-        newGold += goldAmount;
+        newGold += amount;
       }
 
-      // SELL
       if (type === "sell") {
-        if (newGold < goldAmount) {
-          return send(res, 400, {
+        if (newGold < amount) {
+          return json(res, 400, {
             success: false,
-            message: "Not enough gold."
+            message: "مقدار طلای کافی ندارید"
           });
         }
 
-        newGold -= goldAmount;
+        newGold -= amount;
         newCash += total;
       }
 
@@ -575,59 +525,58 @@ module.exports = async (req, res) => {
       `;
 
       await sql`
-        INSERT INTO trades
-        (
+        INSERT INTO trades (
           user_id,
           type,
           gold_amount,
           price,
           total
         )
-        VALUES
-        (
+        VALUES (
           ${auth.id},
           ${type},
-          ${goldAmount},
+          ${amount},
           ${price},
           ${total}
         )
       `;
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
         message:
           type === "buy"
-            ? "Gold purchased successfully."
-            : "Gold sold successfully.",
-        trade: {
-          type,
-          goldAmount,
-          price,
-          total
-        },
+            ? "خرید با موفقیت انجام شد"
+            : "فروش با موفقیت انجام شد",
         user: {
           cash: newCash,
           gold: newGold
+        },
+        trade: {
+          type,
+          gold_amount: amount,
+          price,
+          total
         }
       });
     }
 
-    // =========================
-    // HISTORY
-    // =========================
+    /*
+     * HISTORY
+     */
     if (path === "/api/history" && req.method === "GET") {
-      await setupDatabase();
+      await setupDatabase(sql);
 
-      const auth = getAuth(req);
+      const token = getToken(req);
+      const auth = verifyToken(token);
 
       if (!auth) {
-        return send(res, 401, {
+        return json(res, 401, {
           success: false,
-          message: "Authentication required."
+          message: "Unauthorized"
         });
       }
 
-      const result = await sql`
+      const history = await sql`
         SELECT
           id,
           type,
@@ -638,35 +587,23 @@ module.exports = async (req, res) => {
         FROM trades
         WHERE user_id = ${auth.id}
         ORDER BY created_at DESC
-        LIMIT 100
+        LIMIT 50
       `;
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        history: result
+        history
       });
     }
 
-    // =========================
-    // ADMIN AUTH
-    // =========================
-    function getAdmin(req) {
-      const auth = getAuth(req);
-
-      if (!auth) return null;
-
-      if (auth.role !== "admin") {
-        return null;
-      }
-
-      return auth;
-    }
-
-    // =========================
-    // ADMIN LOGIN
-    // =========================
-    if (path === "/api/admin/login" && req.method === "POST") {
-      const body = await getBody(req);
+    /*
+     * ADMIN LOGIN
+     */
+    if (
+      path === "/api/admin/login" &&
+      req.method === "POST"
+    ) {
+      const body = await readBody(req);
 
       const email = String(body.email || "")
         .trim()
@@ -674,69 +611,90 @@ module.exports = async (req, res) => {
 
       const password = String(body.password || "");
 
-      const adminEmail = String(
-        process.env.ADMIN_EMAIL || ""
-      )
-        .trim()
-        .toLowerCase();
-
-      const adminPassword = String(
-        process.env.ADMIN_PASSWORD || ""
-      );
-
       if (
-        !adminEmail ||
-        !adminPassword
+        !process.env.ADMIN_EMAIL ||
+        !process.env.ADMIN_PASSWORD
       ) {
-        return send(res, 500, {
+        return json(res, 500, {
           success: false,
-          message:
-            "Admin credentials are not configured."
+          message: "Admin settings are not configured"
         });
       }
 
       if (
-        email !== adminEmail ||
-        password !== adminPassword
+        email !==
+          String(process.env.ADMIN_EMAIL)
+            .trim()
+            .toLowerCase() ||
+        password !== process.env.ADMIN_PASSWORD
       ) {
-        return send(res, 401, {
+        return json(res, 401, {
           success: false,
-          message: "Invalid admin credentials."
+          message: "اطلاعات مدیر نادرست است"
         });
       }
 
-      const token = createToken({
-        id: 0,
-        email: adminEmail,
-        role: "admin"
-      });
+      const token = crypto
+        .createHmac(
+          "sha256",
+          process.env.AUTH_SECRET
+        )
+        .update(`admin:${email}`)
+        .digest("hex");
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        message: "Admin login successful.",
         token
       });
     }
 
-    // =========================
-    // ADMIN USERS
-    // =========================
+    /*
+     * ADMIN AUTH
+     */
+    function verifyAdmin(req) {
+      const token = getToken(req);
+
+      if (!token) return false;
+
+      if (
+        !process.env.ADMIN_EMAIL ||
+        !process.env.AUTH_SECRET
+      ) {
+        return false;
+      }
+
+      const expected = crypto
+        .createHmac(
+          "sha256",
+          process.env.AUTH_SECRET
+        )
+        .update(
+          `admin:${String(process.env.ADMIN_EMAIL)
+            .trim()
+            .toLowerCase()}`
+        )
+        .digest("hex");
+
+      return token === expected;
+    }
+
+    /*
+     * ADMIN USERS
+     */
     if (
       path === "/api/admin/users" &&
       req.method === "GET"
     ) {
-      await setupDatabase();
-
-      const admin = getAdmin(req);
-
-      if (!admin) {
-        return send(res, 403, {
+      if (!verifyAdmin(req)) {
+        return json(res, 401, {
           success: false,
-          message: "Admin access required."
+          message: "Admin unauthorized"
         });
       }
 
-      const result = await sql`
+      await setupDatabase(sql);
+
+      const users = await sql`
         SELECT
           id,
           name,
@@ -748,80 +706,74 @@ module.exports = async (req, res) => {
         ORDER BY id DESC
       `;
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        users: result
+        users
       });
     }
 
-    // =========================
-    // ADMIN STATISTICS
-    // =========================
+    /*
+     * ADMIN STATS
+     */
     if (
       path === "/api/admin/stats" &&
       req.method === "GET"
     ) {
-      await setupDatabase();
-
-      const admin = getAdmin(req);
-
-      if (!admin) {
-        return send(res, 403, {
+      if (!verifyAdmin(req)) {
+        return json(res, 401, {
           success: false,
-          message: "Admin access required."
+          message: "Admin unauthorized"
         });
       }
 
+      await setupDatabase(sql);
+
       const users = await sql`
-        SELECT
-          COUNT(*) AS user_count,
-          COALESCE(SUM(cash), 0) AS total_cash,
-          COALESCE(SUM(gold), 0) AS total_gold
+        SELECT COUNT(*)::int AS count
         FROM users
       `;
 
-      const price = await getGoldPrice();
+      const trades = await sql`
+        SELECT COUNT(*)::int AS count
+        FROM trades
+      `;
 
-      return send(res, 200, {
+      const price = await getGoldPrice(sql);
+
+      return json(res, 200, {
         success: true,
-        statistics: {
-          users: Number(users[0].user_count),
-          totalCash: Number(users[0].total_cash),
-          totalGold: Number(users[0].total_gold),
-          goldPrice: price
+        stats: {
+          users: Number(users[0].count),
+          trades: Number(trades[0].count),
+          gold_price: price
         }
       });
     }
 
-    // =========================
-    // ADMIN CHANGE GOLD PRICE
-    // =========================
+    /*
+     * ADMIN PRICE
+     */
     if (
       path === "/api/admin/price" &&
       req.method === "POST"
     ) {
-      await setupDatabase();
-
-      const admin = getAdmin(req);
-
-      if (!admin) {
-        return send(res, 403, {
+      if (!verifyAdmin(req)) {
+        return json(res, 401, {
           success: false,
-          message: "Admin access required."
+          message: "Admin unauthorized"
         });
       }
 
-      const body = await getBody(req);
+      await setupDatabase(sql);
+
+      const body = await readBody(req);
 
       const price = Number(body.price);
 
-      if (
-        !Number.isFinite(price) ||
-        price <= 0
-      ) {
-        return send(res, 400, {
+      if (!Number.isFinite(price) || price <= 0) {
+        return json(res, 400, {
           success: false,
-          message: "Invalid gold price."
+          message: "قیمت نادرست است"
         });
       }
 
@@ -832,37 +784,33 @@ module.exports = async (req, res) => {
         DO UPDATE SET value = EXCLUDED.value
       `;
 
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        message: "Gold price updated successfully.",
-        goldPrice: price
+        price
       });
     }
 
-    // =========================
-    // ADMIN UPDATE USER
-    // =========================
-    const userMatch = path.match(
-      /^\/api\/admin\/users\/(\d+)$/
-    );
-
+    /*
+     * ADMIN UPDATE USER
+     */
     if (
-      userMatch &&
+      path.startsWith("/api/admin/users/") &&
       req.method === "PATCH"
     ) {
-      await setupDatabase();
-
-      const admin = getAdmin(req);
-
-      if (!admin) {
-        return send(res, 403, {
+      if (!verifyAdmin(req)) {
+        return json(res, 401, {
           success: false,
-          message: "Admin access required."
+          message: "Admin unauthorized"
         });
       }
 
-      const userId = Number(userMatch[1]);
-      const body = await getBody(req);
+      await setupDatabase(sql);
+
+      const id = Number(
+        path.split("/").pop()
+      );
+
+      const body = await readBody(req);
 
       const cash =
         body.cash !== undefined
@@ -875,127 +823,96 @@ module.exports = async (req, res) => {
           : null;
 
       if (
-        cash !== null &&
-        (!Number.isFinite(cash) || cash < 0)
+        !Number.isFinite(id) ||
+        (cash !== null && !Number.isFinite(cash)) ||
+        (gold !== null && !Number.isFinite(gold))
       ) {
-        return send(res, 400, {
+        return json(res, 400, {
           success: false,
-          message: "Invalid cash amount."
+          message: "اطلاعات نادرست است"
         });
       }
 
-      if (
-        gold !== null &&
-        (!Number.isFinite(gold) || gold < 0)
-      ) {
-        return send(res, 400, {
-          success: false,
-          message: "Invalid gold amount."
-        });
-      }
-
-      if (cash !== null) {
+      if (cash !== null && gold !== null) {
+        await sql`
+          UPDATE users
+          SET
+            cash = ${cash},
+            gold = ${gold}
+          WHERE id = ${id}
+        `;
+      } else if (cash !== null) {
         await sql`
           UPDATE users
           SET cash = ${cash}
-          WHERE id = ${userId}
+          WHERE id = ${id}
         `;
-      }
-
-      if (gold !== null) {
+      } else if (gold !== null) {
         await sql`
           UPDATE users
           SET gold = ${gold}
-          WHERE id = ${userId}
+          WHERE id = ${id}
         `;
       }
 
-      const result = await sql`
-        SELECT
-          id,
-          name,
-          email,
-          cash,
-          gold,
-          created_at
-        FROM users
-        WHERE id = ${userId}
-        LIMIT 1
-      `;
-
-      if (!result.length) {
-        return send(res, 404, {
-          success: false,
-          message: "User not found."
-        });
-      }
-
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        message: "User updated successfully.",
-        user: result[0]
+        message: "کاربر بروزرسانی شد"
       });
     }
 
-    // =========================
-    // ADMIN DELETE USER
-    // =========================
+    /*
+     * ADMIN DELETE USER
+     */
     if (
-      userMatch &&
+      path.startsWith("/api/admin/users/") &&
       req.method === "DELETE"
     ) {
-      await setupDatabase();
-
-      const admin = getAdmin(req);
-
-      if (!admin) {
-        return send(res, 403, {
+      if (!verifyAdmin(req)) {
+        return json(res, 401, {
           success: false,
-          message: "Admin access required."
+          message: "Admin unauthorized"
         });
       }
 
-      const userId = Number(userMatch[1]);
+      await setupDatabase(sql);
 
-      const result = await sql`
+      const id = Number(
+        path.split("/").pop()
+      );
+
+      if (!Number.isFinite(id)) {
+        return json(res, 400, {
+          success: false,
+          message: "شناسه کاربر نادرست است"
+        });
+      }
+
+      await sql`
         DELETE FROM users
-        WHERE id = ${userId}
-        RETURNING id, name, email
+        WHERE id = ${id}
       `;
 
-      if (!result.length) {
-        return send(res, 404, {
-          success: false,
-          message: "User not found."
-        });
-      }
-
-      return send(res, 200, {
+      return json(res, 200, {
         success: true,
-        message: "User deleted successfully.",
-        user: result[0]
+        message: "کاربر حذف شد"
       });
     }
 
-    // =========================
-    // 404
-    // =========================
-    return send(res, 404, {
+    return json(res, 404, {
       success: false,
-      message: "API endpoint not found.",
-      path
+      message: "API endpoint not found"
     });
-
   } catch (error) {
     console.error("API ERROR:", error);
 
-    return send(res, 500, {
+    return json(res, 500, {
       success: false,
-      message: "Server error.",
+      message: "خطا در اتصال به سرور",
       error:
         process.env.NODE_ENV === "development"
           ? error.message
-          : "Internal server error."
+          : undefined
     });
   }
 };
