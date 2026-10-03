@@ -1,1376 +1,1221 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#070b12">
-
-<title>Digital Finance</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-body{
-  margin:0;
-  font-family:Arial,Tahoma,sans-serif;
-  background:#070b12;
-  color:#fff;
-}
-
-.app{
-  max-width:480px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:85px;
-}
-
-.header{
-  padding:22px 18px 12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.logo{
-  font-size:23px;
-  font-weight:bold;
-}
-
-.logo span{
-  color:#d6a84f;
-}
-
-.avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#d6a84f,#8f6a22);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:bold;
-  color:#111;
-}
-
-.page{
-  display:none;
-  padding:8px 15px;
-}
-
-.page.active{
-  display:block;
-}
-
-.card{
-  background:linear-gradient(145deg,#111923,#0d141d);
-  border:1px solid #202b38;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:14px;
-}
-
-.title{
-  font-size:20px;
-  font-weight:bold;
-  margin-bottom:5px;
-}
-
-.muted{
-  color:#8d99a8;
-  font-size:13px;
-}
-
-.balance{
-  font-size:29px;
-  font-weight:bold;
-  margin-top:8px;
-}
-
-.gold{
-  color:#d6a84f;
-}
-
-.price-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.price{
-  font-size:27px;
-  font-weight:bold;
-  color:#d6a84f;
-}
-
-.change{
-  padding:7px 11px;
-  border-radius:10px;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.up{
-  background:rgba(40,180,100,.14);
-  color:#36d889;
-}
-
-.down{
-  background:rgba(230,70,70,.14);
-  color:#ff6d6d;
-}
-
-.chart-box{
-  margin-top:15px;
-  height:190px;
-  position:relative;
-}
-
-canvas{
-  width:100%;
-  height:100%;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:14px;
-}
-
-.stat{
-  background:#0a1018;
-  border-radius:13px;
-  padding:13px;
-}
-
-.stat b{
-  display:block;
-  margin-top:5px;
-}
-
-.buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:14px;
-}
-
-button{
-  border:0;
-  border-radius:13px;
-  padding:14px;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.buy{
-  background:#d6a84f;
-  color:#111;
-}
-
-.sell{
-  background:#202b38;
-  color:#fff;
-}
-
-.input{
-  width:100%;
-  background:#090e15;
-  border:1px solid #263342;
-  color:white;
-  border-radius:12px;
-  padding:13px;
-  margin-top:8px;
-  outline:none;
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:20;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.modal-box{
-  width:100%;
-  max-width:420px;
-  background:#101721;
-  border:1px solid #293746;
-  border-radius:20px;
-  padding:20px;
-}
-
-.close{
-  background:#202b38;
-  color:white;
-  width:100%;
-  margin-top:8px;
-}
-
-.bottom{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:480px;
-  height:72px;
-  background:#0b1119;
-  border-top:1px solid #202b38;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:10;
-}
-
-.nav{
-  border:0;
-  background:none;
-  color:#738091;
-  font-size:11px;
-  padding:5px;
-}
-
-.nav.active{
-  color:#d6a84f;
-}
-
-.nav-icon{
-  font-size:20px;
-  display:block;
-  margin-bottom:3px;
-}
-
-.history-item{
-  background:#0b1118;
-  padding:13px;
-  border-radius:12px;
-  margin-bottom:8px;
-  display:flex;
-  justify-content:space-between;
-}
-
-.empty{
-  text-align:center;
-  color:#7d8997;
-  padding:30px 10px;
-}
-
-.login-box{
-  margin-top:30px;
-}
-
-.user-name{
-  font-size:20px;
-  font-weight:bold;
-  margin-bottom:4px;
-}
-
-.notice{
-  background:#18150e;
-  border:1px solid #5a4520;
-  color:#d6b875;
-  padding:12px;
-  border-radius:12px;
-  font-size:12px;
-  margin-bottom:14px;
-}
-
-.small{
-  font-size:12px;
-  color:#7d8997;
-}
-
-hr{
-  border:0;
-  border-top:1px solid #202b38;
-  margin:15px 0;
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<header class="header">
-  <div class="logo">Digital <span>Finance</span></div>
-  <div class="avatar" id="avatar">DF</div>
-</header>
-
-<!-- HOME -->
-<section id="home" class="page active">
-
-  <div class="notice">
-    ⚠️ این نسخه آزمایشی است. قیمت‌ها شبیه‌سازی شده‌اند و معامله با پول واقعی انجام نمی‌شود.
-  </div>
-
-  <div class="card">
-    <div class="muted">ارزش کل دارایی</div>
-    <div class="balance" id="homeTotal">100,000 AFN</div>
-
-    <div class="stats">
-      <div class="stat">
-        <span class="muted">نقدی</span>
-        <b id="homeCash">100,000 AFN</b>
-      </div>
-
-      <div class="stat">
-        <span class="muted">طلا</span>
-        <b id="homeGold">2.35 g</b>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-
-    <div class="price-row">
-      <div>
-        <div class="muted">قیمت طلای 24 عیار</div>
-        <div class="price" id="goldPrice">6,850 AFN</div>
-      </div>
-
-      <div id="priceChange" class="change up">
-        +0.00%
-      </div>
-    </div>
-
-    <div class="chart-box">
-      <canvas id="chart"></canvas>
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <span class="muted">قیمت آغاز</span>
-        <b id="openPrice">6,850 AFN</b>
-      </div>
-
-      <div class="stat">
-        <span class="muted">بالاترین</span>
-        <b id="highPrice">6,850 AFN</b>
-      </div>
-
-      <div class="stat">
-        <span class="muted">پایین‌ترین</span>
-        <b id="lowPrice">6,850 AFN</b>
-      </div>
-
-      <div class="stat">
-        <span class="muted">قیمت فعلی</span>
-        <b id="currentPrice">6,850 AFN</b>
-      </div>
-    </div>
-
-    <div class="buttons">
-      <button class="buy" onclick="openTrade('buy')">خرید طلا</button>
-      <button class="sell" onclick="openTrade('sell')">فروش طلا</button>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- MARKET -->
-<section id="market" class="page">
-
-  <div class="title">بازار</div>
-  <div class="muted">وضعیت قیمت طلا</div>
-
-  <div class="card" style="margin-top:14px">
-
-    <div class="price-row">
-      <div>
-        <div class="muted">Gold 24K</div>
-        <div class="price" id="marketPrice">6,850 AFN</div>
-      </div>
-
-      <div id="marketChange" class="change up">
-        +0.00%
-      </div>
-    </div>
-
-    <div class="chart-box">
-      <canvas id="marketChart"></canvas>
-    </div>
-
-    <hr>
-
-    <div class="stats">
-      <div class="stat">
-        <span class="muted">واحد</span>
-        <b>گرم</b>
-      </div>
-
-      <div class="stat">
-        <span class="muted">عیار</span>
-        <b>24K</b>
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- WALLET -->
-<section id="wallet" class="page">
-
-  <div class="title">دارایی من</div>
-  <div class="muted">ارزش لحظه‌ای دارایی‌های آزمایشی</div>
-
-  <div class="card" style="margin-top:14px">
-
-    <div class="muted">ارزش کل</div>
-    <div class="balance" id="walletTotal">100,000 AFN</div>
-
-    <hr>
-
-    <div class="price-row">
-      <span>💵 موجودی نقدی</span>
-      <b id="walletCash">100,000 AFN</b>
-    </div>
-
-    <br>
-
-    <div class="price-row">
-      <span>🪙 طلای من</span>
-      <b id="walletGold">2.35 g</b>
-    </div>
-
-    <br>
-
-    <div class="price-row">
-      <span>ارزش طلا</span>
-      <b class="gold" id="walletGoldValue">16,097.50 AFN</b>
-    </div>
-
-    <div class="buttons">
-      <button class="buy" onclick="openTrade('buy')">خرید</button>
-      <button class="sell" onclick="openTrade('sell')">فروش</button>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- HISTORY -->
-<section id="history" class="page">
-
-  <div class="title">تاریخچه معاملات</div>
-  <div class="muted">آخرین معاملات شما</div>
-
-  <div id="historyList" style="margin-top:14px"></div>
-
-</section>
-
-
-<!-- ACCOUNT -->
-<section id="account" class="page">
-
-  <div class="title">حساب کاربری</div>
-
-  <div id="loggedIn">
-
-    <div class="card" style="margin-top:14px">
-
-      <div class="user-name" id="accountName">
-        کاربر
-      </div>
-
-      <div class="muted" id="accountEmail">
-        -
-      </div>
-
-      <hr>
-
-      <div class="price-row">
-        <span>موجودی نقدی</span>
-        <b id="accountCash">0 AFN</b>
-      </div>
-
-      <br>
-
-      <div class="price-row">
-        <span>طلای من</span>
-        <b id="accountGold">0 g</b>
-      </div>
-
-      <button class="sell" style="width:100%;margin-top:20px" onclick="logout()">
-        خروج از حساب
-      </button>
-
-    </div>
-
-  </div>
-
-  <div id="loginBox" class="login-box">
-
-    <div class="card">
-
-      <div class="title">ورود / ثبت‌نام</div>
-
-      <input id="nameInput" class="input" placeholder="نام">
-
-      <input id="emailInput" class="input" placeholder="ایمیل">
-
-      <input id="passwordInput" class="input" type="password" placeholder="رمز عبور">
-
-      <div class="buttons">
-
-        <button class="buy" onclick="register()">
-          ثبت‌نام
-        </button>
-
-        <button class="sell" onclick="login()">
-          ورود
-        </button>
-
-      </div>
-
-      <div class="small" style="margin-top:12px">
-        اطلاعات این نسخه فقط در مرورگر ذخیره می‌شود.
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- BOTTOM NAV -->
-<nav class="bottom">
-
-  <button class="nav active" onclick="showPage('home',this)">
-    <span class="nav-icon">🏠</span>
-    خانه
-  </button>
-
-  <button class="nav" onclick="showPage('market',this)">
-    <span class="nav-icon">📈</span>
-    بازار
-  </button>
-
-  <button class="nav" onclick="showPage('wallet',this)">
-    <span class="nav-icon">💰</span>
-    دارایی
-  </button>
-
-  <button class="nav" onclick="showPage('history',this)">
-    <span class="nav-icon">📋</span>
-    تاریخچه
-  </button>
-
-  <button class="nav" onclick="showPage('account',this)">
-    <span class="nav-icon">👤</span>
-    حساب
-  </button>
-
-</nav>
-
-</div>
-
-
-<!-- TRADE MODAL -->
-<div id="tradeModal" class="modal">
-
-  <div class="modal-box">
-
-    <div class="title" id="tradeTitle">
-      خرید طلا
-    </div>
-
-    <div class="muted" style="margin-top:5px">
-      قیمت فعلی:
-      <b id="modalPrice">6,850 AFN</b>
-      برای هر گرم
-    </div>
-
-    <input
-      id="tradeAmount"
-      class="input"
-      type="number"
-      step="0.01"
-      min="0"
-      placeholder="مقدار طلا به گرم"
-    >
-
-    <div class="card" style="margin-top:12px;margin-bottom:10px">
-
-      <div class="price-row">
-        <span>مبلغ معامله</span>
-        <b id="tradeTotal">0 AFN</b>
-      </div>
-
-    </div>
-
-    <button class="buy" style="width:100%" onclick="executeTrade()">
-      تأیید معامله
-    </button>
-
-    <button class="close" onclick="closeTrade()">
-      انصراف
-    </button>
-
-  </div>
-
-</div>
-
-
-<script>
-
-const START_PRICE = 6850;
-
-let goldPrice = START_PRICE;
-let tradeType = "buy";
-
-let priceHistory = [];
-
-for(let i=0;i<30;i++){
-  priceHistory.push(START_PRICE);
-}
-
-
-/* ---------------- USERS ---------------- */
-
-let users =
-  JSON.parse(localStorage.getItem("digitalFinanceUsers") || "[]");
-
-let currentUserId =
-  localStorage.getItem("digitalFinanceCurrentUser");
-
-let currentUser =
-  users.find(u => String(u.id) === String(currentUserId));
-
-
-/* ---------------- DEFAULT DEMO USER ---------------- */
-
-if(!currentUser){
-
-  currentUser = {
-    id: Date.now(),
-    name:"Demo User",
-    email:"demo@digitalfinance.app",
-    password:"1234",
-    cash:100000,
-    gold:2.35,
-    history:[]
-  };
-
-  users.push(currentUser);
-
-  localStorage.setItem(
-    "digitalFinanceUsers",
-    JSON.stringify(users)
+const { neon } = require("@neondatabase/serverless");
+const crypto = require("crypto");
+
+const sql = neon(process.env.DATABASE_URL);
+
+const START_GOLD_PRICE = 6850;
+const DEFAULT_CASH = 100000;
+const DEFAULT_GOLD = 2.35;
+
+// =========================
+// CORS
+// =========================
+function setCors(res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PATCH,DELETE,OPTIONS"
   );
-
-  localStorage.setItem(
-    "digitalFinanceCurrentUser",
-    currentUser.id
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Setup-Key"
   );
 }
 
-
-/* ---------------- SAVE ---------------- */
-
-function saveUser(){
-
-  const index =
-    users.findIndex(u => String(u.id) === String(currentUser.id));
-
-  if(index !== -1){
-
-    users[index] = currentUser;
-
-    localStorage.setItem(
-      "digitalFinanceUsers",
-      JSON.stringify(users)
-    );
-  }
-}
-
-
-/* ---------------- FORMAT ---------------- */
-
-function money(value){
-
-  return Number(value).toLocaleString("en-US",{
-    maximumFractionDigits:2
-  }) + " AFN";
-
-}
-
-
-/* ---------------- UPDATE UI ---------------- */
-
-function updateUI(){
-
-  const total =
-    currentUser.cash +
-    currentUser.gold * goldPrice;
-
-  document.getElementById("homeTotal").textContent =
-    money(total);
-
-  document.getElementById("homeCash").textContent =
-    money(currentUser.cash);
-
-  document.getElementById("homeGold").textContent =
-    currentUser.gold.toFixed(2) + " g";
-
-
-  document.getElementById("walletTotal").textContent =
-    money(total);
-
-  document.getElementById("walletCash").textContent =
-    money(currentUser.cash);
-
-  document.getElementById("walletGold").textContent =
-    currentUser.gold.toFixed(2) + " g";
-
-  document.getElementById("walletGoldValue").textContent =
-    money(currentUser.gold * goldPrice);
-
-
-  document.getElementById("accountName").textContent =
-    currentUser.name;
-
-  document.getElementById("accountEmail").textContent =
-    currentUser.email;
-
-  document.getElementById("accountCash").textContent =
-    money(currentUser.cash);
-
-  document.getElementById("accountGold").textContent =
-    currentUser.gold.toFixed(2) + " g";
-
-
-  document.getElementById("avatar").textContent =
-    currentUser.name
-      .trim()
-      .substring(0,2)
-      .toUpperCase();
-
-
-  document.getElementById("goldPrice").textContent =
-    money(goldPrice);
-
-  document.getElementById("marketPrice").textContent =
-    money(goldPrice);
-
-  document.getElementById("currentPrice").textContent =
-    money(goldPrice);
-
-  document.getElementById("modalPrice").textContent =
-    money(goldPrice);
-
-
-  updatePriceStats();
-  updateHistory();
-
-}
-
-
-/* ---------------- PRICE CHANGE ---------------- */
-
-function updatePriceStats(){
-
-  const change =
-    ((goldPrice - START_PRICE) / START_PRICE) * 100;
-
-  const changeText =
-    (change >= 0 ? "+" : "") +
-    change.toFixed(2) + "%";
-
-
-  const elements = [
-    document.getElementById("priceChange"),
-    document.getElementById("marketChange")
-  ];
-
-
-  elements.forEach(el => {
-
-    el.textContent = changeText;
-
-    if(change >= 0){
-
-      el.className = "change up";
-
-    }else{
-
-      el.className = "change down";
-
-    }
-
-  });
-
-
-  document.getElementById("openPrice").textContent =
-    money(START_PRICE);
-
-
-  const high =
-    Math.max(...priceHistory);
-
-  const low =
-    Math.min(...priceHistory);
-
-
-  document.getElementById("highPrice").textContent =
-    money(high);
-
-  document.getElementById("lowPrice").textContent =
-    money(low);
-
-}
-
-
-/* ---------------- PRICE SIMULATION ---------------- */
-
-function simulatePrice(){
-
-  const movement =
-    (Math.random() - 0.48) * 25;
-
-  goldPrice += movement;
-
-  if(goldPrice < 6400){
-    goldPrice = 6400;
-  }
-
-  if(goldPrice > 7300){
-    goldPrice = 7300;
-  }
-
-
-  priceHistory.push(goldPrice);
-
-  if(priceHistory.length > 40){
-    priceHistory.shift();
-  }
-
-
-  drawChart(
-    document.getElementById("chart")
+// =========================
+// RESPONSE
+// =========================
+function send(res, status, data) {
+  setCors(res);
+
+  res.statusCode = status;
+
+  res.setHeader(
+    "Content-Type",
+    "application/json; charset=utf-8"
   );
 
-  drawChart(
-    document.getElementById("marketChart")
-  );
-
-  updateUI();
-
+  res.end(JSON.stringify(data));
 }
 
-
-/* ---------------- CHART ---------------- */
-
-function drawChart(canvas){
-
-  if(!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-
-  const width =
-    canvas.clientWidth;
-
-  const height =
-    canvas.clientHeight;
-
-
-  const ratio =
-    window.devicePixelRatio || 1;
-
-  canvas.width =
-    width * ratio;
-
-  canvas.height =
-    height * ratio;
-
-  ctx.scale(ratio,ratio);
-
-
-  ctx.clearRect(0,0,width,height);
-
-
-  const min =
-    Math.min(...priceHistory) - 15;
-
-  const max =
-    Math.max(...priceHistory) + 15;
-
-
-  const range =
-    max - min || 1;
-
-
-  ctx.beginPath();
-
-
-  priceHistory.forEach((value,index)=>{
-
-    const x =
-      (index / (priceHistory.length-1)) *
-      width;
-
-    const y =
-      height -
-      ((value-min)/range)*height;
-
-
-    if(index === 0){
-
-      ctx.moveTo(x,y);
-
-    }else{
-
-      ctx.lineTo(x,y);
-
-    }
-
-  });
-
-
-  ctx.lineWidth = 3;
-
-  ctx.strokeStyle = "#d6a84f";
-
-  ctx.stroke();
-
-
-  /* آخرین نقطه */
-
-  const last =
-    priceHistory[priceHistory.length-1];
-
-  const x =
-    width;
-
-  const y =
-    height -
-    ((last-min)/range)*height;
-
-
-  ctx.beginPath();
-
-  ctx.arc(x,y,5,0,Math.PI*2);
-
-  ctx.fillStyle = "#d6a84f";
-
-  ctx.fill();
-
-}
-
-
-/* ---------------- NAVIGATION ---------------- */
-
-function showPage(page,button){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(p => p.classList.remove("active"));
-
-  document
-    .getElementById(page)
-    .classList.add("active");
-
-
-  document
-    .querySelectorAll(".nav")
-    .forEach(n => n.classList.remove("active"));
-
-  button.classList.add("active");
-
-}
-
-
-/* ---------------- TRADE ---------------- */
-
-function openTrade(type){
-
-  tradeType = type;
-
-  document.getElementById("tradeModal").style.display =
-    "flex";
-
-  document.getElementById("tradeTitle").textContent =
-    type === "buy" ? "خرید طلا" : "فروش طلا";
-
-  document.getElementById("tradeAmount").value = "";
-
-  document.getElementById("tradeTotal").textContent =
-    "0 AFN";
-
-}
-
-
-function closeTrade(){
-
-  document.getElementById("tradeModal").style.display =
-    "none";
-
-}
-
-
-document
-  .getElementById("tradeAmount")
-  .addEventListener("input",function(){
-
-    const amount =
-      Number(this.value) || 0;
-
-    const total =
-      amount * goldPrice;
-
-    document.getElementById("tradeTotal").textContent =
-      money(total);
-
-  });
-
-
-/* ---------------- EXECUTE TRADE ---------------- */
-
-function executeTrade(){
-
-  const amount =
-    Number(
-      document.getElementById("tradeAmount").value
-    );
-
-
-  if(!amount || amount <= 0){
-
-    alert("مقدار طلا را وارد کنید.");
-
-    return;
-  }
-
-
-  const total =
-    amount * goldPrice;
-
-
-  if(tradeType === "buy"){
-
-    if(total > currentUser.cash){
-
-      alert("موجودی نقدی کافی نیست.");
-
-      return;
-    }
-
-
-    currentUser.cash -= total;
-    currentUser.gold += amount;
-
-
-    currentUser.history.unshift({
-      type:"خرید",
-      amount,
-      total,
-      price:goldPrice,
-      date:new Date().toLocaleString("fa-IR")
+// =========================
+// BODY
+// =========================
+async function getBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+
+    req.on("data", chunk => {
+      body += chunk;
     });
 
+    req.on("end", () => {
+      if (!body) {
+        resolve({});
+        return;
+      }
 
-  }else{
-
-    if(amount > currentUser.gold){
-
-      alert("مقدار طلای شما کافی نیست.");
-
-      return;
-    }
-
-
-    currentUser.gold -= amount;
-    currentUser.cash += total;
-
-
-    currentUser.history.unshift({
-      type:"فروش",
-      amount,
-      total,
-      price:goldPrice,
-      date:new Date().toLocaleString("fa-IR")
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        reject(new Error("Invalid JSON"));
+      }
     });
 
-  }
-
-
-  if(currentUser.history.length > 20){
-
-    currentUser.history =
-      currentUser.history.slice(0,20);
-
-  }
-
-
-  saveUser();
-
-  updateUI();
-
-  closeTrade();
-
+    req.on("error", reject);
+  });
 }
 
-
-/* ---------------- HISTORY ---------------- */
-
-function updateHistory(){
-
-  const box =
-    document.getElementById("historyList");
-
-  if(!currentUser.history ||
-     currentUser.history.length === 0){
-
-    box.innerHTML =
-      '<div class="card empty">هنوز معامله‌ای ثبت نشده است.</div>';
-
-    return;
-  }
-
-
-  box.innerHTML =
-    currentUser.history.map(item => `
-
-      <div class="history-item">
-
-        <div>
-
-          <b>
-            ${item.type === "خرید" ? "🟢" : "🔴"}
-            ${item.type}
-          </b>
-
-          <div class="small">
-            ${item.amount.toFixed(2)} g
-          </div>
-
-          <div class="small">
-            ${item.date}
-          </div>
-
-        </div>
-
-        <div style="text-align:left">
-
-          <b>
-            ${money(item.total)}
-          </b>
-
-          <div class="small">
-            ${money(item.price)}/g
-          </div>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
+// =========================
+// PASSWORD HASH
+// =========================
+function hashPassword(password) {
+  return crypto
+    .createHash("sha256")
+    .update(String(password))
+    .digest("hex");
 }
 
+// =========================
+// TOKEN
+// =========================
+function createToken(user) {
+  const secret =
+    process.env.AUTH_SECRET ||
+    "change-this-secret";
 
-/* ---------------- REGISTER ---------------- */
-
-function register(){
-
-  const name =
-    document.getElementById("nameInput").value.trim();
-
-  const email =
-    document.getElementById("emailInput").value.trim();
-
-  const password =
-    document.getElementById("passwordInput").value;
-
-
-  if(!name || !email || !password){
-
-    alert("لطفاً تمام معلومات را وارد کنید.");
-
-    return;
-  }
-
-
-  const exists =
-    users.find(
-      u => u.email.toLowerCase() === email.toLowerCase()
-    );
-
-
-  if(exists){
-
-    alert("این ایمیل قبلاً ثبت شده است.");
-
-    return;
-  }
-
-
-  const newUser = {
-
-    id:Date.now(),
-
-    name,
-
-    email,
-
-    password,
-
-    cash:100000,
-
-    gold:2.35,
-
-    history:[]
-
+  const payload = {
+    id: user.id,
+    email: user.email,
+    role: user.role || "user",
+    time: Date.now()
   };
 
+  const encoded = Buffer
+    .from(JSON.stringify(payload))
+    .toString("base64url");
 
-  users.push(newUser);
+  const signature = crypto
+    .createHmac("sha256", secret)
+    .update(encoded)
+    .digest("base64url");
 
-  currentUser = newUser;
-
-
-  localStorage.setItem(
-    "digitalFinanceUsers",
-    JSON.stringify(users)
-  );
-
-  localStorage.setItem(
-    "digitalFinanceCurrentUser",
-    newUser.id
-  );
-
-
-  updateUI();
-
-  alert("ثبت‌نام موفقانه انجام شد.");
-
+  return `${encoded}.${signature}`;
 }
 
+function verifyToken(token) {
+  try {
+    if (!token) return null;
 
-/* ---------------- LOGIN ---------------- */
+    const secret =
+      process.env.AUTH_SECRET ||
+      "change-this-secret";
 
-function login(){
+    const parts = token.split(".");
 
-  const email =
-    document.getElementById("emailInput").value.trim();
+    if (parts.length !== 2) return null;
 
-  const password =
-    document.getElementById("passwordInput").value;
+    const [encoded, signature] = parts;
 
+    const expected = crypto
+      .createHmac("sha256", secret)
+      .update(encoded)
+      .digest("base64url");
 
-  const user =
-    users.find(
-      u =>
-        u.email.toLowerCase() === email.toLowerCase() &&
-        u.password === password
+    if (signature !== expected) return null;
+
+    return JSON.parse(
+      Buffer
+        .from(encoded, "base64url")
+        .toString()
     );
+  } catch {
+    return null;
+  }
+}
 
+function getAuth(req) {
+  const header = req.headers.authorization || "";
 
-  if(!user){
+  if (!header.startsWith("Bearer ")) {
+    return null;
+  }
 
-    alert("ایمیل یا رمز عبور نادرست است.");
+  return verifyToken(header.substring(7));
+}
 
+// =========================
+// DATABASE SETUP
+// =========================
+async function setupDatabase() {
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      cash NUMERIC(20,2) NOT NULL DEFAULT 100000,
+      gold NUMERIC(20,6) NOT NULL DEFAULT 2.35,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS trades (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+      type TEXT NOT NULL,
+      gold_amount NUMERIC(20,6) NOT NULL,
+      price NUMERIC(20,2) NOT NULL,
+      total NUMERIC(20,2) NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    )
+  `;
+
+  await sql`
+    INSERT INTO settings (key, value)
+    VALUES (
+      'gold_price',
+      ${String(START_GOLD_PRICE)}
+    )
+    ON CONFLICT (key) DO NOTHING
+  `;
+
+  return true;
+}
+
+// =========================
+// GOLD PRICE
+// =========================
+async function getGoldPrice() {
+
+  const result = await sql`
+    SELECT value
+    FROM settings
+    WHERE key = 'gold_price'
+    LIMIT 1
+  `;
+
+  if (!result.length) {
+
+    await sql`
+      INSERT INTO settings (key, value)
+      VALUES (
+        'gold_price',
+        ${String(START_GOLD_PRICE)}
+      )
+      ON CONFLICT (key) DO NOTHING
+    `;
+
+    return START_GOLD_PRICE;
+  }
+
+  return Number(result[0].value);
+}
+
+// =========================
+// MAIN API
+// =========================
+module.exports = async (req, res) => {
+
+  setCors(res);
+
+  // OPTIONS
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.end();
     return;
   }
 
-
-  currentUser = user;
-
-
-  localStorage.setItem(
-    "digitalFinanceCurrentUser",
-    user.id
+  const url = new URL(
+    req.url,
+    `https://${req.headers.host || "localhost"}`
   );
 
+  const path =
+    url.pathname.replace(/\/+$/, "") || "/";
 
-  updateUI();
+  try {
 
-  alert("ورود موفقانه انجام شد.");
+    // =========================
+    // HEALTH
+    // =========================
+    if (
+      path === "/api" ||
+      path === "/api/health"
+    ) {
 
-}
+      return send(res, 200, {
+        success: true,
+        message:
+          "Digital Finance Backend is running!",
+        service: "Digital Finance",
+        currency: "AFN",
+        gold: "24K"
+      });
+    }
 
+    // =========================
+    // DATABASE SETUP
+    // GET + POST
+    // =========================
+    if (
+      path === "/api/setup" &&
+      (
+        req.method === "GET" ||
+        req.method === "POST"
+      )
+    ) {
 
-/* ---------------- LOGOUT ---------------- */
+      const setupKey =
+        req.headers["x-setup-key"] ||
+        url.searchParams.get("key");
 
-function logout(){
+      const requiredKey =
+        process.env.SETUP_SECRET;
 
-  localStorage.removeItem(
-    "digitalFinanceCurrentUser"
-  );
+      if (!requiredKey) {
 
+        return send(res, 500, {
+          success: false,
+          message:
+            "SETUP_SECRET is not configured."
+        });
+      }
 
-  location.reload();
+      if (setupKey !== requiredKey) {
 
-}
+        return send(res, 401, {
+          success: false,
+          message:
+            "Invalid setup key."
+        });
+      }
 
+      await setupDatabase();
 
-/* ---------------- ACCOUNT STATE ---------------- */
+      return send(res, 200, {
+        success: true,
+        message:
+          "Digital Finance database is ready!"
+      });
+    }
 
-function updateAccountState(){
+    // =========================
+    // PRICE
+    // =========================
+    if (
+      path === "/api/price" &&
+      req.method === "GET"
+    ) {
 
-  const logged =
-    !!currentUser;
+      await setupDatabase();
 
+      const price =
+        await getGoldPrice();
 
-  document.getElementById("loggedIn").style.display =
-    logged ? "block" : "none";
+      return send(res, 200, {
+        success: true,
+        goldPrice: price,
+        currency: "AFN",
+        unit: "gram",
+        karat: "24K"
+      });
+    }
 
-  document.getElementById("loginBox").style.display =
-    logged ? "none" : "block";
+    // =========================
+    // REGISTER
+    // =========================
+    if (
+      path === "/api/register" &&
+      req.method === "POST"
+    ) {
 
-}
+      await setupDatabase();
 
+      const body =
+        await getBody(req);
 
-/* ---------------- START ---------------- */
+      const name =
+        String(body.name || "").trim();
 
-updateAccountState();
+      const email =
+        String(body.email || "")
+          .trim()
+          .toLowerCase();
 
-updateUI();
+      const password =
+        String(body.password || "");
 
+      if (!name || !email || !password) {
 
-drawChart(
-  document.getElementById("chart")
-);
+        return send(res, 400, {
+          success: false,
+          message:
+            "Name, email and password are required."
+        });
+      }
 
-drawChart(
-  document.getElementById("marketChart")
-);
+      if (password.length < 6) {
 
+        return send(res, 400, {
+          success: false,
+          message:
+            "Password must be at least 6 characters."
+        });
+      }
 
-/* تغییر قیمت هر 5 ثانیه */
+      const existing =
+        await sql`
+          SELECT id
+          FROM users
+          WHERE email = ${email}
+          LIMIT 1
+        `;
 
-setInterval(simulatePrice,5000);
+      if (existing.length) {
 
+        return send(res, 409, {
+          success: false,
+          message:
+            "This email is already registered."
+        });
+      }
 
-/* رسم دوباره هنگام تغییر اندازه صفحه */
+      const passwordHash =
+        hashPassword(password);
 
-window.addEventListener("resize",()=>{
+      const result =
+        await sql`
+          INSERT INTO users
+          (
+            name,
+            email,
+            password_hash,
+            cash,
+            gold
+          )
+          VALUES
+          (
+            ${name},
+            ${email},
+            ${passwordHash},
+            ${DEFAULT_CASH},
+            ${DEFAULT_GOLD}
+          )
+          RETURNING
+            id,
+            name,
+            email,
+            cash,
+            gold,
+            created_at
+        `;
 
-  drawChart(
-    document.getElementById("chart")
-  );
+      const user = result[0];
 
-  drawChart(
-    document.getElementById("marketChart")
-  );
+      const token =
+        createToken({
+          ...user,
+          role: "user"
+        });
 
-});
+      return send(res, 201, {
+        success: true,
+        message:
+          "Account created successfully.",
+        token,
+        user
+      });
+    }
 
-</script>
+    // =========================
+    // LOGIN
+    // =========================
+    if (
+      path === "/api/login" &&
+      req.method === "POST"
+    ) {
 
-</body>
-</html>
+      await setupDatabase();
+
+      const body =
+        await getBody(req);
+
+      const email =
+        String(body.email || "")
+          .trim()
+          .toLowerCase();
+
+      const password =
+        String(body.password || "");
+
+      const result =
+        await sql`
+          SELECT
+            id,
+            name,
+            email,
+            password_hash,
+            cash,
+            gold,
+            created_at
+          FROM users
+          WHERE email = ${email}
+          LIMIT 1
+        `;
+
+      if (!result.length) {
+
+        return send(res, 401, {
+          success: false,
+          message:
+            "Email or password is incorrect."
+        });
+      }
+
+      const user = result[0];
+
+      if (
+        hashPassword(password) !==
+        user.password_hash
+      ) {
+
+        return send(res, 401, {
+          success: false,
+          message:
+            "Email or password is incorrect."
+        });
+      }
+
+      delete user.password_hash;
+
+      const token =
+        createToken({
+          ...user,
+          role: "user"
+        });
+
+      return send(res, 200, {
+        success: true,
+        message: "Login successful.",
+        token,
+        user
+      });
+    }
+
+    // =========================
+    // CURRENT USER
+    // =========================
+    if (
+      path === "/api/user" &&
+      req.method === "GET"
+    ) {
+
+      await setupDatabase();
+
+      const auth =
+        getAuth(req);
+
+      if (!auth) {
+
+        return send(res, 401, {
+          success: false,
+          message:
+            "Authentication required."
+        });
+      }
+
+      const result =
+        await sql`
+          SELECT
+            id,
+            name,
+            email,
+            cash,
+            gold,
+            created_at
+          FROM users
+          WHERE id = ${auth.id}
+          LIMIT 1
+        `;
+
+      if (!result.length) {
+
+        return send(res, 404, {
+          success: false,
+          message:
+            "User not found."
+        });
+      }
+
+      return send(res, 200, {
+        success: true,
+        user: result[0]
+      });
+    }
+
+    // =========================
+    // TRADE
+    // =========================
+    if (
+      path === "/api/trade" &&
+      req.method === "POST"
+    ) {
+
+      await setupDatabase();
+
+      const auth =
+        getAuth(req);
+
+      if (!auth) {
+
+        return send(res, 401, {
+          success: false,
+          message:
+            "Authentication required."
+        });
+      }
+
+      const body =
+        await getBody(req);
+
+      const type =
+        String(body.type || "")
+          .toLowerCase();
+
+      const goldAmount =
+        Number(body.goldAmount);
+
+      if (
+        type !== "buy" &&
+        type !== "sell"
+      ) {
+
+        return send(res, 400, {
+          success: false,
+          message:
+            "Trade type must be buy or sell."
+        });
+      }
+
+      if (
+        !Number.isFinite(goldAmount) ||
+        goldAmount <= 0
+      ) {
+
+        return send(res, 400, {
+          success: false,
+          message:
+            "Invalid gold amount."
+        });
+      }
+
+      const price =
+        await getGoldPrice();
+
+      const total =
+        goldAmount * price;
+
+      const result =
+        await sql`
+          SELECT
+            id,
+            cash,
+            gold
+          FROM users
+          WHERE id = ${auth.id}
+          LIMIT 1
+        `;
+
+      if (!result.length) {
+
+        return send(res, 404, {
+          success: false,
+          message:
+            "User not found."
+        });
+      }
+
+      const user = result[0];
+
+      let cash =
+        Number(user.cash);
+
+      let gold =
+        Number(user.gold);
+
+      if (type === "buy") {
+
+        if (cash < total) {
+
+          return send(res, 400, {
+            success: false,
+            message:
+              "Not enough AFN balance."
+          });
+        }
+
+        cash -= total;
+        gold += goldAmount;
+      }
+
+      if (type === "sell") {
+
+        if (gold < goldAmount) {
+
+          return send(res, 400, {
+            success: false,
+            message:
+              "Not enough gold."
+          });
+        }
+
+        gold -= goldAmount;
+        cash += total;
+      }
+
+      await sql`
+        UPDATE users
+        SET
+          cash = ${cash},
+          gold = ${gold}
+        WHERE id = ${auth.id}
+      `;
+
+      await sql`
+        INSERT INTO trades
+        (
+          user_id,
+          type,
+          gold_amount,
+          price,
+          total
+        )
+        VALUES
+        (
+          ${auth.id},
+          ${type},
+          ${goldAmount},
+          ${price},
+          ${total}
+        )
+      `;
+
+      return send(res, 200, {
+        success: true,
+        message:
+          type === "buy"
+            ? "Gold purchased successfully."
+            : "Gold sold successfully.",
+        trade: {
+          type,
+          goldAmount,
+          price,
+          total
+        },
+        user: {
+          cash,
+          gold
+        }
+      });
+    }
+
+    // =========================
+    // HISTORY
+    // =========================
+    if (
+      path === "/api/history" &&
+      req.method === "GET"
+    ) {
+
+      await setupDatabase();
+
+      const auth =
+        getAuth(req);
+
+      if (!auth) {
+
+        return send(res, 401, {
+          success: false,
+          message:
+            "Authentication required."
+        });
+      }
+
+      const result =
+        await sql`
+          SELECT
+            id,
+            type,
+            gold_amount,
+            price,
+            total,
+            created_at
+          FROM trades
+          WHERE user_id = ${auth.id}
+          ORDER BY created_at DESC
+          LIMIT 100
+        `;
+
+      return send(res, 200, {
+        success: true,
+        history: result
+      });
+    }
+
+    // =========================
+    // ADMIN LOGIN
+    // =========================
+    if (
+      path === "/api/admin/login" &&
+      req.method === "POST"
+    ) {
+
+      const body =
+        await getBody(req);
+
+      const email =
+        String(body.email || "")
+          .trim()
+          .toLowerCase();
+
+      const password =
+        String(body.password || "");
+
+      const adminEmail =
+        String(
+          process.env.ADMIN_EMAIL || ""
+        )
+          .trim()
+          .toLowerCase();
+
+      const adminPassword =
+        String(
+          process.env.ADMIN_PASSWORD || ""
+        );
+
+      if (
+        !adminEmail ||
+        !adminPassword
+      ) {
+
+        return send(res, 500, {
+          success: false,
+          message:
+            "Admin credentials are not configured."
+        });
+      }
+
+      if (
+        email !== adminEmail ||
+        password !== adminPassword
+      ) {
+
+        return send(res, 401, {
+          success: false,
+          message:
+            "Invalid admin credentials."
+        });
+      }
+
+      const token =
+        createToken({
+          id: 0,
+          email: adminEmail,
+          role: "admin"
+        });
+
+      return send(res, 200, {
+        success: true,
+        message:
+          "Admin login successful.",
+        token
+      });
+    }
+
+    // =========================
+    // ADMIN AUTH
+    // =========================
+    function getAdmin(req) {
+
+      const auth =
+        getAuth(req);
+
+      if (!auth) return null;
+
+      if (auth.role !== "admin") {
+        return null;
+      }
+
+      return auth;
+    }
+
+    // =========================
+    // ADMIN USERS
+    // =========================
+    if (
+      path === "/api/admin/users" &&
+      req.method === "GET"
+    ) {
+
+      await setupDatabase();
+
+      const admin =
+        getAdmin(req);
+
+      if (!admin) {
+
+        return send(res, 403, {
+          success: false,
+          message:
+            "Admin access required."
+        });
+      }
+
+      const result =
+        await sql`
+          SELECT
+            id,
+            name,
+            email,
+            cash,
+            gold,
+            created_at
+          FROM users
+          ORDER BY id DESC
+        `;
+
+      return send(res, 200, {
+        success: true,
+        users: result
+      });
+    }
+
+    // =========================
+    // ADMIN STATS
+    // =========================
+    if (
+      path === "/api/admin/stats" &&
+      req.method === "GET"
+    ) {
+
+      await setupDatabase();
+
+      const admin =
+        getAdmin(req);
+
+      if (!admin) {
+
+        return send(res, 403, {
+          success: false,
+          message:
+            "Admin access required."
+        });
+      }
+
+      const result =
+        await sql`
+          SELECT
+            COUNT(*) AS user_count,
+            COALESCE(SUM(cash), 0)
+              AS total_cash,
+            COALESCE(SUM(gold), 0)
+              AS total_gold
+          FROM users
+        `;
+
+      const price =
+        await getGoldPrice();
+
+      return send(res, 200, {
+        success: true,
+        statistics: {
+          users:
+            Number(result[0].user_count),
+          totalCash:
+            Number(result[0].total_cash),
+          totalGold:
+            Number(result[0].total_gold),
+          goldPrice:
+            price
+        }
+      });
+    }
+
+    // =========================
+    // ADMIN CHANGE PRICE
+    // =========================
+    if (
+      path === "/api/admin/price" &&
+      req.method === "POST"
+    ) {
+
+      await setupDatabase();
+
+      const admin =
+        getAdmin(req);
+
+      if (!admin) {
+
+        return send(res, 403, {
+          success: false,
+          message:
+            "Admin access required."
+        });
+      }
+
+      const body =
+        await getBody(req);
+
+      const price =
+        Number(body.price);
+
+      if (
+        !Number.isFinite(price) ||
+        price <= 0
+      ) {
+
+        return send(res, 400, {
+          success: false,
+          message:
+            "Invalid gold price."
+        });
+      }
+
+      await sql`
+        INSERT INTO settings
+        (
+          key,
+          value
+        )
+        VALUES
+        (
+          'gold_price',
+          ${String(price)}
+        )
+        ON CONFLICT (key)
+        DO UPDATE SET
+          value = EXCLUDED.value
+      `;
+
+      return send(res, 200, {
+        success: true,
+        message:
+          "Gold price updated successfully.",
+        goldPrice: price
+      });
+    }
+
+    // =========================
+    // ADMIN UPDATE USER
+    // =========================
+    const userMatch =
+      path.match(
+        /^\/api\/admin\/users\/(\d+)$/
+      );
+
+    if (
+      userMatch &&
+      req.method === "PATCH"
+    ) {
+
+      await setupDatabase();
+
+      const admin =
+        getAdmin(req);
+
+      if (!admin) {
+
+        return send(res, 403, {
+          success: false,
+          message:
+            "Admin access required."
+        });
+      }
+
+      const userId =
+        Number(userMatch[1]);
+
+      const body =
+        await getBody(req);
+
+      const cash =
+        body.cash !== undefined
+          ? Number(body.cash)
+          : null;
+
+      const gold =
+        body.gold !== undefined
+          ? Number(body.gold)
+          : null;
+
+      if (
+        cash !== null &&
+        (
+          !Number.isFinite(cash) ||
+          cash < 0
+        )
+      ) {
+
+        return send(res, 400, {
+          success: false,
+          message:
+            "Invalid cash amount."
+        });
+      }
+
+      if (
+        gold !== null &&
+        (
+          !Number.isFinite(gold) ||
+          gold < 0
+        )
+      ) {
+
+        return send(res, 400, {
+          success: false,
+          message:
+            "Invalid gold amount."
+        });
+      }
+
+      if (cash !== null) {
+
+        await sql`
+          UPDATE users
+          SET cash = ${cash}
+          WHERE id = ${userId}
+        `;
+      }
+
+      if (gold !== null) {
+
+        await sql`
+          UPDATE users
+          SET gold = ${gold}
+          WHERE id = ${userId}
+        `;
+      }
+
+      const result =
+        await sql`
+          SELECT
+            id,
+            name,
+            email,
+            cash,
+            gold,
+            created_at
+          FROM users
+          WHERE id = ${userId}
+          LIMIT 1
+        `;
+
+      if (!result.length) {
+
+        return send(res, 404, {
+          success: false,
+          message:
+            "User not found."
+        });
+      }
+
+      return send(res, 200, {
+        success: true,
+        message:
+          "User updated successfully.",
+        user: result[0]
+      });
+    }
+
+    // =========================
+    // ADMIN DELETE USER
+    // =========================
+    if (
+      userMatch &&
+      req.method === "DELETE"
+    ) {
+
+      await setupDatabase();
+
+      const admin =
+        getAdmin(req);
+
+      if (!admin) {
+
+        return send(res, 403, {
+          success: false,
+          message:
+            "Admin access required."
+        });
+      }
+
+      const userId =
+        Number(userMatch[1]);
+
+      const result =
+        await sql`
+          DELETE FROM users
+          WHERE id = ${userId}
+          RETURNING
+            id,
+            name,
+            email
+        `;
+
+      if (!result.length) {
+
+        return send(res, 404, {
+          success: false,
+          message:
+            "User not found."
+        });
+      }
+
+      return send(res, 200, {
+        success: true,
+        message:
+          "User deleted successfully.",
+        user: result[0]
+      });
+    }
+
+    // =========================
+    // NOT FOUND
+    // =========================
+    return send(res, 404, {
+      success: false,
+      message:
+        "API endpoint not found.",
+      path
+    });
+
+  } catch (error) {
+
+    console.error(
+      "DIGITAL FINANCE API ERROR:",
+      error
+    );
+
+    return send(res, 500, {
+      success: false,
+      message:
+        "Server error.",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : "Internal server error."
+    });
+  }
+};
