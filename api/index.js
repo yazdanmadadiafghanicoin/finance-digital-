@@ -1,918 +1,953 @@
 const { neon } = require("@neondatabase/serverless");
-const crypto = require("crypto");
 
-const FRONTEND_ORIGIN =
-  "https://yazdanmadadiafghanicoin.github.io";
+const sql = neon(process.env.DATABASE_URL);
 
-function setCors(req, res) {
-  const origin = req.headers.origin || "";
+const DEMO_STARTING_USDT = 10000;
 
-  if (
-    origin === FRONTEND_ORIGIN ||
-    origin === "https://finance-digital-eta.vercel.app"
-  ) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  } else {
-    res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
-  }
+// =====================================================
+// 100 DIGITAL FINANCE ASSETS
+// Demo prices only
+// =====================================================
 
-  res.setHeader("Vary", "Origin");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
-  );
-}
+const ASSETS = [
+  ["BTC", "Bitcoin", 65000],
+  ["ETH", "Ethereum", 2500],
+  ["BNB", "BNB", 600],
+  ["SOL", "Solana", 150],
+  ["XRP", "XRP", 0.55],
+  ["DOGE", "Dogecoin", 0.12],
+  ["ADA", "Cardano", 0.35],
+  ["AVAX", "Avalanche", 25],
+  ["TRX", "TRON", 0.25],
+  ["LINK", "Chainlink", 14],
+  ["DOT", "Polkadot", 4.5],
+  ["MATIC", "Polygon", 0.30],
+  ["SHIB", "Shiba Inu", 0.000012],
+  ["LTC", "Litecoin", 70],
+  ["BCH", "Bitcoin Cash", 350],
+  ["UNI", "Uniswap", 7],
+  ["ATOM", "Cosmos", 5],
+  ["ETC", "Ethereum Classic", 20],
+  ["XLM", "Stellar", 0.10],
+  ["FIL", "Filecoin", 3.5],
+  ["APT", "Aptos", 5],
+  ["ARB", "Arbitrum", 0.45],
+  ["OP", "Optimism", 0.65],
+  ["NEAR", "NEAR Protocol", 3],
+  ["ALGO", "Algorand", 0.18],
+  ["VET", "VeChain", 0.025],
+  ["ICP", "Internet Computer", 7],
+  ["HBAR", "Hedera", 0.09],
+  ["SAND", "The Sandbox", 0.25],
+  ["MANA", "Decentraland", 0.30],
+  ["AAVE", "Aave", 120],
+  ["MKR", "Maker", 1500],
+  ["GRT", "The Graph", 0.12],
+  ["THETA", "Theta Network", 0.60],
+  ["EOS", "EOS", 0.70],
+  ["XTZ", "Tezos", 0.65],
+  ["FLOW", "Flow", 0.40],
+  ["EGLD", "MultiversX", 25],
+  ["AXS", "Axie Infinity", 4.5],
+  ["SNX", "Synthetix", 1.5],
+  ["CRV", "Curve DAO", 0.45],
+  ["LDO", "Lido DAO", 1.1],
+  ["RUNE", "THORChain", 3],
+  ["MKR2", "Maker Token", 2],
+  ["INJ", "Injective", 15],
+  ["SUI", "Sui", 2],
+  ["SEI", "Sei", 0.35],
+  ["TIA", "Celestia", 3],
+  ["KAS", "Kaspa", 0.10],
+  ["PEPE", "Pepe", 0.000009],
+  ["FLOKI", "FLOKI", 0.00012],
+  ["BONK", "Bonk", 0.000018],
+  ["WIF", "dogwifhat", 1.2],
+  ["JASMY", "JasmyCoin", 0.025],
+  ["IOTA", "IOTA", 0.20],
+  ["NEO", "NEO", 9],
+  ["QTUM", "Qtum", 3],
+  ["DASH", "Dash", 25],
+  ["ZEC", "Zcash", 40],
+  ["XMR", "Monero", 150],
+  ["KAVA", "Kava", 0.45],
+  ["ONE", "Harmony", 0.015],
+  ["BAT", "Basic Attention Token", 0.20],
+  ["ENJ", "Enjin Coin", 0.16],
+  ["CHZ", "Chiliz", 0.06],
+  ["HOT", "Holo", 0.002],
+  ["ZIL", "Zilliqa", 0.02],
+  ["CELO", "Celo", 0.50],
+  ["MINA", "Mina Protocol", 0.40],
+  ["ROSE", "Oasis Network", 0.06],
+  ["KSM", "Kusama", 20],
+  ["COMP", "Compound", 45],
+  ["YFI", "yearn.finance", 5000],
+  ["SUSHI", "SushiSwap", 1],
+  ["1INCH", "1inch", 0.25],
+  ["ENS", "Ethereum Name Service", 20],
+  ["IMX", "Immutable", 0.90],
+  ["GALA", "Gala", 0.02],
+  ["APE", "ApeCoin", 0.80],
+  ["GMT", "STEPN", 0.08],
+  ["LUNC", "Terra Luna Classic", 0.00008],
+  ["USTC", "TerraClassicUSD", 0.015],
+  ["FTM", "Fantom", 0.45],
+  ["SFP", "SafePal", 0.70],
+  ["CAKE", "PancakeSwap", 2],
+  ["TWT", "Trust Wallet Token", 1],
+  ["MASK", "Mask Network", 2.5],
+  ["WOO", "WOO Network", 0.20],
+  ["ANKR", "Ankr", 0.03],
+  ["SKL", "SKALE", 0.04],
+  ["LPT", "Livepeer", 10],
+  ["AR", "Arweave", 15],
+  ["STX", "Stacks", 1.5],
+  ["RPL", "Rocket Pool", 10],
+  ["BLUR", "Blur", 0.20],
+  ["CYBER", "CyberConnect", 2],
+  ["JUP", "Jupiter", 0.80],
+  ["WLD", "Worldcoin", 1.5],
+  ["ONDO", "Ondo", 1],
+  ["PYTH", "Pyth Network", 0.30],
+  ["ENA", "Ethena", 0.50],
+  ["TAO", "Bittensor", 300],
+  ["AFC", "Afghani Coin", 1]
+];
+
+// =====================================================
+// HELPERS
+// =====================================================
 
 function json(res, status, data) {
-  res.status(status);
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(data));
+  res.status(status).json(data);
 }
 
-function getDB() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not configured");
-  }
-
-  return neon(process.env.DATABASE_URL);
+function cors(res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
-function readBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = "";
-
-    req.on("data", chunk => {
-      body += chunk;
-    });
-
-    req.on("end", () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch {
-        reject(new Error("Invalid JSON"));
-      }
-    });
-
-    req.on("error", reject);
-  });
+function getTelegramId(req) {
+  return (
+    req.query?.telegram_id ||
+    req.body?.telegram_id ||
+    null
+  );
 }
 
-function hashPassword(password) {
-  return crypto
-    .createHash("sha256")
-    .update(String(password))
-    .digest("hex");
+function getAction(req) {
+  return (
+    req.query?.action ||
+    req.body?.action ||
+    ""
+  ).toLowerCase();
 }
 
-function createToken(user) {
-  const secret = process.env.AUTH_SECRET;
+// =====================================================
+// SETUP DATABASE
+// =====================================================
 
-  if (!secret) {
-    throw new Error("AUTH_SECRET is not configured");
-  }
-
-  const payload = Buffer.from(
-    JSON.stringify({
-      id: user.id,
-      email: user.email
-    })
-  ).toString("base64url");
-
-  const signature = crypto
-    .createHmac("sha256", secret)
-    .update(payload)
-    .digest("base64url");
-
-  return `${payload}.${signature}`;
-}
-
-function verifyToken(token) {
-  const secret = process.env.AUTH_SECRET;
-
-  if (!secret || !token) return null;
-
-  const parts = token.split(".");
-
-  if (parts.length !== 2) return null;
-
-  const [payload, signature] = parts;
-
-  const expected = crypto
-    .createHmac("sha256", secret)
-    .update(payload)
-    .digest("base64url");
-
-  if (signature !== expected) return null;
-
-  try {
-    return JSON.parse(
-      Buffer.from(payload, "base64url").toString()
-    );
-  } catch {
-    return null;
-  }
-}
-
-function getToken(req) {
-  const auth = req.headers.authorization || "";
-
-  if (auth.startsWith("Bearer ")) {
-    return auth.slice(7);
-  }
-
-  return null;
-}
-
-async function setupDatabase(sql) {
+async function setupDatabase() {
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
+      telegram_id TEXT UNIQUE NOT NULL,
+      username TEXT,
+      balance NUMERIC(30,8) DEFAULT 0,
+      energy INTEGER DEFAULT 100,
+      level INTEGER DEFAULT 1,
+      power INTEGER DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      energy_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS assets (
+      id SERIAL PRIMARY KEY,
+      symbol TEXT UNIQUE NOT NULL,
       name TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
-      cash NUMERIC DEFAULT 100000,
-      gold NUMERIC DEFAULT 2.35,
-      created_at TIMESTAMPTZ DEFAULT NOW()
+      price NUMERIC(30,12) NOT NULL DEFAULT 0,
+      active BOOLEAN DEFAULT TRUE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS balances (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      asset_id INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
+      amount NUMERIC(40,18) NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, asset_id)
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS orders (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      asset_id INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
+      side TEXT NOT NULL CHECK (side IN ('buy','sell')),
+      quantity NUMERIC(40,18) NOT NULL,
+      price NUMERIC(30,12) NOT NULL,
+      total NUMERIC(40,18) NOT NULL,
+      status TEXT NOT NULL DEFAULT 'filled',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
 
   await sql`
     CREATE TABLE IF NOT EXISTS trades (
       id SERIAL PRIMARY KEY,
-      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-      type TEXT NOT NULL,
-      gold_amount NUMERIC NOT NULL,
-      price NUMERIC NOT NULL,
-      total NUMERIC NOT NULL,
-      created_at TIMESTAMPTZ DEFAULT NOW()
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      asset_id INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
+      side TEXT NOT NULL CHECK (side IN ('buy','sell')),
+      quantity NUMERIC(40,18) NOT NULL,
+      price NUMERIC(30,12) NOT NULL,
+      total NUMERIC(40,18) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS settings (
-      key TEXT PRIMARY KEY,
-      value TEXT NOT NULL
-    )
+    CREATE INDEX IF NOT EXISTS idx_balances_user
+    ON balances(user_id)
   `;
 
   await sql`
-    INSERT INTO settings (key, value)
-    VALUES ('gold_price', '6850')
-    ON CONFLICT (key) DO NOTHING
+    CREATE INDEX IF NOT EXISTS idx_orders_user
+    ON orders(user_id)
   `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_trades_user
+    ON trades(user_id)
+  `;
+
+  // Seed 100 assets
+  for (const [symbol, name, price] of ASSETS) {
+    await sql`
+      INSERT INTO assets (symbol, name, price)
+      VALUES (${symbol}, ${name}, ${price})
+      ON CONFLICT (symbol)
+      DO UPDATE SET
+        name = EXCLUDED.name,
+        price = EXCLUDED.price,
+        active = TRUE
+    `;
+  }
+
+  return true;
 }
 
-async function getGoldPrice(sql) {
-  const result = await sql`
-    SELECT value
-    FROM settings
-    WHERE key = 'gold_price'
+// =====================================================
+// FIND / CREATE USER
+// =====================================================
+
+async function getOrCreateUser(telegramId, username = null) {
+  if (!telegramId) {
+    throw new Error("telegram_id is required");
+  }
+
+  let users = await sql`
+    SELECT *
+    FROM users
+    WHERE telegram_id = ${String(telegramId)}
     LIMIT 1
   `;
 
-  if (!result.length) return 6850;
-
-  return Number(result[0].value);
-}
-
-module.exports = async (req, res) => {
-  setCors(req, res);
-
-  if (req.method === "OPTIONS") {
-    res.status(204);
-    return res.end();
+  if (users.length) {
+    return users[0];
   }
 
-  const url = new URL(
-    req.url,
-    `https://${req.headers.host || "finance-digital-eta.vercel.app"}`
-  );
+  const created = await sql`
+    INSERT INTO users (
+      telegram_id,
+      username,
+      balance,
+      energy,
+      level,
+      power
+    )
+    VALUES (
+      ${String(telegramId)},
+      ${username},
+      0,
+      100,
+      1,
+      1
+    )
+    RETURNING *
+  `;
 
-  const path = url.pathname;
+  const user = created[0];
+
+  // Create demo USDT balance
+  const usdt = await sql`
+    SELECT id
+    FROM assets
+    WHERE symbol = 'USDT'
+    LIMIT 1
+  `;
+
+  // USDT isn't in the 100 coins above, so create it as base currency.
+  let usdtId;
+
+  if (!usdt.length) {
+    const inserted = await sql`
+      INSERT INTO assets (symbol, name, price, active)
+      VALUES ('USDT', 'Tether USD', 1, TRUE)
+      ON CONFLICT (symbol) DO UPDATE SET active = TRUE
+      RETURNING id
+    `;
+    usdtId = inserted[0].id;
+  } else {
+    usdtId = usdt[0].id;
+  }
+
+  await sql`
+    INSERT INTO balances (user_id, asset_id, amount)
+    VALUES (${user.id}, ${usdtId}, ${DEMO_STARTING_USDT})
+    ON CONFLICT (user_id, asset_id) DO NOTHING
+  `;
+
+  return user;
+}
+
+// =====================================================
+// MARKETS
+// =====================================================
+
+async function getMarkets() {
+  return await sql`
+    SELECT
+      id,
+      symbol,
+      name,
+      price,
+      active,
+      created_at
+    FROM assets
+    WHERE active = TRUE
+    ORDER BY id ASC
+  `;
+}
+
+// =====================================================
+// USER BALANCES
+// =====================================================
+
+async function getBalances(telegramId) {
+  const user = await getOrCreateUser(telegramId);
+
+  const rows = await sql`
+    SELECT
+      a.symbol,
+      a.name,
+      a.price,
+      b.amount,
+      (b.amount * a.price) AS value
+    FROM balances b
+    JOIN assets a ON a.id = b.asset_id
+    WHERE b.user_id = ${user.id}
+      AND b.amount > 0
+    ORDER BY
+      CASE WHEN a.symbol = 'USDT' THEN 0 ELSE 1 END,
+      b.amount DESC
+  `;
+
+  return {
+    userId: user.id,
+    telegramId: user.telegram_id,
+    balances: rows
+  };
+}
+
+// =====================================================
+// BUY
+// =====================================================
+
+async function buyAsset(telegramId, symbol, quantity) {
+  if (!symbol) throw new Error("symbol is required");
+
+  const qty = Number(quantity);
+
+  if (!Number.isFinite(qty) || qty <= 0) {
+    throw new Error("Invalid quantity");
+  }
+
+  const user = await getOrCreateUser(telegramId);
+
+  const assets = await sql`
+    SELECT *
+    FROM assets
+    WHERE symbol = ${String(symbol).toUpperCase()}
+      AND active = TRUE
+    LIMIT 1
+  `;
+
+  if (!assets.length) {
+    throw new Error("Asset not found");
+  }
+
+  const asset = assets[0];
+  const price = Number(asset.price);
+  const total = price * qty;
+
+  const usdt = await sql`
+    SELECT b.id, b.amount
+    FROM balances b
+    JOIN assets a ON a.id = b.asset_id
+    WHERE b.user_id = ${user.id}
+      AND a.symbol = 'USDT'
+    LIMIT 1
+  `;
+
+  if (!usdt.length) {
+    throw new Error("USDT balance not found");
+  }
+
+  const usdtAmount = Number(usdt[0].amount);
+
+  if (usdtAmount < total) {
+    throw new Error(
+      `Insufficient USDT balance. Required ${total}, available ${usdtAmount}`
+    );
+  }
+
+  // Decrease USDT
+  await sql`
+    UPDATE balances
+    SET
+      amount = amount - ${total},
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = ${usdt[0].id}
+  `;
+
+  // Add asset
+  await sql`
+    INSERT INTO balances (
+      user_id,
+      asset_id,
+      amount
+    )
+    VALUES (
+      ${user.id},
+      ${asset.id},
+      ${qty}
+    )
+    ON CONFLICT (user_id, asset_id)
+    DO UPDATE SET
+      amount = balances.amount + ${qty},
+      updated_at = CURRENT_TIMESTAMP
+  `;
+
+  // Order
+  const order = await sql`
+    INSERT INTO orders (
+      user_id,
+      asset_id,
+      side,
+      quantity,
+      price,
+      total,
+      status
+    )
+    VALUES (
+      ${user.id},
+      ${asset.id},
+      'buy',
+      ${qty},
+      ${price},
+      ${total},
+      'filled'
+    )
+    RETURNING *
+  `;
+
+  // Trade
+  await sql`
+    INSERT INTO trades (
+      user_id,
+      asset_id,
+      side,
+      quantity,
+      price,
+      total
+    )
+    VALUES (
+      ${user.id},
+      ${asset.id},
+      'buy',
+      ${qty},
+      ${price},
+      ${total}
+    )
+  `;
+
+  return {
+    success: true,
+    side: "buy",
+    symbol: asset.symbol,
+    quantity: qty,
+    price,
+    total,
+    order: order[0]
+  };
+}
+
+// =====================================================
+// SELL
+// =====================================================
+
+async function sellAsset(telegramId, symbol, quantity) {
+  if (!symbol) throw new Error("symbol is required");
+
+  const qty = Number(quantity);
+
+  if (!Number.isFinite(qty) || qty <= 0) {
+    throw new Error("Invalid quantity");
+  }
+
+  const user = await getOrCreateUser(telegramId);
+
+  const assets = await sql`
+    SELECT *
+    FROM assets
+    WHERE symbol = ${String(symbol).toUpperCase()}
+      AND active = TRUE
+    LIMIT 1
+  `;
+
+  if (!assets.length) {
+    throw new Error("Asset not found");
+  }
+
+  const asset = assets[0];
+  const price = Number(asset.price);
+  const total = price * qty;
+
+  const balances = await sql`
+    SELECT id, amount
+    FROM balances
+    WHERE user_id = ${user.id}
+      AND asset_id = ${asset.id}
+    LIMIT 1
+  `;
+
+  if (!balances.length) {
+    throw new Error("You don't own this asset");
+  }
+
+  const owned = Number(balances[0].amount);
+
+  if (owned < qty) {
+    throw new Error(
+      `Insufficient ${asset.symbol} balance. Available ${owned}`
+    );
+  }
+
+  // Decrease asset
+  await sql`
+    UPDATE balances
+    SET
+      amount = amount - ${qty},
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = ${balances[0].id}
+  `;
+
+  // Add USDT
+  const usdt = await sql`
+    SELECT id
+    FROM assets
+    WHERE symbol = 'USDT'
+    LIMIT 1
+  `;
+
+  if (!usdt.length) {
+    throw new Error("USDT asset not found");
+  }
+
+  await sql`
+    INSERT INTO balances (
+      user_id,
+      asset_id,
+      amount
+    )
+    VALUES (
+      ${user.id},
+      ${usdt[0].id},
+      ${total}
+    )
+    ON CONFLICT (user_id, asset_id)
+    DO UPDATE SET
+      amount = balances.amount + ${total},
+      updated_at = CURRENT_TIMESTAMP
+  `;
+
+  // Order
+  const order = await sql`
+    INSERT INTO orders (
+      user_id,
+      asset_id,
+      side,
+      quantity,
+      price,
+      total,
+      status
+    )
+    VALUES (
+      ${user.id},
+      ${asset.id},
+      'sell',
+      ${qty},
+      ${price},
+      ${total},
+      'filled'
+    )
+    RETURNING *
+  `;
+
+  // Trade
+  await sql`
+    INSERT INTO trades (
+      user_id,
+      asset_id,
+      side,
+      quantity,
+      price,
+      total
+    )
+    VALUES (
+      ${user.id},
+      ${asset.id},
+      'sell',
+      ${qty},
+      ${price},
+      ${total}
+    )
+  `;
+
+  return {
+    success: true,
+    side: "sell",
+    symbol: asset.symbol,
+    quantity: qty,
+    price,
+    total,
+    order: order[0]
+  };
+}
+
+// =====================================================
+// TRADE HISTORY
+// =====================================================
+
+async function getTrades(telegramId) {
+  const user = await getOrCreateUser(telegramId);
+
+  return await sql`
+    SELECT
+      t.id,
+      t.side,
+      t.quantity,
+      t.price,
+      t.total,
+      t.created_at,
+      a.symbol,
+      a.name
+    FROM trades t
+    JOIN assets a ON a.id = t.asset_id
+    WHERE t.user_id = ${user.id}
+    ORDER BY t.created_at DESC
+    LIMIT 100
+  `;
+}
+
+// =====================================================
+// ORDERS
+// =====================================================
+
+async function getOrders(telegramId) {
+  const user = await getOrCreateUser(telegramId);
+
+  return await sql`
+    SELECT
+      o.id,
+      o.side,
+      o.quantity,
+      o.price,
+      o.total,
+      o.status,
+      o.created_at,
+      a.symbol,
+      a.name
+    FROM orders o
+    JOIN assets a ON a.id = o.asset_id
+    WHERE o.user_id = ${user.id}
+    ORDER BY o.created_at DESC
+    LIMIT 100
+  `;
+}
+
+// =====================================================
+// MAIN API
+// =====================================================
+
+module.exports = async (req, res) => {
+  cors(res);
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
 
   try {
-    const sql = getDB();
+    // -----------------------------------------------
+    // ROOT
+    // -----------------------------------------------
 
-    /*
-     * HEALTH
-     */
-    if (path === "/api" && req.method === "GET") {
+    if (
+      req.method === "GET" &&
+      !req.query.action &&
+      !req.query.telegram_id
+    ) {
       return json(res, 200, {
         success: true,
         message: "Digital Finance Backend is running!",
         service: "Digital Finance",
         currency: "AFN",
-        gold: "24K"
+        gold: "24K",
+        exchange: "Demo Exchange",
+        assets: 100
       });
     }
 
-    /*
-     * SETUP
-     */
-    if (path === "/api/setup") {
-      const key =
-        url.searchParams.get("key") ||
-        req.headers["x-setup-key"];
+    // -----------------------------------------------
+    // SETUP
+    // GET /api/setup
+    // -----------------------------------------------
 
-      if (!process.env.SETUP_SECRET) {
-        return json(res, 500, {
-          success: false,
-          message: "SETUP_SECRET is not configured"
-        });
-      }
-
-      if (key !== process.env.SETUP_SECRET) {
-        return json(res, 401, {
-          success: false,
-          message: "Invalid setup key"
-        });
-      }
-
-      await setupDatabase(sql);
+    if (
+      req.method === "GET" &&
+      req.query.setup === "1"
+    ) {
+      await setupDatabase();
 
       return json(res, 200, {
         success: true,
-        message: "Database setup completed successfully"
+        message: "Digital Finance database and 100 assets are ready!"
       });
     }
 
-    /*
-     * PRICE
-     */
-    if (path === "/api/price" && req.method === "GET") {
-      await setupDatabase(sql);
+    const action = getAction(req);
 
-      const price = await getGoldPrice(sql);
+    // -----------------------------------------------
+    // MARKETS
+    // GET /api?action=markets
+    // -----------------------------------------------
+
+    if (
+      req.method === "GET" &&
+      (action === "markets" || req.query.markets === "1")
+    ) {
+      await setupDatabase();
+
+      const markets = await getMarkets();
 
       return json(res, 200, {
         success: true,
-        price
+        count: markets.length,
+        markets
       });
     }
 
-    /*
-     * REGISTER
-     */
-    if (path === "/api/register" && req.method === "POST") {
-      await setupDatabase(sql);
+    // -----------------------------------------------
+    // USER
+    // GET /api/user?telegram_id=123
+    // -----------------------------------------------
 
-      const body = await readBody(req);
+    if (
+      req.method === "GET" &&
+      req.query.telegram_id &&
+      !action
+    ) {
+      await setupDatabase();
 
-      const name = String(body.name || "").trim();
-      const email = String(body.email || "")
-        .trim()
-        .toLowerCase();
-      const password = String(body.password || "");
+      const user = await getOrCreateUser(
+        req.query.telegram_id
+      );
 
-      if (!name || !email || !password) {
-        return json(res, 400, {
-          success: false,
-          message: "نام، ایمیل و رمز عبور الزامی است"
-        });
-      }
-
-      if (password.length < 4) {
-        return json(res, 400, {
-          success: false,
-          message: "رمز عبور باید حداقل ۴ کاراکتر باشد"
-        });
-      }
-
-      const existing = await sql`
-        SELECT id
-        FROM users
-        WHERE email = ${email}
-        LIMIT 1
-      `;
-
-      if (existing.length) {
-        return json(res, 409, {
-          success: false,
-          message: "این ایمیل قبلاً ثبت شده است"
-        });
-      }
-
-      const passwordHash = hashPassword(password);
-
-      const result = await sql`
-        INSERT INTO users (
-          name,
-          email,
-          password_hash
-        )
-        VALUES (
-          ${name},
-          ${email},
-          ${passwordHash}
-        )
-        RETURNING
-          id,
-          name,
-          email,
-          cash,
-          gold,
-          created_at
-      `;
-
-      const user = result[0];
-
-      const token = createToken(user);
-
-      return json(res, 201, {
+      return json(res, 200, {
         success: true,
-        message: "ثبت‌نام با موفقیت انجام شد",
-        token,
         user
       });
     }
 
-    /*
-     * LOGIN
-     */
-    if (path === "/api/login" && req.method === "POST") {
-      await setupDatabase(sql);
+    // -----------------------------------------------
+    // BALANCES
+    // GET /api?action=balances&telegram_id=123
+    // -----------------------------------------------
 
-      const body = await readBody(req);
+    if (
+      req.method === "GET" &&
+      action === "balances"
+    ) {
+      await setupDatabase();
 
-      const email = String(body.email || "")
-        .trim()
-        .toLowerCase();
+      const telegramId = getTelegramId(req);
 
-      const password = String(body.password || "");
-
-      if (!email || !password) {
+      if (!telegramId) {
         return json(res, 400, {
           success: false,
-          message: "ایمیل و رمز عبور را وارد کنید"
+          error: "telegram_id is required"
         });
       }
 
-      const result = await sql`
-        SELECT
-          id,
-          name,
-          email,
-          password_hash,
-          cash,
-          gold,
-          created_at
-        FROM users
-        WHERE email = ${email}
-        LIMIT 1
-      `;
-
-      if (!result.length) {
-        return json(res, 401, {
-          success: false,
-          message: "ایمیل یا رمز عبور اشتباه است"
-        });
-      }
-
-      const user = result[0];
-
-      const passwordHash = hashPassword(password);
-
-      if (passwordHash !== user.password_hash) {
-        return json(res, 401, {
-          success: false,
-          message: "ایمیل یا رمز عبور اشتباه است"
-        });
-      }
-
-      delete user.password_hash;
-
-      const token = createToken(user);
-
-      return json(res, 200, {
-        success: true,
-        message: "ورود موفق بود",
-        token,
-        user
-      });
+      return json(
+        res,
+        200,
+        {
+          success: true,
+          ...(await getBalances(telegramId))
+        }
+      );
     }
 
-    /*
-     * CURRENT USER
-     */
-    if (path === "/api/user" && req.method === "GET") {
-      await setupDatabase(sql);
+    // -----------------------------------------------
+    // TRADES
+    // -----------------------------------------------
 
-      const token = getToken(req);
-      const auth = verifyToken(token);
+    if (
+      req.method === "GET" &&
+      action === "trades"
+    ) {
+      await setupDatabase();
 
-      if (!auth) {
-        return json(res, 401, {
-          success: false,
-          message: "Unauthorized"
-        });
-      }
+      const telegramId = getTelegramId(req);
 
-      const result = await sql`
-        SELECT
-          id,
-          name,
-          email,
-          cash,
-          gold,
-          created_at
-        FROM users
-        WHERE id = ${auth.id}
-        LIMIT 1
-      `;
-
-      if (!result.length) {
-        return json(res, 404, {
-          success: false,
-          message: "User not found"
-        });
-      }
-
-      return json(res, 200, {
-        success: true,
-        user: result[0]
-      });
-    }
-
-    /*
-     * TRADE
-     */
-    if (path === "/api/trade" && req.method === "POST") {
-      await setupDatabase(sql);
-
-      const token = getToken(req);
-      const auth = verifyToken(token);
-
-      if (!auth) {
-        return json(res, 401, {
-          success: false,
-          message: "Unauthorized"
-        });
-      }
-
-      const body = await readBody(req);
-
-      const type = body.type;
-      const amount = Number(body.gold_amount);
-
-      if (
-        (type !== "buy" && type !== "sell") ||
-        !Number.isFinite(amount) ||
-        amount <= 0
-      ) {
+      if (!telegramId) {
         return json(res, 400, {
           success: false,
-          message: "اطلاعات معامله نادرست است"
+          error: "telegram_id is required"
         });
       }
 
-      const price = await getGoldPrice(sql);
-      const total = amount * price;
-
-      const users = await sql`
-        SELECT id, cash, gold
-        FROM users
-        WHERE id = ${auth.id}
-        LIMIT 1
-      `;
-
-      if (!users.length) {
-        return json(res, 404, {
-          success: false,
-          message: "کاربر پیدا نشد"
-        });
-      }
-
-      const user = users[0];
-
-      let newCash = Number(user.cash);
-      let newGold = Number(user.gold);
-
-      if (type === "buy") {
-        if (newCash < total) {
-          return json(res, 400, {
-            success: false,
-            message: "موجودی نقدی کافی نیست"
-          });
-        }
-
-        newCash -= total;
-        newGold += amount;
-      }
-
-      if (type === "sell") {
-        if (newGold < amount) {
-          return json(res, 400, {
-            success: false,
-            message: "مقدار طلای کافی ندارید"
-          });
-        }
-
-        newGold -= amount;
-        newCash += total;
-      }
-
-      await sql`
-        UPDATE users
-        SET
-          cash = ${newCash},
-          gold = ${newGold}
-        WHERE id = ${auth.id}
-      `;
-
-      await sql`
-        INSERT INTO trades (
-          user_id,
-          type,
-          gold_amount,
-          price,
-          total
-        )
-        VALUES (
-          ${auth.id},
-          ${type},
-          ${amount},
-          ${price},
-          ${total}
-        )
-      `;
+      const trades = await getTrades(telegramId);
 
       return json(res, 200, {
         success: true,
-        message:
-          type === "buy"
-            ? "خرید با موفقیت انجام شد"
-            : "فروش با موفقیت انجام شد",
-        user: {
-          cash: newCash,
-          gold: newGold
-        },
-        trade: {
-          type,
-          gold_amount: amount,
-          price,
-          total
-        }
+        trades
       });
     }
 
-    /*
-     * HISTORY
-     */
-    if (path === "/api/history" && req.method === "GET") {
-      await setupDatabase(sql);
+    // -----------------------------------------------
+    // ORDERS
+    // -----------------------------------------------
 
-      const token = getToken(req);
-      const auth = verifyToken(token);
-
-      if (!auth) {
-        return json(res, 401, {
-          success: false,
-          message: "Unauthorized"
-        });
-      }
-
-      const history = await sql`
-        SELECT
-          id,
-          type,
-          gold_amount,
-          price,
-          total,
-          created_at
-        FROM trades
-        WHERE user_id = ${auth.id}
-        ORDER BY created_at DESC
-        LIMIT 50
-      `;
-
-      return json(res, 200, {
-        success: true,
-        history
-      });
-    }
-
-    /*
-     * ADMIN LOGIN
-     */
     if (
-      path === "/api/admin/login" &&
-      req.method === "POST"
+      req.method === "GET" &&
+      action === "orders"
     ) {
-      const body = await readBody(req);
+      await setupDatabase();
 
-      const email = String(body.email || "")
-        .trim()
-        .toLowerCase();
+      const telegramId = getTelegramId(req);
 
-      const password = String(body.password || "");
-
-      if (
-        !process.env.ADMIN_EMAIL ||
-        !process.env.ADMIN_PASSWORD
-      ) {
-        return json(res, 500, {
-          success: false,
-          message: "Admin settings are not configured"
-        });
-      }
-
-      if (
-        email !==
-          String(process.env.ADMIN_EMAIL)
-            .trim()
-            .toLowerCase() ||
-        password !== process.env.ADMIN_PASSWORD
-      ) {
-        return json(res, 401, {
-          success: false,
-          message: "اطلاعات مدیر نادرست است"
-        });
-      }
-
-      const token = crypto
-        .createHmac(
-          "sha256",
-          process.env.AUTH_SECRET
-        )
-        .update(`admin:${email}`)
-        .digest("hex");
-
-      return json(res, 200, {
-        success: true,
-        token
-      });
-    }
-
-    /*
-     * ADMIN AUTH
-     */
-    function verifyAdmin(req) {
-      const token = getToken(req);
-
-      if (!token) return false;
-
-      if (
-        !process.env.ADMIN_EMAIL ||
-        !process.env.AUTH_SECRET
-      ) {
-        return false;
-      }
-
-      const expected = crypto
-        .createHmac(
-          "sha256",
-          process.env.AUTH_SECRET
-        )
-        .update(
-          `admin:${String(process.env.ADMIN_EMAIL)
-            .trim()
-            .toLowerCase()}`
-        )
-        .digest("hex");
-
-      return token === expected;
-    }
-
-    /*
-     * ADMIN USERS
-     */
-    if (
-      path === "/api/admin/users" &&
-      req.method === "GET"
-    ) {
-      if (!verifyAdmin(req)) {
-        return json(res, 401, {
-          success: false,
-          message: "Admin unauthorized"
-        });
-      }
-
-      await setupDatabase(sql);
-
-      const users = await sql`
-        SELECT
-          id,
-          name,
-          email,
-          cash,
-          gold,
-          created_at
-        FROM users
-        ORDER BY id DESC
-      `;
-
-      return json(res, 200, {
-        success: true,
-        users
-      });
-    }
-
-    /*
-     * ADMIN STATS
-     */
-    if (
-      path === "/api/admin/stats" &&
-      req.method === "GET"
-    ) {
-      if (!verifyAdmin(req)) {
-        return json(res, 401, {
-          success: false,
-          message: "Admin unauthorized"
-        });
-      }
-
-      await setupDatabase(sql);
-
-      const users = await sql`
-        SELECT COUNT(*)::int AS count
-        FROM users
-      `;
-
-      const trades = await sql`
-        SELECT COUNT(*)::int AS count
-        FROM trades
-      `;
-
-      const price = await getGoldPrice(sql);
-
-      return json(res, 200, {
-        success: true,
-        stats: {
-          users: Number(users[0].count),
-          trades: Number(trades[0].count),
-          gold_price: price
-        }
-      });
-    }
-
-    /*
-     * ADMIN PRICE
-     */
-    if (
-      path === "/api/admin/price" &&
-      req.method === "POST"
-    ) {
-      if (!verifyAdmin(req)) {
-        return json(res, 401, {
-          success: false,
-          message: "Admin unauthorized"
-        });
-      }
-
-      await setupDatabase(sql);
-
-      const body = await readBody(req);
-
-      const price = Number(body.price);
-
-      if (!Number.isFinite(price) || price <= 0) {
+      if (!telegramId) {
         return json(res, 400, {
           success: false,
-          message: "قیمت نادرست است"
+          error: "telegram_id is required"
         });
       }
 
-      await sql`
-        INSERT INTO settings (key, value)
-        VALUES ('gold_price', ${String(price)})
-        ON CONFLICT (key)
-        DO UPDATE SET value = EXCLUDED.value
-      `;
+      const orders = await getOrders(telegramId);
 
       return json(res, 200, {
         success: true,
-        price
+        orders
       });
     }
 
-    /*
-     * ADMIN UPDATE USER
-     */
+    // -----------------------------------------------
+    // BUY
+    // POST /api?action=buy
+    // -----------------------------------------------
+
     if (
-      path.startsWith("/api/admin/users/") &&
-      req.method === "PATCH"
+      req.method === "POST" &&
+      action === "buy"
     ) {
-      if (!verifyAdmin(req)) {
-        return json(res, 401, {
+      await setupDatabase();
+
+      const {
+        telegram_id,
+        symbol,
+        quantity
+      } = req.body || {};
+
+      if (!telegram_id || !symbol || quantity === undefined) {
+        return json(res, 400, {
           success: false,
-          message: "Admin unauthorized"
+          error: "telegram_id, symbol and quantity are required"
         });
       }
 
-      await setupDatabase(sql);
-
-      const id = Number(
-        path.split("/").pop()
+      const result = await buyAsset(
+        telegram_id,
+        symbol,
+        quantity
       );
 
-      const body = await readBody(req);
-
-      const cash =
-        body.cash !== undefined
-          ? Number(body.cash)
-          : null;
-
-      const gold =
-        body.gold !== undefined
-          ? Number(body.gold)
-          : null;
-
-      if (
-        !Number.isFinite(id) ||
-        (cash !== null && !Number.isFinite(cash)) ||
-        (gold !== null && !Number.isFinite(gold))
-      ) {
-        return json(res, 400, {
-          success: false,
-          message: "اطلاعات نادرست است"
-        });
-      }
-
-      if (cash !== null && gold !== null) {
-        await sql`
-          UPDATE users
-          SET
-            cash = ${cash},
-            gold = ${gold}
-          WHERE id = ${id}
-        `;
-      } else if (cash !== null) {
-        await sql`
-          UPDATE users
-          SET cash = ${cash}
-          WHERE id = ${id}
-        `;
-      } else if (gold !== null) {
-        await sql`
-          UPDATE users
-          SET gold = ${gold}
-          WHERE id = ${id}
-        `;
-      }
-
-      return json(res, 200, {
-        success: true,
-        message: "کاربر بروزرسانی شد"
-      });
+      return json(res, 200, result);
     }
 
-    /*
-     * ADMIN DELETE USER
-     */
+    // -----------------------------------------------
+    // SELL
+    // POST /api?action=sell
+    // -----------------------------------------------
+
     if (
-      path.startsWith("/api/admin/users/") &&
-      req.method === "DELETE"
+      req.method === "POST" &&
+      action === "sell"
     ) {
-      if (!verifyAdmin(req)) {
-        return json(res, 401, {
-          success: false,
-          message: "Admin unauthorized"
-        });
-      }
+      await setupDatabase();
 
-      await setupDatabase(sql);
+      const {
+        telegram_id,
+        symbol,
+        quantity
+      } = req.body || {};
 
-      const id = Number(
-        path.split("/").pop()
-      );
-
-      if (!Number.isFinite(id)) {
+      if (!telegram_id || !symbol || quantity === undefined) {
         return json(res, 400, {
           success: false,
-          message: "شناسه کاربر نادرست است"
+          error: "telegram_id, symbol and quantity are required"
         });
       }
 
-      await sql`
-        DELETE FROM users
-        WHERE id = ${id}
-      `;
+      const result = await sellAsset(
+        telegram_id,
+        symbol,
+        quantity
+      );
 
-      return json(res, 200, {
-        success: true,
-        message: "کاربر حذف شد"
-      });
+      return json(res, 200, result);
     }
 
     return json(res, 404, {
       success: false,
-      message: "API endpoint not found"
+      error: "Endpoint not found"
     });
+
   } catch (error) {
-    console.error("API ERROR:", error);
+    console.error("Digital Finance API Error:", error);
 
     return json(res, 500, {
       success: false,
-      message: "خطا در اتصال به سرور",
-      error:
-        process.env.NODE_ENV === "development"
-          ? error.message
-          : undefined
+      error: error.message || "Server error"
     });
   }
 };
