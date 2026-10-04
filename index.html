@@ -2,196 +2,279 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07111f">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
 <title>Digital Finance</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
 *{
   box-sizing:border-box;
 }
 
-body{
+html,body{
   margin:0;
-  font-family:Arial,Tahoma,sans-serif;
+  padding:0;
   background:#07111f;
   color:#fff;
+  font-family:Arial,Tahoma,sans-serif;
+}
+
+body{
+  min-height:100vh;
 }
 
 button,input{
   font-family:inherit;
 }
 
+button{
+  cursor:pointer;
+}
+
+.app{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding-bottom:40px;
+}
+
+/* HEADER */
+
 .header{
   position:sticky;
   top:0;
   z-index:20;
-  background:#091827;
-  border-bottom:1px solid #1d3045;
+  background:rgba(7,17,31,.96);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid #1b3048;
   padding:15px;
 }
 
 .header-row{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
 
 .logo{
   font-size:22px;
-  font-weight:bold;
+  font-weight:900;
 }
 
 .logo span{
-  color:#19d3ae;
+  color:#2dd4bf;
 }
 
-.demo{
+.status{
   font-size:11px;
-  color:#8ea4b8;
+  color:#8fa4bb;
 }
 
-.balance{
-  margin-top:14px;
-  background:linear-gradient(135deg,#10283c,#0b1c2c);
-  border:1px solid #203b52;
-  border-radius:15px;
-  padding:14px;
+.status-dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#22c55e;
+  margin-left:5px;
 }
 
-.balance-label{
-  color:#8fa7ba;
-  font-size:12px;
-}
-
-.balance-value{
-  font-size:27px;
-  font-weight:bold;
-  margin-top:5px;
-}
-
-.tabs{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  padding:12px 15px;
-  background:#07111f;
-}
-
-.tab{
-  border:1px solid #263c50;
-  background:#0d1c2b;
-  color:#a9bdce;
-  padding:9px 16px;
-  border-radius:20px;
-  white-space:nowrap;
-}
-
-.tab.active{
-  background:#19d3ae;
-  color:#001c18;
-  border-color:#19d3ae;
-  font-weight:bold;
-}
+/* SEARCH */
 
 .search{
-  padding:0 15px 12px;
+  margin-top:14px;
 }
 
 .search input{
   width:100%;
-  padding:13px;
+  border:1px solid #213850;
+  background:#0c1b2c;
+  color:#fff;
   border-radius:12px;
-  border:1px solid #263c50;
-  background:#0c1b2a;
-  color:white;
+  padding:13px;
   outline:none;
+  font-size:14px;
 }
+
+.search input:focus{
+  border-color:#2dd4bf;
+}
+
+/* TABS */
+
+.tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  margin-top:12px;
+  padding-bottom:2px;
+}
+
+.tabs button{
+  border:1px solid #213850;
+  background:#0c1b2c;
+  color:#9fb2c8;
+  border-radius:20px;
+  padding:8px 15px;
+  white-space:nowrap;
+}
+
+.tabs button.active{
+  background:#143b42;
+  color:#2dd4bf;
+  border-color:#2dd4bf;
+}
+
+/* GOLD */
 
 .gold{
-  margin:0 15px 12px;
-  padding:13px;
-  background:#161b21;
-  border:1px solid #403a27;
-  border-radius:13px;
-  display:flex;
-  justify-content:space-between;
+  margin:15px;
+  background:linear-gradient(135deg,#17263a,#101c2d);
+  border:1px solid #354b62;
+  border-radius:16px;
+  padding:15px;
 }
 
-.gold small{
-  color:#9faab5;
+.gold-title{
+  color:#f4c95d;
+  font-size:13px;
 }
 
-.gold strong{
-  color:#ffd76a;
+.gold-price{
+  font-size:24px;
+  font-weight:900;
+  margin-top:7px;
 }
+
+.gold-sub{
+  color:#8499af;
+  font-size:11px;
+  margin-top:5px;
+}
+
+/* MARKET LIST */
 
 .market-list{
-  padding:0 15px 90px;
+  padding:0 15px;
 }
 
 .market{
-  padding:15px 0;
-  border-bottom:1px solid #172a3d;
-  cursor:pointer;
+  background:#0c1b2c;
+  border:1px solid #1c3249;
+  border-radius:15px;
+  padding:14px;
+  margin-bottom:9px;
+  transition:.15s;
+}
+
+.market:active{
+  transform:scale(.985);
 }
 
 .market-top{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:10px;
+}
+
+.coin{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.coin-icon{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#122a42;
+  border:1px solid #29445e;
+  font-size:14px;
+  font-weight:900;
 }
 
 .coin-name{
-  font-weight:bold;
+  font-weight:800;
+  font-size:14px;
 }
 
 .coin-symbol{
-  color:#71889b;
+  color:#71879d;
   font-size:11px;
-  margin-right:5px;
+  margin-top:3px;
+}
+
+.market-price{
+  text-align:left;
 }
 
 .price{
-  font-weight:bold;
+  font-size:15px;
+  font-weight:800;
 }
 
-.change-up{
-  color:#19d3ae;
-}
-
-.change-down{
-  color:#ff5964;
-}
-
-.market-bottom{
-  margin-top:7px;
-  display:flex;
-  justify-content:space-between;
-  color:#72899c;
+.change{
+  margin-top:4px;
   font-size:11px;
 }
 
-.detail{
-  display:none;
-  padding-bottom:100px;
+.green{
+  color:#22c55e;
 }
 
-.detail-head{
-  padding:15px;
-  background:#091827;
-  border-bottom:1px solid #1c3044;
+.red{
+  color:#ef4444;
+}
+
+.market-bottom{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+  color:#8297ac;
+  font-size:10px;
+}
+
+.market-bottom div{
+  background:#091625;
+  padding:8px;
+  border-radius:8px;
+}
+
+.market-bottom strong{
+  display:block;
+  color:#d9e5ef;
+  font-size:11px;
+  margin-top:3px;
+}
+
+/* DETAIL */
+
+.detail{
+  display:none;
+}
+
+.detail.show{
+  display:block;
 }
 
 .back{
-  display:inline-block;
-  color:#19d3ae;
-  margin-bottom:14px;
-  cursor:pointer;
+  margin:15px;
+  width:calc(100% - 30px);
+  padding:11px;
+  border-radius:12px;
+  border:1px solid #233b53;
+  background:#0c1b2c;
+  color:#fff;
+}
+
+.detail-head{
+  padding:5px 15px 15px;
 }
 
 .detail-title{
@@ -200,15 +283,39 @@ button,input{
   align-items:center;
 }
 
+.detail-coin{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.detail-icon{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#122a42;
+  border:1px solid #29445e;
+  font-weight:900;
+}
+
+.detail-name{
+  font-size:19px;
+  font-weight:900;
+}
+
 .detail-symbol{
-  font-size:25px;
-  font-weight:bold;
+  color:#8095aa;
+  font-size:12px;
+  margin-top:3px;
 }
 
 .detail-price{
-  font-size:25px;
-  font-weight:bold;
-  margin-top:8px;
+  font-size:27px;
+  font-weight:900;
+  margin-top:15px;
 }
 
 .detail-change{
@@ -216,171 +323,217 @@ button,input{
   font-size:13px;
 }
 
-.info-grid{
+/* STATS */
+
+.stats{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:9px;
-  padding:15px;
+  padding:0 15px;
 }
 
-.info{
-  background:#0c1b2a;
-  border:1px solid #1d3449;
+.stat{
+  background:#0c1b2c;
+  border:1px solid #1c3249;
   border-radius:12px;
   padding:12px;
 }
 
-.info-label{
-  color:#758da0;
-  font-size:11px;
-  margin-bottom:7px;
+.stat-label{
+  color:#748ba1;
+  font-size:10px;
 }
 
-.info-value{
-  font-weight:bold;
-  font-size:14px;
+.stat-value{
+  color:#eef6ff;
+  font-size:13px;
+  font-weight:800;
+  margin-top:7px;
   word-break:break-word;
 }
 
-.chart-card{
-  margin:0 15px 15px;
-  background:#0b1927;
-  border:1px solid #1d3449;
-  border-radius:14px;
-  overflow:hidden;
+/* CHART */
+
+.chart-box{
+  margin:15px;
+  padding:12px;
+  background:#0c1b2c;
+  border:1px solid #1c3249;
+  border-radius:15px;
 }
 
-.chart-top{
-  padding:12px;
+.chart-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  margin-bottom:10px;
+}
+
+.chart-title{
+  font-weight:800;
+  font-size:14px;
+}
+
+.timer{
+  color:#8aa0b5;
+  font-size:11px;
 }
 
 .timeframes{
   display:flex;
   gap:5px;
-  overflow:auto;
-  padding:0 10px 10px;
+  overflow-x:auto;
+  margin-bottom:10px;
 }
 
-.tf{
-  background:#122334;
-  color:#8fa5b7;
-  border:1px solid #263c50;
-  border-radius:7px;
-  padding:7px 11px;
-  white-space:nowrap;
+.timeframes button{
+  border:1px solid #20374f;
+  background:#091625;
+  color:#8298ad;
+  border-radius:8px;
+  padding:6px 9px;
+  font-size:10px;
 }
 
-.tf.active{
-  background:#19d3ae;
-  color:#001c18;
+.timeframes button.active{
+  color:#2dd4bf;
+  border-color:#2dd4bf;
 }
 
-#chart{
-  height:360px;
+canvas{
   width:100%;
+  height:300px;
+  display:block;
+  background:#081422;
+  border-radius:10px;
 }
 
-.timer{
-  color:#8ea4b8;
-  font-size:11px;
-}
+/* BUY SELL */
 
-.trade-card{
-  margin:0 15px 15px;
-  padding:15px;
-  background:#0b1927;
-  border:1px solid #1d3449;
-  border-radius:14px;
+.trade-box{
+  margin:15px;
+  background:#0c1b2c;
+  border:1px solid #1c3249;
+  border-radius:15px;
+  padding:14px;
 }
 
 .trade-title{
-  font-weight:bold;
+  font-size:14px;
+  font-weight:900;
   margin-bottom:12px;
 }
 
-.trade-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.trade-stat{
-  background:#101f2e;
+.trade-input{
+  width:100%;
+  background:#081625;
+  color:#fff;
+  border:1px solid #223b54;
   border-radius:10px;
-  padding:10px;
+  padding:12px;
+  outline:none;
+  margin-bottom:10px;
 }
 
-.trade-stat small{
-  color:#7d94a7;
-}
-
-.trade-stat strong{
-  display:block;
-  margin-top:5px;
-}
-
-.actions{
+.trade-buttons{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
-  padding:0 15px;
+  gap:8px;
 }
 
-.buy,.sell{
+.buy-btn,
+.sell-btn{
   border:0;
-  padding:14px;
-  border-radius:12px;
-  font-weight:bold;
-  font-size:15px;
+  border-radius:10px;
+  padding:12px;
+  font-weight:900;
+  color:#fff;
 }
 
-.buy{
-  background:#19d3ae;
-  color:#00251f;
+.buy-btn{
+  background:#16834d;
 }
 
-.sell{
-  background:#ff5964;
-  color:white;
+.sell-btn{
+  background:#a62f43;
 }
 
-.loading{
-  text-align:center;
-  padding:40px;
-  color:#8299aa;
+/* BUY SELL STATS */
+
+.flow{
+  margin-top:12px;
 }
+
+.flow-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  color:#8ba0b5;
+  margin-bottom:5px;
+}
+
+.bar{
+  width:100%;
+  height:8px;
+  background:#17283b;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.bar-buy{
+  height:100%;
+  background:#22c55e;
+  width:50%;
+}
+
+/* EMPTY */
 
 .empty{
   text-align:center;
-  padding:40px;
-  color:#71889b;
-}
-
-.notice{
-  margin:15px;
-  padding:15px;
-  background:#151f2b;
-  border:1px solid #293b4c;
-  border-radius:12px;
-  color:#a8bac8;
+  padding:35px 15px;
+  color:#758ba0;
   font-size:13px;
-  line-height:1.8;
 }
 
-@media(max-width:420px){
-  #chart{
-    height:300px;
+/* LOADING */
+
+.loading{
+  text-align:center;
+  padding:35px;
+  color:#8499af;
+}
+
+/* ERROR */
+
+.error{
+  margin:15px;
+  padding:14px;
+  border-radius:12px;
+  background:#32151d;
+  border:1px solid #71303d;
+  color:#ff9aaa;
+  font-size:12px;
+}
+
+/* FOOTER */
+
+.footer{
+  text-align:center;
+  color:#536b82;
+  font-size:10px;
+  padding:20px;
+}
+
+/* RESPONSIVE */
+
+@media(min-width:700px){
+
+  .stats{
+    grid-template-columns:repeat(4,1fr);
   }
 
-  .info-grid{
-    gap:7px;
-  }
-
-  .info{
-    padding:10px;
+  .market-bottom{
+    grid-template-columns:repeat(4,1fr);
   }
 }
 </style>
@@ -388,1116 +541,2117 @@ button,input{
 
 <body>
 
+<div class="app">
+
+<!-- HEADER -->
+
 <header class="header">
+
   <div class="header-row">
-    <div class="logo">Digital <span>Finance</span></div>
-    <div class="demo">DEMO MARKET</div>
-  </div>
 
-  <div class="balance">
-    <div class="balance-label">موجودی حساب</div>
-    <div class="balance-value" id="balance">$0.00</div>
-  </div>
-</header>
+    <div class="logo">
+      Digital <span>Finance</span>
+    </div>
 
-<div id="home">
+    <div class="status">
+      <span class="status-dot"></span>
+      Live
+    </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="setTab('all',this)">همه</button>
-    <button class="tab" onclick="setTab('crypto',this)">Crypto</button>
-    <button class="tab" onclick="setTab('gold',this)">Gold</button>
   </div>
 
   <div class="search">
     <input
       id="search"
+      type="text"
       placeholder="جستجوی ارز..."
       oninput="renderMarkets()"
     >
   </div>
 
-  <div class="gold">
-    <div>
-      <small>طلا 24K</small>
-      <div>Gold / AFN</div>
-    </div>
-    <strong id="goldPrice">در حال دریافت...</strong>
+  <div class="tabs">
+
+    <button
+      class="active"
+      onclick="setTab('all',this)"
+    >
+      همه
+    </button>
+
+    <button
+      onclick="setTab('gainers',this)"
+    >
+      بیشترین رشد
+    </button>
+
+    <button
+      onclick="setTab('losers',this)"
+    >
+      بیشترین کاهش
+    </button>
+
   </div>
 
-  <div id="marketList" class="market-list">
-    <div class="loading">در حال دریافت بازارها...</div>
+</header>
+
+
+<!-- HOME -->
+
+<div id="home">
+
+  <div class="gold">
+
+    <div class="gold-title">
+      🥇 طلای 24 عیار
+    </div>
+
+    <div
+      class="gold-price"
+      id="goldPrice"
+    >
+      در حال دریافت...
+    </div>
+
+    <div
+      class="gold-sub"
+      id="goldUpdated"
+    >
+      قیمت هر گرم به AFN
+    </div>
+
+  </div>
+
+
+  <div
+    id="marketList"
+    class="market-list"
+  >
+
+    <div class="loading">
+      در حال دریافت بازار...
+    </div>
+
   </div>
 
 </div>
 
-<section id="detail" class="detail">
+
+<!-- DETAIL -->
+
+<div
+  id="detail"
+  class="detail"
+>
+
+  <button
+    class="back"
+    onclick="showHome()"
+  >
+    ← بازگشت به بازار
+  </button>
+
 
   <div class="detail-head">
 
-    <div class="back" onclick="closeDetail()">← بازگشت به بازار</div>
-
     <div class="detail-title">
-      <div>
-        <div class="detail-symbol" id="detailSymbol">BTC</div>
-        <div id="detailName">Bitcoin</div>
+
+      <div class="detail-coin">
+
+        <div
+          class="detail-icon"
+          id="detailIcon"
+        >
+          --
+        </div>
+
+        <div>
+
+          <div
+            class="detail-name"
+            id="detailName"
+          >
+            --
+          </div>
+
+          <div
+            class="detail-symbol"
+            id="detailSymbol"
+          >
+            --
+          </div>
+
+        </div>
+
       </div>
 
-      <div style="text-align:left">
-        <div class="detail-price" id="detailPrice">—</div>
-        <div id="detailChange" class="detail-change">—</div>
+    </div>
+
+
+    <div
+      class="detail-price"
+      id="detailPrice"
+    >
+      --
+    </div>
+
+    <div
+      class="detail-change"
+      id="detailChange"
+    >
+      --
+    </div>
+
+  </div>
+
+
+  <!-- MARKET STATS -->
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-label">
+        Market Cap
+      </div>
+      <div
+        class="stat-value"
+        id="marketCap"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        حجم 24 ساعت
+      </div>
+      <div
+        class="stat-value"
+        id="volume24"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        Circulating Supply
+      </div>
+      <div
+        class="stat-value"
+        id="circulating"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        Total Supply
+      </div>
+      <div
+        class="stat-value"
+        id="totalSupply"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        Max Supply
+      </div>
+      <div
+        class="stat-value"
+        id="maxSupply"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        بالاترین 24h
+      </div>
+      <div
+        class="stat-value"
+        id="high24"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        پایین‌ترین 24h
+      </div>
+      <div
+        class="stat-value"
+        id="low24"
+      >
+        --
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">
+        تعداد معاملات
+      </div>
+      <div
+        class="stat-value"
+        id="tradeCount"
+      >
+        --
       </div>
     </div>
 
   </div>
 
-  <div class="info-grid">
 
-    <div class="info">
-      <div class="info-label">Market Cap</div>
-      <div class="info-value" id="marketCap">—</div>
+  <!-- CHART -->
+
+  <div class="chart-box">
+
+    <div class="chart-head">
+
+      <div class="chart-title">
+        نمودار قیمت
+      </div>
+
+      <div
+        class="timer"
+        id="candleTimer"
+      >
+        --
+      </div>
+
     </div>
 
-    <div class="info">
-      <div class="info-label">حجم معاملات 24h</div>
-      <div class="info-value" id="volume24">—</div>
-    </div>
-
-    <div class="info">
-      <div class="info-label">Circulating Supply</div>
-      <div class="info-value" id="circulating">—</div>
-    </div>
-
-    <div class="info">
-      <div class="info-label">Total Supply</div>
-      <div class="info-value" id="totalSupply">—</div>
-    </div>
-
-    <div class="info">
-      <div class="info-label">Max Supply</div>
-      <div class="info-value" id="maxSupply">—</div>
-    </div>
-
-    <div class="info">
-      <div class="info-label">24h High</div>
-      <div class="info-value" id="high24">—</div>
-    </div>
-
-    <div class="info">
-      <div class="info-label">24h Low</div>
-      <div class="info-value" id="low24">—</div>
-    </div>
-
-    <div class="info">
-      <div class="info-label">تعداد معاملات</div>
-      <div class="info-value" id="tradeCount">—</div>
-    </div>
-
-  </div>
-
-  <div class="chart-card">
-
-    <div class="chart-top">
-      <strong>نمودار قیمت</strong>
-      <span class="timer" id="candleTimer">—</span>
-    </div>
 
     <div class="timeframes">
-      <button class="tf active" onclick="changeTF('5m',this)">5m</button>
-      <button class="tf" onclick="changeTF('1h',this)">1H</button>
-      <button class="tf" onclick="changeTF('4h',this)">4H</button>
-      <button class="tf" onclick="changeTF('24h',this)">24H</button>
-      <button class="tf" onclick="changeTF('7d',this)">7D</button>
-      <button class="tf" onclick="changeTF('30d',this)">30D</button>
+
+      <button
+        class="active"
+        onclick="changeInterval('5m',this)"
+      >
+        5M
+      </button>
+
+      <button
+        onclick="changeInterval('1h',this)"
+      >
+        1H
+      </button>
+
+      <button
+        onclick="changeInterval('4h',this)"
+      >
+        4H
+      </button>
+
+      <button
+        onclick="changeInterval('24h',this)"
+      >
+        24H
+      </button>
+
+      <button
+        onclick="changeInterval('7d',this)"
+      >
+        7D
+      </button>
+
+      <button
+        onclick="changeInterval('30d',this)"
+      >
+        30D
+      </button>
+
     </div>
 
-    <div id="chart"></div>
+
+    <canvas
+      id="chart"
+    ></canvas>
 
   </div>
 
-  <div class="trade-card">
 
-    <div class="trade-title">آمار خرید و فروش</div>
+  <!-- BUY SELL -->
 
-    <div class="trade-grid">
+  <div class="trade-box">
 
-      <div class="trade-stat">
-        <small>حجم خرید</small>
-        <strong id="buyVolume" class="change-up">—</strong>
+    <div class="trade-title">
+      خرید و فروش
+    </div>
+
+    <input
+      id="tradeAmount"
+      class="trade-input"
+      type="number"
+      min="0"
+      step="any"
+      placeholder="مقدار ارز"
+    >
+
+    <div class="trade-buttons">
+
+      <button
+        class="buy-btn"
+        onclick="trade('buy')"
+      >
+        خرید
+      </button>
+
+      <button
+        class="sell-btn"
+        onclick="trade('sell')"
+      >
+        فروش
+      </button>
+
+    </div>
+
+
+    <div class="flow">
+
+      <div class="flow-row">
+
+        <span>
+          خرید 24h
+        </span>
+
+        <strong
+          id="buyVolume"
+        >
+          0
+        </strong>
+
       </div>
 
-      <div class="trade-stat">
-        <small>حجم فروش</small>
-        <strong id="sellVolume" class="change-down">—</strong>
+      <div class="bar">
+
+        <div
+          id="buyBar"
+          class="bar-buy"
+        ></div>
+
       </div>
 
-      <div class="trade-stat">
-        <small>درصد خرید</small>
-        <strong id="buyPercent">—</strong>
-      </div>
+    </div>
 
-      <div class="trade-stat">
-        <small>درصد فروش</small>
-        <strong id="sellPercent">—</strong>
+
+    <div class="flow">
+
+      <div class="flow-row">
+
+        <span>
+          فروش 24h
+        </span>
+
+        <strong
+          id="sellVolume"
+        >
+          0
+        </strong>
+
       </div>
 
     </div>
 
   </div>
 
-  <div class="actions">
+</div>
 
-    <button class="buy" onclick="buyAsset()">
-      خرید
-    </button>
 
-    <button class="sell" onclick="sellAsset()">
-      فروش
-    </button>
+<div class="footer">
+  Digital Finance • Live Market
+</div>
 
-  </div>
+</div>
 
-  <div class="notice">
-    این نسخه برای بازار آزمایشی Digital Finance است.
-    قیمت‌های بازارهای خارجی از منابع عمومی دریافت می‌شوند.
-    معاملات داخل برنامه آزمایشی هستند.
-  </div>
-
-</section>
 
 <script>
 
-const API = "";
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const API_BASE = "";
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
 
 let markets = [];
+
 let currentTab = "all";
+
 let selectedAsset = null;
-let currentTF = "5m";
 
-let chart = null;
-let candleSeries = null;
-let volumeSeries = null;
+let currentInterval = "5m";
 
-let userId = "123456789";
+let candles = [];
 
-try{
-  if(window.Telegram && Telegram.WebApp){
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
+let candleTimerInterval = null;
 
-    if(Telegram.WebApp.initDataUnsafe &&
-       Telegram.WebApp.initDataUnsafe.user){
+let marketRefreshInterval = null;
 
-      userId =
-        String(Telegram.WebApp.initDataUnsafe.user.id);
-    }
-  }
-}catch(e){}
+let tickerInterval = null;
 
-function esc(value){
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function $(id){
+  return document.getElementById(id);
 }
+
+
+function number(value){
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    Number.isNaN(Number(value))
+  ){
+    return null;
+  }
+
+  return Number(value);
+}
+
 
 function money(value){
 
-  if(value === null ||
-     value === undefined ||
-     value === "" ||
-     isNaN(Number(value))) return "—";
+  const n = number(value);
 
-  const n = Number(value);
+  if(n === null){
+    return "--";
+  }
 
-  if(Math.abs(n) >= 1e12)
-    return "$" + (n/1e12).toFixed(2) + "T";
+  if(
+    Math.abs(n) >= 1000000000000
+  ){
+    return "$" + (n / 1000000000000).toFixed(2) + "T";
+  }
 
-  if(Math.abs(n) >= 1e9)
-    return "$" + (n/1e9).toFixed(2) + "B";
+  if(
+    Math.abs(n) >= 1000000000
+  ){
+    return "$" + (n / 1000000000).toFixed(2) + "B";
+  }
 
-  if(Math.abs(n) >= 1e6)
-    return "$" + (n/1e6).toFixed(2) + "M";
+  if(
+    Math.abs(n) >= 1000000
+  ){
+    return "$" + (n / 1000000).toFixed(2) + "M";
+  }
 
-  if(Math.abs(n) >= 1e3)
-    return "$" + (n/1e3).toFixed(2) + "K";
+  if(
+    Math.abs(n) >= 1000
+  ){
+    return "$" + (n / 1000).toFixed(2) + "K";
+  }
 
-  if(n < 0.001)
-    return "$" + n.toFixed(8);
-
-  if(n < 1)
-    return "$" + n.toFixed(6);
+  if(n >= 1){
+    return "$" + n.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:2
+      }
+    );
+  }
 
   return "$" + n.toLocaleString(
     "en-US",
     {
-      maximumFractionDigits:2
+      maximumFractionDigits:8
     }
   );
 }
 
-function numberFormat(value){
 
-  if(value === null ||
-     value === undefined ||
-     value === "" ||
-     isNaN(Number(value))) return "—";
+function amount(value){
 
-  const n = Number(value);
+  const n = number(value);
 
-  if(n >= 1e12)
-    return (n/1e12).toFixed(2)+"T";
+  if(n === null){
+    return "--";
+  }
 
-  if(n >= 1e9)
-    return (n/1e9).toFixed(2)+"B";
+  if(
+    Math.abs(n) >= 1000000000000
+  ){
+    return (n / 1000000000000).toFixed(2) + "T";
+  }
 
-  if(n >= 1e6)
-    return (n/1e6).toFixed(2)+"M";
+  if(
+    Math.abs(n) >= 1000000000
+  ){
+    return (n / 1000000000).toFixed(2) + "B";
+  }
 
-  if(n >= 1e3)
-    return (n/1e3).toFixed(2)+"K";
+  if(
+    Math.abs(n) >= 1000000
+  ){
+    return (n / 1000000).toFixed(2) + "M";
+  }
 
-  return n.toLocaleString("en-US",{
-    maximumFractionDigits:4
-  });
-}
+  if(
+    Math.abs(n) >= 1000
+  ){
+    return (n / 1000).toFixed(2) + "K";
+  }
 
-function getSymbol(a){
-  return String(a.symbol || "").toUpperCase();
-}
-
-function getName(a){
-  return a.name || getSymbol(a);
-}
-
-function getPrice(a){
-  return Number(
-    a.price ??
-    a.current_price ??
-    0
+  return n.toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:4
+    }
   );
 }
 
-function getChange(a){
-  return Number(
-    a.change_24h ??
-    a.price_change_percentage_24h ??
-    a.change ??
-    0
+
+function priceFormat(value){
+
+  const n = number(value);
+
+  if(n === null){
+    return "--";
+  }
+
+  if(n >= 1){
+    return "$" + n.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:4
+      }
+    );
+  }
+
+  return "$" + n.toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:10
+    }
   );
 }
+
+
+function changeFormat(value){
+
+  const n = number(value);
+
+  if(n === null){
+    return "--";
+  }
+
+  const sign =
+    n > 0 ? "+" : "";
+
+  return sign +
+    n.toFixed(2) +
+    "%";
+}
+
+
+/* =========================================================
+   API
+   ========================================================= */
+
+async function api(url,options={}){
+
+  const response =
+    await fetch(
+      API_BASE + url,
+      options
+    );
+
+  const data =
+    await response.json();
+
+  if(!response.ok){
+
+    throw new Error(
+      data.error ||
+      "API Error"
+    );
+  }
+
+  return data;
+}
+
+
+/* =========================================================
+   LOAD MARKETS
+   ========================================================= */
 
 async function loadMarkets(){
 
   try{
 
-    const res = await fetch(
-      API + "/api?action=markets",
-      {
-        cache:"no-store"
-      }
-    );
-
-    if(!res.ok)
-      throw new Error("markets HTTP "+res.status);
-
-    const data = await res.json();
+    const data =
+      await api(
+        "/api?action=markets"
+      );
 
     markets =
       Array.isArray(data.markets)
-      ? data.markets
-      : Array.isArray(data.data)
-      ? data.data
-      : [];
+        ? data.markets
+        : [];
 
     renderMarkets();
 
-  }catch(err){
+    if(
+      selectedAsset
+    ){
 
-    console.error(err);
+      const updated =
+        markets.find(
+          m =>
+            String(m.symbol)
+              .toUpperCase()
+            ===
+            String(selectedAsset.symbol)
+              .toUpperCase()
+        );
 
-    document.getElementById("marketList").innerHTML =
-      `<div class="empty">
-        دریافت بازارها ناموفق بود.<br>
-        دوباره تلاش کنید.
-      </div>`;
+      if(updated){
+
+        selectedAsset =
+          updated;
+
+        updateDetail();
+      }
+    }
+
+  }catch(error){
+
+    $("marketList").innerHTML =
+      `
+      <div class="error">
+        خطا در دریافت بازار:
+        ${escapeHtml(error.message)}
+      </div>
+      `;
   }
 }
 
-function setTab(tab,button){
 
-  currentTab = tab;
+/* =========================================================
+   ESCAPE
+   ========================================================= */
 
-  document.querySelectorAll(".tab")
-    .forEach(x=>x.classList.remove("active"));
+function escapeHtml(value){
 
-  button.classList.add("active");
-
-  renderMarkets();
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
+
+
+/* =========================================================
+   RENDER MARKETS
+   ========================================================= */
 
 function renderMarkets(){
 
   const list =
-    document.getElementById("marketList");
+    $("marketList");
+
+  let data =
+    [...markets];
 
   const search =
-    document.getElementById("search")
+    $("search")
       .value
       .trim()
-      .toLowerCase();
+      .toUpperCase();
 
-  let arr = markets.filter(asset=>{
 
-    const symbol =
-      getSymbol(asset).toLowerCase();
+  if(search){
 
-    const name =
-      String(getName(asset)).toLowerCase();
+    data =
+      data.filter(
+        item =>
+          String(item.symbol)
+            .toUpperCase()
+            .includes(search)
+          ||
+          String(item.name)
+            .toUpperCase()
+            .includes(search)
+      );
+  }
 
-    if(search &&
-       !symbol.includes(search) &&
-       !name.includes(search)){
-      return false;
-    }
 
-    if(currentTab === "gold"){
-      return symbol.includes("GOLD") ||
-             symbol === "XAU";
-    }
+  if(
+    currentTab === "gainers"
+  ){
 
-    if(currentTab === "crypto"){
-      return !(symbol.includes("GOLD") ||
-               symbol === "XAU");
-    }
+    data.sort(
+      (a,b) =>
+        Number(b.change_24h || 0)
+        -
+        Number(a.change_24h || 0)
+    );
 
-    return true;
-  });
+  }
 
-  if(!arr.length){
+
+  if(
+    currentTab === "losers"
+  ){
+
+    data.sort(
+      (a,b) =>
+        Number(a.change_24h || 0)
+        -
+        Number(b.change_24h || 0)
+    );
+  }
+
+
+  if(!data.length){
 
     list.innerHTML =
-      `<div class="empty">
+      `
+      <div class="empty">
         ارزی پیدا نشد.
-      </div>`;
+      </div>
+      `;
 
     return;
   }
 
-  list.innerHTML = arr.map(asset=>{
 
-    const symbol = getSymbol(asset);
-    const name = getName(asset);
-    const price = getPrice(asset);
-    const change = getChange(asset);
+  list.innerHTML =
+    data.map(
+      market => {
 
-    const cls =
-      change >= 0
-      ? "change-up"
-      : "change-down";
+        const change =
+          Number(
+            market.change_24h || 0
+          );
 
-    return `
-      <div class="market"
-           onclick="openAsset('${esc(symbol)}')">
+        const changeClass =
+          change >= 0
+            ? "green"
+            : "red";
 
-        <div class="market-top">
 
-          <div>
-            <span class="coin-name">
-              ${esc(name)}
-            </span>
+        return `
 
-            <span class="coin-symbol">
-              ${esc(symbol)}
-            </span>
+        <div
+          class="market"
+          onclick='openAsset(${JSON.stringify(
+            market
+          ).replaceAll("'","&#39;")})'
+        >
+
+          <div class="market-top">
+
+            <div class="coin">
+
+              <div class="coin-icon">
+                ${escapeHtml(
+                  String(
+                    market.symbol
+                  ).slice(0,4)
+                )}
+              </div>
+
+              <div>
+
+                <div class="coin-name">
+                  ${escapeHtml(
+                    market.name || market.symbol
+                  )}
+                </div>
+
+                <div class="coin-symbol">
+                  ${escapeHtml(
+                    market.symbol
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="market-price">
+
+              <div class="price">
+                ${priceFormat(
+                  market.price
+                )}
+              </div>
+
+              <div
+                class="change ${changeClass}"
+              >
+                ${changeFormat(change)}
+              </div>
+
+            </div>
+
           </div>
 
-          <div class="price">
-            ${money(price)}
+
+          <div class="market-bottom">
+
+            <div>
+              Market Cap
+              <strong>
+                ${money(
+                  market.market_cap
+                )}
+              </strong>
+            </div>
+
+            <div>
+              Volume 24h
+              <strong>
+                ${money(
+                  market.total_volume
+                )}
+              </strong>
+            </div>
+
+            <div>
+              High
+              <strong>
+                ${priceFormat(
+                  market.high_24h
+                )}
+              </strong>
+            </div>
+
+            <div>
+              Low
+              <strong>
+                ${priceFormat(
+                  market.low_24h
+                )}
+              </strong>
+            </div>
+
           </div>
 
         </div>
 
-        <div class="market-bottom">
-
-          <span>
-            Market Cap:
-            ${money(
-              asset.market_cap ??
-              asset.marketCap
-            )}
-          </span>
-
-          <span class="${cls}">
-            ${change >= 0 ? "+" : ""}
-            ${change.toFixed(2)}%
-          </span>
-
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
+        `;
+      }
+    ).join("");
 }
+
+
+/* =========================================================
+   TAB
+   ========================================================= */
+
+function setTab(
+  tab,
+  button
+){
+
+  currentTab =
+    tab;
+
+  document
+    .querySelectorAll(".tabs button")
+    .forEach(
+      b =>
+        b.classList.remove(
+          "active"
+        )
+    );
+
+  button.classList.add(
+    "active"
+  );
+
+  renderMarkets();
+}
+
+
+/* =========================================================
+   OPEN ASSET
+   ========================================================= */
+
+function openAsset(asset){
+
+  selectedAsset =
+    asset;
+
+  $("home")
+    .style
+    .display = "none";
+
+  $("detail")
+    .classList
+    .add("show");
+
+  updateDetail();
+
+  loadCandles();
+
+  window.scrollTo(
+    0,
+    0
+  );
+}
+
+
+/* =========================================================
+   SHOW HOME
+   ========================================================= */
+
+function showHome(){
+
+  selectedAsset =
+    null;
+
+  $("detail")
+    .classList
+    .remove("show");
+
+  $("home")
+    .style
+    .display = "block";
+
+  stopCandleTimer();
+
+  window.scrollTo(
+    0,
+    0
+  );
+}
+
+
+/* =========================================================
+   DETAIL
+   ========================================================= */
+
+function updateDetail(){
+
+  if(!selectedAsset){
+    return;
+  }
+
+  const a =
+    selectedAsset;
+
+
+  $("detailIcon")
+    .textContent =
+      String(a.symbol)
+        .slice(0,4);
+
+
+  $("detailName")
+    .textContent =
+      a.name ||
+      a.symbol;
+
+
+  $("detailSymbol")
+    .textContent =
+      a.symbol;
+
+
+  $("detailPrice")
+    .textContent =
+      priceFormat(
+        a.price
+      );
+
+
+  const change =
+    Number(
+      a.change_24h || 0
+    );
+
+
+  $("detailChange")
+    .textContent =
+      changeFormat(
+        change
+      );
+
+
+  $("detailChange")
+    .className =
+      "detail-change " +
+      (
+        change >= 0
+          ? "green"
+          : "red"
+      );
+
+
+  $("marketCap")
+    .textContent =
+      money(
+        a.market_cap
+      );
+
+
+  $("volume24")
+    .textContent =
+      money(
+        a.total_volume
+      );
+
+
+  $("circulating")
+    .textContent =
+      amount(
+        a.circulating_supply
+      );
+
+
+  $("totalSupply")
+    .textContent =
+      amount(
+        a.total_supply
+      );
+
+
+  $("maxSupply")
+    .textContent =
+      amount(
+        a.max_supply
+      );
+
+
+  $("high24")
+    .textContent =
+      priceFormat(
+        a.high_24h
+      );
+
+
+  $("low24")
+    .textContent =
+      priceFormat(
+        a.low_24h
+      );
+
+
+  $("tradeCount")
+    .textContent =
+      amount(
+        a.trade_count
+      );
+
+
+  $("buyVolume")
+    .textContent =
+      amount(
+        a.buy_volume
+      );
+
+
+  $("sellVolume")
+    .textContent =
+      amount(
+        a.sell_volume
+      );
+
+
+  const buyPercent =
+    Number(
+      a.buy_percent || 0
+    );
+
+
+  $("buyBar")
+    .style
+    .width =
+      Math.max(
+        0,
+        Math.min(
+          100,
+          buyPercent
+        )
+      ) + "%";
+}
+
+
+/* =========================================================
+   GOLD
+   ========================================================= */
 
 async function loadGold(){
 
   try{
 
-    const res = await fetch(
-      API + "/api?action=gold",
-      {
-        cache:"no-store"
-      }
-    );
-
-    const data = await res.json();
-
-    const price =
-      data.price ??
-      data.gold ??
-      data.value;
-
-    document.getElementById("goldPrice")
-      .textContent =
-      price !== undefined
-      ? Number(price).toLocaleString("en-US")+" AFN"
-      : "—";
-
-  }catch(e){
-
-    document.getElementById("goldPrice")
-      .textContent = "—";
-  }
-}
-
-async function loadUser(){
-
-  try{
-
-    const res = await fetch(
-      API +
-      "/api?action=user&telegram_id=" +
-      encodeURIComponent(userId),
-      {
-        cache:"no-store"
-      }
-    );
-
-    const data = await res.json();
-
-    const user = data.user || data;
-
-    const balance =
-      Number(
-        user.balance ??
-        user.usdt_balance ??
-        0
+    const data =
+      await api(
+        "/api?action=gold"
       );
 
-    document.getElementById("balance")
+    if(
+      data.success &&
+      Number(data.price) > 0
+    ){
+
+      $("goldPrice")
+        .textContent =
+          Number(
+            data.price
+          ).toLocaleString(
+            "en-US",
+            {
+              maximumFractionDigits:2
+            }
+          ) +
+          " AFN";
+
+      $("goldUpdated")
+        .textContent =
+          "24K • هر گرم • قیمت زنده";
+
+    }else{
+
+      $("goldPrice")
+        .textContent =
+          "در دسترس نیست";
+    }
+
+  }catch(error){
+
+    $("goldPrice")
       .textContent =
-      "$" +
-      balance.toLocaleString(
-        "en-US",
-        {
-          minimumFractionDigits:2,
-          maximumFractionDigits:2
-        }
-      );
-
-  }catch(e){
-
-    console.log("user error",e);
+        "در دسترس نیست";
   }
 }
 
-function openAsset(symbol){
 
-  selectedAsset =
-    markets.find(
-      x=>getSymbol(x) === String(symbol).toUpperCase()
+/* =========================================================
+   CHANGE INTERVAL
+   ========================================================= */
+
+function changeInterval(
+  interval,
+  button
+){
+
+  currentInterval =
+    interval;
+
+  document
+    .querySelectorAll(".timeframes button")
+    .forEach(
+      b =>
+        b.classList.remove(
+          "active"
+        )
     );
 
-  if(!selectedAsset) return;
+  button.classList.add(
+    "active"
+  );
 
-  document.getElementById("home")
-    .style.display="none";
-
-  document.getElementById("detail")
-    .style.display="block";
-
-  window.scrollTo(0,0);
-
-  updateDetail();
-
-  loadMarketStats();
-
-  createChart();
-
-  loadCandles(currentTF);
-
-  startTicker();
+  loadCandles();
 }
 
-function closeDetail(){
 
-  document.getElementById("detail")
-    .style.display="none";
+/* =========================================================
+   CANDLES
+   ========================================================= */
 
-  document.getElementById("home")
-    .style.display="block";
+async function loadCandles(){
 
-  stopTicker();
-
-  if(chart){
-
-    try{
-      chart.remove();
-    }catch(e){}
-
-    chart = null;
-    candleSeries = null;
-    volumeSeries = null;
-  }
-}
-
-function updateDetail(){
-
-  if(!selectedAsset) return;
-
-  const symbol =
-    getSymbol(selectedAsset);
-
-  const name =
-    getName(selectedAsset);
-
-  const price =
-    getPrice(selectedAsset);
-
-  const change =
-    getChange(selectedAsset);
-
-  document.getElementById("detailSymbol")
-    .textContent=symbol;
-
-  document.getElementById("detailName")
-    .textContent=name;
-
-  document.getElementById("detailPrice")
-    .textContent=money(price);
-
-  const changeEl =
-    document.getElementById("detailChange");
-
-  changeEl.textContent =
-    (change>=0 ? "+" : "") +
-    change.toFixed(2) +
-    "% (24h)";
-
-  changeEl.className =
-    "detail-change " +
-    (change>=0
-      ? "change-up"
-      : "change-down");
-
-  document.getElementById("marketCap")
-    .textContent =
-    money(
-      selectedAsset.market_cap ??
-      selectedAsset.marketCap
-    );
-
-  document.getElementById("volume24")
-    .textContent =
-    money(
-      selectedAsset.total_volume ??
-      selectedAsset.volume_24h ??
-      selectedAsset.volume
-    );
-
-  document.getElementById("circulating")
-    .textContent =
-    numberFormat(
-      selectedAsset.circulating_supply ??
-      selectedAsset.circulatingSupply
-    );
-
-  document.getElementById("totalSupply")
-    .textContent =
-    numberFormat(
-      selectedAsset.total_supply ??
-      selectedAsset.totalSupply
-    );
-
-  document.getElementById("maxSupply")
-    .textContent =
-    numberFormat(
-      selectedAsset.max_supply ??
-      selectedAsset.maxSupply
-    );
-
-  document.getElementById("high24")
-    .textContent =
-    money(
-      selectedAsset.high_24h ??
-      selectedAsset.high24h
-    );
-
-  document.getElementById("low24")
-    .textContent =
-    money(
-      selectedAsset.low_24h ??
-      selectedAsset.low24h
-    );
-}
-
-async function loadMarketStats(){
-
-  if(!selectedAsset) return;
-
-  const symbol =
-    getSymbol(selectedAsset);
-
-  try{
-
-    const res = await fetch(
-      API +
-      "/api?action=trades&telegram_id=" +
-      encodeURIComponent(userId),
-      {
-        cache:"no-store"
-      }
-    );
-
-    if(!res.ok) return;
-
-    const data = await res.json();
-
-    const trades =
-      Array.isArray(data.trades)
-      ? data.trades
-      : [];
-
-    const coinTrades =
-      trades.filter(t=>
-        String(
-          t.symbol ??
-          t.asset_symbol ??
-          ""
-        ).toUpperCase() === symbol
-      );
-
-    let buyVolume=0;
-    let sellVolume=0;
-    let buyCount=0;
-    let sellCount=0;
-
-    coinTrades.forEach(t=>{
-
-      const side =
-        String(
-          t.side ??
-          t.type ??
-          ""
-        ).toLowerCase();
-
-      const amount =
-        Number(
-          t.amount ??
-          t.quantity ??
-          t.total ??
-          0
-        );
-
-      if(side === "buy"){
-
-        buyVolume += amount;
-        buyCount++;
-
-      }else if(side === "sell"){
-
-        sellVolume += amount;
-        sellCount++;
-      }
-
-    });
-
-    const total =
-      buyVolume + sellVolume;
-
-    const buyPercent =
-      total > 0
-      ? buyVolume/total*100
-      : 0;
-
-    const sellPercent =
-      total > 0
-      ? sellVolume/total*100
-      : 0;
-
-    document.getElementById("buyVolume")
-      .textContent=numberFormat(buyVolume);
-
-    document.getElementById("sellVolume")
-      .textContent=numberFormat(sellVolume);
-
-    document.getElementById("buyPercent")
-      .textContent=buyPercent.toFixed(1)+"%";
-
-    document.getElementById("sellPercent")
-      .textContent=sellPercent.toFixed(1)+"%";
-
-    document.getElementById("tradeCount")
-      .textContent =
-      coinTrades.length.toLocaleString("en-US");
-
-  }catch(e){
-
-    console.log("trade stats error",e);
-  }
-}
-
-function createChart(){
-
-  const container =
-    document.getElementById("chart");
-
-  container.innerHTML="";
-
-  if(
-    !window.LightweightCharts ||
-    !window.LightweightCharts.createChart
-  ){
-
-    container.innerHTML =
-      `<div class="empty">
-        نمودار بارگذاری نشد.
-      </div>`;
-
+  if(!selectedAsset){
     return;
   }
 
-  chart =
-    LightweightCharts.createChart(
-      container,
-      {
-        layout:{
-          background:{
-            type:"solid",
-            color:"#0b1927"
-          },
-          textColor:"#8fa5b7"
-        },
-
-        grid:{
-          vertLines:{
-            color:"#152a3c"
-          },
-          horzLines:{
-            color:"#152a3c"
-          }
-        },
-
-        rightPriceScale:{
-          borderColor:"#22384b"
-        },
-
-        timeScale:{
-          borderColor:"#22384b",
-          timeVisible:true,
-          secondsVisible:false
-        },
-
-        crosshair:{
-          mode:1
-        }
-      }
-    );
-
-  candleSeries =
-    chart.addCandlestickSeries({
-      upColor:"#19d3ae",
-      downColor:"#ff5964",
-      borderUpColor:"#19d3ae",
-      borderDownColor:"#ff5964",
-      wickUpColor:"#19d3ae",
-      wickDownColor:"#ff5964"
-    });
-
-  volumeSeries =
-    chart.addHistogramSeries({
-      priceFormat:{
-        type:"volume"
-      },
-      priceScaleId:"",
-      scaleMargins:{
-        top:0.8,
-        bottom:0
-      }
-    });
-
-  window.addEventListener(
-    "resize",
-    resizeChart
-  );
-
-  resizeChart();
-}
-
-function resizeChart(){
-
-  if(!chart) return;
-
-  const el =
-    document.getElementById("chart");
-
-  if(!el) return;
-
-  chart.resize(
-    el.clientWidth,
-    el.clientHeight
-  );
-}
-
-async function loadCandles(interval){
-
-  if(!selectedAsset ||
-     !candleSeries ||
-     !volumeSeries) return;
-
   const symbol =
-    getSymbol(selectedAsset);
+    String(
+      selectedAsset.symbol
+    ).toUpperCase();
 
-  document.getElementById("candleTimer")
-    .textContent="در حال دریافت...";
+
+  /*
+    AFC intentionally has no fake candles.
+  */
 
   if(symbol === "AFC"){
 
-    candleSeries.setData([]);
-    volumeSeries.setData([]);
+    candles = [];
 
-    document.getElementById("candleTimer")
-      .textContent="نمودار AFC فعلاً موجود نیست";
+    drawChart();
+
+    $("candleTimer")
+      .textContent =
+        "نمودار AFC هنوز فعال نیست";
+
+    stopCandleTimer();
 
     return;
   }
+
 
   try{
 
     const url =
-      API +
-      "/api/candles?symbol=" +
-      encodeURIComponent(symbol) +
+      "/api/candles" +
+      "?symbol=" +
+      encodeURIComponent(
+        symbol
+      ) +
       "&interval=" +
-      encodeURIComponent(interval);
-
-    const res =
-      await fetch(
-        url,
-        {
-          cache:"no-store"
-        }
+      encodeURIComponent(
+        currentInterval
       );
 
-    if(!res.ok)
-      throw new Error(
-        "candle HTTP "+res.status
-      );
 
     const data =
-      await res.json();
+      await api(url);
 
-    const candles =
+
+    candles =
       Array.isArray(data.candles)
-      ? data.candles
-      : Array.isArray(data.data)
-      ? data.data
-      : [];
+        ? data.candles
+        : [];
 
-    const clean =
-      candles
-      .filter(x=>
-        x &&
-        x.time &&
-        Number(x.open) > 0 &&
-        Number(x.high) > 0 &&
-        Number(x.low) > 0 &&
-        Number(x.close) > 0
-      )
-      .map(x=>({
 
-        time:Number(x.time),
+    drawChart();
 
-        open:Number(x.open),
-        high:Number(x.high),
-        low:Number(x.low),
-        close:Number(x.close)
+    startCandleTimer();
 
-      }))
-      .sort(
-        (a,b)=>a.time-b.time
-      );
+  }catch(error){
 
-    const volumes =
-      candles
-      .filter(x=>
-        x &&
-        x.time
-      )
-      .map(x=>({
+    candles = [];
 
-        time:Number(x.time),
+    drawChart();
 
-        value:Number(
-          x.volume || 0
-        ),
+    $("candleTimer")
+      .textContent =
+        "نمودار در دسترس نیست";
 
-        color:
-          Number(x.close) >= Number(x.open)
-          ? "rgba(25,211,174,0.35)"
-          : "rgba(255,89,100,0.35)"
-
-      }))
-      .sort(
-        (a,b)=>a.time-b.time
-      );
-
-    if(!clean.length){
-
-      candleSeries.setData([]);
-      volumeSeries.setData([]);
-
-      document.getElementById("candleTimer")
-        .textContent="اطلاعات کندل موجود نیست";
-
-      return;
-    }
-
-    candleSeries.setData(clean);
-    volumeSeries.setData(volumes);
-
-    chart.timeScale()
-      .fitContent();
-
-    updateTimer(interval);
-
-  }catch(err){
-
-    console.error(err);
-
-    candleSeries.setData([]);
-    volumeSeries.setData([]);
-
-    document.getElementById("candleTimer")
-      .textContent="خطا در دریافت کندل";
+    stopCandleTimer();
   }
 }
 
-function changeTF(tf,button){
 
-  currentTF=tf;
+/* =========================================================
+   CANDLE TIMER
+   ========================================================= */
 
-  document.querySelectorAll(".tf")
-    .forEach(x=>x.classList.remove("active"));
+function stopCandleTimer(){
 
-  button.classList.add("active");
+  if(
+    candleTimerInterval
+  ){
 
-  loadCandles(tf);
+    clearInterval(
+      candleTimerInterval
+    );
+
+    candleTimerInterval =
+      null;
+  }
 }
 
-function updateTimer(interval){
 
-  const map={
-    "5m":300,
-    "1h":3600,
-    "4h":14400,
-    "24h":86400,
-    "7d":604800,
-    "30d":2592000
-  };
+function startCandleTimer(){
+
+  stopCandleTimer();
+
+  if(
+    !candles.length
+  ){
+
+    $("candleTimer")
+      .textContent =
+        "--";
+
+    return;
+  }
+
+
+  candleTimerInterval =
+    setInterval(
+      updateCandleTimer,
+      1000
+    );
+
+  updateCandleTimer();
+}
+
+
+function updateCandleTimer(){
+
+  if(
+    !candles.length
+  ){
+    return;
+  }
+
+  const last =
+    candles[
+      candles.length - 1
+    ];
+
+
+  let openTime =
+    Number(
+      last.time ||
+      last.openTime ||
+      0
+    );
+
+
+  if(
+    openTime &&
+    openTime < 100000000000
+  ){
+    openTime *= 1000;
+  }
+
+
+  let duration =
+    5 * 60 * 1000;
+
+
+  if(currentInterval === "1h"){
+    duration =
+      60 * 60 * 1000;
+  }
+
+  if(currentInterval === "4h"){
+    duration =
+      4 * 60 * 60 * 1000;
+  }
+
+  if(currentInterval === "24h"){
+    duration =
+      24 * 60 * 60 * 1000;
+  }
+
+  if(currentInterval === "7d"){
+    duration =
+      7 * 24 * 60 * 60 * 1000;
+  }
+
+  if(currentInterval === "30d"){
+    duration =
+      24 * 60 * 60 * 1000;
+  }
+
+
+  const now =
+    Date.now();
+
+  const next =
+    openTime +
+    duration;
+
+  const remaining =
+    Math.max(
+      0,
+      next - now
+    );
+
 
   const seconds =
-    map[interval] || 300;
+    Math.floor(
+      remaining / 1000
+    );
 
-  function tick(){
 
-    const now =
-      Math.floor(Date.now()/1000);
+  const h =
+    Math.floor(
+      seconds / 3600
+    );
 
-    const remain =
-      seconds -
-      (now % seconds);
 
-    const h =
-      Math.floor(remain/3600);
+  const m =
+    Math.floor(
+      (seconds % 3600) / 60
+    );
 
-    const m =
-      Math.floor(
-        (remain%3600)/60
-      );
 
-    const s =
-      remain%60;
+  const s =
+    seconds % 60;
 
-    let txt="";
 
-    if(h>0)
-      txt += h+"h ";
-
-    txt +=
+  $("candleTimer")
+    .textContent =
+      "کندل بعدی: " +
+      String(h).padStart(2,"0") +
+      ":" +
       String(m).padStart(2,"0") +
       ":" +
       String(s).padStart(2,"0");
-
-    const el =
-      document.getElementById(
-        "candleTimer"
-      );
-
-    if(el)
-      el.textContent =
-        "کندل بعدی: "+txt;
-  }
-
-  tick();
-
-  clearInterval(
-    window.candleTimerInterval
-  );
-
-  window.candleTimerInterval =
-    setInterval(tick,1000);
 }
 
-let tickerInterval=null;
 
-function startTicker(){
+/* =========================================================
+   DRAW CHART
+   ========================================================= */
 
-  stopTicker();
+function drawChart(){
+
+  const canvas =
+    $("chart");
+
+  const ctx =
+    canvas.getContext("2d");
+
+
+  const width =
+    canvas.clientWidth;
+
+  const height =
+    canvas.clientHeight;
+
+
+  const ratio =
+    window.devicePixelRatio ||
+    1;
+
+
+  canvas.width =
+    width * ratio;
+
+  canvas.height =
+    height * ratio;
+
+  ctx.setTransform(
+    ratio,
+    0,
+    0,
+    ratio,
+    0,
+    0
+  );
+
+
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  if(!candles.length){
+
+    ctx.fillStyle =
+      "#71879d";
+
+    ctx.font =
+      "13px Arial";
+
+    ctx.textAlign =
+      "center";
+
+    ctx.fillText(
+      selectedAsset &&
+      selectedAsset.symbol === "AFC"
+        ? "نمودار AFC هنوز فعال نیست"
+        : "داده نمودار موجود نیست",
+      width / 2,
+      height / 2
+    );
+
+    return;
+  }
+
+
+  const prices =
+    candles.flatMap(
+      c => [
+        Number(c.high || c.h || 0),
+        Number(c.low || c.l || 0)
+      ]
+    ).filter(
+      x =>
+        Number.isFinite(x) &&
+        x > 0
+    );
+
+
+  if(!prices.length){
+    return;
+  }
+
+
+  const max =
+    Math.max(...prices);
+
+  const min =
+    Math.min(...prices);
+
+
+  const volumeValues =
+    candles.map(
+      c =>
+        Number(
+          c.volume ||
+          c.v ||
+          0
+        )
+    );
+
+
+  const maxVolume =
+    Math.max(
+      ...volumeValues,
+      1
+    );
+
+
+  const chartHeight =
+    height * .73;
+
+  const volumeTop =
+    height * .78;
+
+  const left =
+    8;
+
+  const right =
+    width - 8;
+
+  const top =
+    10;
+
+  const bottom =
+    chartHeight - 5;
+
+
+  /* GRID */
+
+  ctx.strokeStyle =
+    "#17283a";
+
+  ctx.lineWidth =
+    1;
+
+
+  for(
+    let i=0;
+    i<=5;
+    i++
+  ){
+
+    const y =
+      top +
+      (
+        (bottom - top)
+        * i / 5
+      );
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      left,
+      y
+    );
+
+    ctx.lineTo(
+      right,
+      y
+    );
+
+    ctx.stroke();
+  }
+
+
+  const range =
+    max - min || 1;
+
+
+  const candleWidth =
+    Math.max(
+      2,
+      (
+        right - left
+      ) /
+      candles.length *
+      .65
+    );
+
+
+  const step =
+    (
+      right - left
+    ) /
+    candles.length;
+
+
+  candles.forEach(
+    (c,index) => {
+
+      const open =
+        Number(
+          c.open ||
+          c.o ||
+          0
+        );
+
+      const close =
+        Number(
+          c.close ||
+          c.c ||
+          0
+        );
+
+      const high =
+        Number(
+          c.high ||
+          c.h ||
+          Math.max(
+            open,
+            close
+          )
+        );
+
+      const low =
+        Number(
+          c.low ||
+          c.l ||
+          Math.min(
+            open,
+            close
+          )
+        );
+
+
+      if(
+        !open ||
+        !close ||
+        !high ||
+        !low
+      ){
+        return;
+      }
+
+
+      const x =
+        left +
+        step * index +
+        step / 2;
+
+
+      const yOpen =
+        bottom -
+        (
+          (open - min) /
+          range
+        ) *
+        (
+          bottom - top
+        );
+
+
+      const yClose =
+        bottom -
+        (
+          (close - min) /
+          range
+        ) *
+        (
+          bottom - top
+        );
+
+
+      const yHigh =
+        bottom -
+        (
+          (high - min) /
+          range
+        ) *
+        (
+          bottom - top
+        );
+
+
+      const yLow =
+        bottom -
+        (
+          (low - min) /
+          range
+        ) *
+        (
+          bottom - top
+        );
+
+
+      const up =
+        close >= open;
+
+
+      ctx.strokeStyle =
+        up
+          ? "#22c55e"
+          : "#ef4444";
+
+      ctx.fillStyle =
+        up
+          ? "#22c55e"
+          : "#ef4444";
+
+
+      /* WICK */
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        x,
+        yHigh
+      );
+
+      ctx.lineTo(
+        x,
+        yLow
+      );
+
+      ctx.stroke();
+
+
+      /* BODY */
+
+      const bodyTop =
+        Math.min(
+          yOpen,
+          yClose
+        );
+
+      const bodyHeight =
+        Math.max(
+          1,
+          Math.abs(
+            yClose -
+            yOpen
+          )
+        );
+
+
+      ctx.fillRect(
+        x -
+        candleWidth / 2,
+        bodyTop,
+        candleWidth,
+        bodyHeight
+      );
+
+
+      /* VOLUME */
+
+      const volume =
+        volumeValues[index] ||
+        0;
+
+
+      const vh =
+        (
+          volume /
+          maxVolume
+        ) *
+        (
+          height -
+          volumeTop -
+          4
+        );
+
+
+      ctx.globalAlpha =
+        .35;
+
+      ctx.fillRect(
+        x -
+        candleWidth / 2,
+        height -
+        vh,
+        candleWidth,
+        vh
+      );
+
+      ctx.globalAlpha =
+        1;
+    }
+  );
+
+
+  /* PRICE LABELS */
+
+  ctx.fillStyle =
+    "#71879d";
+
+  ctx.font =
+    "9px Arial";
+
+  ctx.textAlign =
+    "left";
+
+
+  for(
+    let i=0;
+    i<=4;
+    i++
+  ){
+
+    const value =
+      max -
+      (
+        range *
+        i / 4
+      );
+
+
+    const y =
+      top +
+      (
+        (bottom - top)
+        * i / 4
+      );
+
+
+    ctx.fillText(
+      priceFormat(value),
+      10,
+      y + 3
+    );
+  }
+}
+
+
+/* =========================================================
+   TRADE
+   ========================================================= */
+
+async function trade(
+  side
+){
+
+  if(!selectedAsset){
+
+    alert(
+      "ابتدا یک ارز را انتخاب کنید."
+    );
+
+    return;
+  }
+
+
+  const amountValue =
+    Number(
+      $("tradeAmount").value
+    );
+
+
+  if(
+    !Number.isFinite(
+      amountValue
+    ) ||
+    amountValue <= 0
+  ){
+
+    alert(
+      "مقدار معتبر وارد کنید."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const response =
+      await api(
+        "/api?action=" +
+        side,
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              telegram_id:
+                getTelegramId(),
+
+              symbol:
+                selectedAsset.symbol,
+
+              amount:
+                amountValue
+            })
+        }
+      );
+
+
+    if(response.success){
+
+      alert(
+        side === "buy"
+          ? "خرید با موفقیت انجام شد."
+          : "فروش با موفقیت انجام شد."
+      );
+
+      $("tradeAmount")
+        .value = "";
+
+      await loadMarkets();
+
+    }else{
+
+      alert(
+        response.error ||
+        "عملیات انجام نشد."
+      );
+    }
+
+  }catch(error){
+
+    alert(
+      error.message
+    );
+  }
+}
+
+
+/* =========================================================
+   TELEGRAM USER
+   ========================================================= */
+
+function getTelegramId(){
+
+  try{
+
+    if(
+      window.Telegram &&
+      Telegram.WebApp &&
+      Telegram.WebApp.initDataUnsafe &&
+      Telegram.WebApp.initDataUnsafe.user
+    ){
+
+      return String(
+        Telegram
+          .WebApp
+          .initDataUnsafe
+          .user
+          .id
+      );
+    }
+
+  }catch(e){}
+
+
+  return "123456789";
+}
+
+
+/* =========================================================
+   TELEGRAM INIT
+   ========================================================= */
+
+function initTelegram(){
+
+  try{
+
+    if(
+      window.Telegram &&
+      Telegram.WebApp
+    ){
+
+      Telegram.WebApp.ready();
+
+      Telegram.WebApp.expand();
+    }
+
+  }catch(error){
+
+    console.log(
+      "Telegram WebApp:",
+      error
+    );
+  }
+}
+
+
+/* =========================================================
+   LIVE TICKER
+   ========================================================= */
+
+function startLiveUpdates(){
+
+  if(marketRefreshInterval){
+    clearInterval(
+      marketRefreshInterval
+    );
+  }
+
+  marketRefreshInterval =
+    setInterval(
+      loadMarkets,
+      30000
+    );
+
+
+  if(tickerInterval){
+    clearInterval(
+      tickerInterval
+    );
+  }
 
   tickerInterval =
     setInterval(
-      async()=>{
-        await loadMarkets();
+      async () => {
 
-        if(selectedAsset){
+        if(
+          selectedAsset
+        ){
 
-          const fresh =
-            markets.find(
-              x=>
-              getSymbol(x) ===
-              getSymbol(selectedAsset)
-            );
+          try{
 
-          if(fresh){
+            const data =
+              await api(
+                "/api?action=markets"
+              );
 
-            selectedAsset=fresh;
+            const updated =
+              data.markets
+                ?.find(
+                  m =>
+                    String(
+                      m.symbol
+                    ).toUpperCase()
+                    ===
+                    String(
+                      selectedAsset.symbol
+                    ).toUpperCase()
+                );
 
-            updateDetail();
-          }
+            if(updated){
+
+              selectedAsset =
+                updated;
+
+              updateDetail();
+            }
+
+          }catch(e){}
+
         }
 
       },
@@ -1505,190 +2659,45 @@ function startTicker(){
     );
 }
 
-function stopTicker(){
 
-  if(tickerInterval){
+/* =========================================================
+   RESIZE
+   ========================================================= */
 
-    clearInterval(
-      tickerInterval
-    );
+window.addEventListener(
+  "resize",
+  () => {
 
-    tickerInterval=null;
-  }
-}
+    if(
+      $("detail")
+        .classList
+        .contains("show")
+    ){
 
-async function buyAsset(){
-
-  if(!selectedAsset) return;
-
-  const symbol =
-    getSymbol(selectedAsset);
-
-  const price =
-    getPrice(selectedAsset);
-
-  const amount =
-    prompt(
-      "مقدار "+symbol+" برای خرید را وارد کنید:"
-    );
-
-  if(!amount) return;
-
-  const qty =
-    Number(amount);
-
-  if(!isFinite(qty) || qty<=0){
-
-    alert("مقدار نادرست است.");
-    return;
-  }
-
-  try{
-
-    const res =
-      await fetch(
-        API+"/api?action=buy",
-        {
-          method:"POST",
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:JSON.stringify({
-
-            telegram_id:userId,
-            symbol:symbol,
-            amount:qty,
-            price:price
-
-          })
-        }
-      );
-
-    const data =
-      await res.json();
-
-    if(!res.ok ||
-       data.success === false){
-
-      alert(
-        data.message ||
-        "خرید انجام نشد."
-      );
-
-      return;
+      drawChart();
     }
-
-    alert("خرید با موفقیت انجام شد.");
-
-    await loadUser();
-    await loadMarketStats();
-
-  }catch(e){
-
-    alert(
-      "خطا در اتصال به سرور."
-    );
   }
-}
+);
 
-async function sellAsset(){
 
-  if(!selectedAsset) return;
+/* =========================================================
+   START
+   ========================================================= */
 
-  const symbol =
-    getSymbol(selectedAsset);
+async function start(){
 
-  const price =
-    getPrice(selectedAsset);
-
-  const amount =
-    prompt(
-      "مقدار "+symbol+" برای فروش را وارد کنید:"
-    );
-
-  if(!amount) return;
-
-  const qty =
-    Number(amount);
-
-  if(!isFinite(qty) || qty<=0){
-
-    alert("مقدار نادرست است.");
-    return;
-  }
-
-  try{
-
-    const res =
-      await fetch(
-        API+"/api?action=sell",
-        {
-          method:"POST",
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:JSON.stringify({
-
-            telegram_id:userId,
-            symbol:symbol,
-            amount:qty,
-            price:price
-
-          })
-        }
-      );
-
-    const data =
-      await res.json();
-
-    if(!res.ok ||
-       data.success === false){
-
-      alert(
-        data.message ||
-        "فروش انجام نشد."
-      );
-
-      return;
-    }
-
-    alert("فروش با موفقیت انجام شد.");
-
-    await loadUser();
-    await loadMarketStats();
-
-  }catch(e){
-
-    alert(
-      "خطا در اتصال به سرور."
-    );
-  }
-}
-
-async function init(){
+  initTelegram();
 
   await Promise.all([
     loadMarkets(),
-    loadGold(),
-    loadUser()
+    loadGold()
   ]);
+
+  startLiveUpdates();
 }
 
-init();
 
-setInterval(
-  loadGold,
-  30000
-);
-
-setInterval(
-  loadUser,
-  15000
-);
+start();
 
 </script>
 
