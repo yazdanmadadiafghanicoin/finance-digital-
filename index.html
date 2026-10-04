@@ -2,8 +2,8 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#0b1220">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
 
 <title>Digital Finance</title>
 
@@ -15,487 +15,428 @@
 body{
   margin:0;
   font-family:Arial,Tahoma,sans-serif;
-  background:linear-gradient(135deg,#07111f,#10233b,#07111f);
+  background:#07111f;
   color:#fff;
-  min-height:100vh;
 }
 
-.container{
-  width:100%;
-  max-width:520px;
-  margin:auto;
-  padding:18px;
-  padding-bottom:100px;
+button,input{
+  font-family:inherit;
 }
 
 .header{
-  text-align:center;
-  padding:15px 0 20px;
+  padding:22px 18px;
+  background:linear-gradient(135deg,#0c1d32,#07111f);
+  border-bottom:1px solid #20344d;
 }
 
 .logo{
-  width:70px;
-  height:70px;
-  border-radius:20px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#d4af37,#f7d774);
-  color:#111;
-  font-size:30px;
-  font-weight:bold;
-  box-shadow:0 8px 30px rgba(212,175,55,.25);
-}
-
-.header h1{
-  margin:12px 0 4px;
   font-size:25px;
+  font-weight:bold;
 }
 
-.header p{
-  margin:0;
-  color:#9eabbc;
-  font-size:14px;
+.subtitle{
+  color:#8fa5bd;
+  margin-top:6px;
+  font-size:13px;
+}
+
+.container{
+  padding:15px;
+  padding-bottom:90px;
 }
 
 .card{
-  background:rgba(18,30,48,.92);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:20px;
-  padding:18px;
+  background:linear-gradient(145deg,#10243a,#0b1a2c);
+  border:1px solid #203b57;
+  border-radius:18px;
+  padding:17px;
   margin-bottom:15px;
-  box-shadow:0 10px 35px rgba(0,0,0,.2);
-}
-
-.balance-title{
-  color:#9eabbc;
-  font-size:14px;
-}
-
-.balance{
-  font-size:35px;
-  font-weight:bold;
-  margin-top:7px;
-}
-
-.balance small{
-  font-size:15px;
-  color:#d4af37;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.stat{
-  background:#101d30;
-  padding:15px;
-  border-radius:15px;
-}
-
-.stat span{
-  display:block;
-  color:#8f9bad;
-  font-size:12px;
-  margin-bottom:6px;
-}
-
-.stat strong{
-  font-size:18px;
+  box-shadow:0 8px 25px rgba(0,0,0,.2);
 }
 
 .section-title{
-  font-size:18px;
-  margin:4px 0 15px;
-}
-
-.price{
-  font-size:28px;
+  font-size:19px;
   font-weight:bold;
-  color:#f2cc65;
+  margin-bottom:14px;
 }
 
-.green{
-  color:#31d17c;
+.gold-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.red{
-  color:#ff6262;
+.gold-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.gold-icon{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(145deg,#ffd84d,#b98200);
+  color:#281d00;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.gold-name{
+  font-weight:bold;
+  font-size:16px;
+}
+
+.small{
+  color:#8fa5bd;
+  font-size:12px;
+  margin-top:5px;
+}
+
+.gold-price{
+  color:#ffd84d;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.search{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #29435f;
+  outline:none;
+  background:#071522;
+  color:#fff;
+  font-size:15px;
+  margin-bottom:14px;
 }
 
 .market{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  padding:13px 0;
-  border-bottom:1px solid rgba(255,255,255,.07);
+  justify-content:space-between;
+  gap:10px;
+  padding:14px 0;
+  border-bottom:1px solid #1d3248;
 }
 
 .market:last-child{
-  border-bottom:0;
+  border-bottom:none;
 }
 
-.market-left{
+.coin-left{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
+  min-width:0;
 }
 
-.coin{
-  width:40px;
-  height:40px;
+.coin-icon{
+  width:43px;
+  height:43px;
   border-radius:50%;
-  background:#182a42;
+  background:#172d45;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:12px;
   font-weight:bold;
+  color:#dcecff;
+  border:1px solid #31516e;
 }
 
-.market-name{
-  font-weight:bold;
+.coin-info{
+  min-width:0;
 }
 
-.market-sub{
+.symbol{
+  font-weight:bold;
+  font-size:15px;
+}
+
+.name{
+  color:#8198af;
   font-size:11px;
-  color:#8290a3;
-  margin-top:3px;
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:145px;
 }
 
-.market-price{
+.coin-right{
   text-align:left;
 }
 
-.market-price div{
+.price{
   font-weight:bold;
-}
-
-.market-price small{
-  font-size:11px;
-}
-
-button{
-  width:100%;
-  border:0;
-  border-radius:14px;
-  padding:14px;
   font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
 }
 
-.primary{
-  background:linear-gradient(135deg,#d4af37,#f4d36e);
-  color:#111;
+.afn{
+  color:#7e95ad;
+  font-size:11px;
+  margin-top:4px;
 }
 
-.secondary{
-  background:#1b2b42;
+.afc{
+  border:1px solid #008f5a;
+  background:linear-gradient(145deg,#073d2c,#08271f);
+}
+
+.afc .coin-icon{
+  background:linear-gradient(145deg,#078b59,#023d29);
+  border-color:#16b778;
   color:#fff;
 }
 
-button:active{
+.status{
+  text-align:center;
+  padding:15px;
+  color:#8fa5bd;
+}
+
+.error{
+  color:#ff7272;
+  text-align:center;
+  padding:15px;
+}
+
+.refresh{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:13px;
+  background:#1769aa;
+  color:white;
+  font-size:15px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.refresh:active{
   transform:scale(.98);
 }
 
-.form{
-  display:none;
-}
-
-input{
-  width:100%;
-  padding:14px;
-  border:1px solid #263951;
-  background:#0b1626;
-  color:#fff;
-  border-radius:12px;
-  margin-bottom:10px;
-  outline:none;
-}
-
-.nav{
+.bottom{
   position:fixed;
   bottom:0;
   left:0;
   right:0;
-  max-width:520px;
-  margin:auto;
-  height:72px;
-  background:rgba(7,17,31,.97);
-  border-top:1px solid rgba(255,255,255,.08);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
+  height:68px;
+  background:#091726;
+  border-top:1px solid #20364d;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
   z-index:10;
 }
 
-.nav button{
+.nav{
+  border:0;
   background:none;
-  color:#7e8da1;
-  border-radius:0;
-  padding:8px 2px;
-  font-size:11px;
+  color:#7f96ae;
+  font-size:12px;
 }
 
-.nav button.active{
-  color:#f0cd69;
+.nav.active{
+  color:#36a8ff;
 }
 
 .nav-icon{
   display:block;
-  font-size:20px;
+  font-size:22px;
   margin-bottom:3px;
 }
 
-.page{
+.hidden{
   display:none;
 }
 
-.page.active{
-  display:block;
+.count{
+  background:#193552;
+  color:#9fc8ed;
+  border-radius:20px;
+  padding:4px 9px;
+  font-size:11px;
 }
 
-.notice{
-  padding:12px;
-  border-radius:12px;
-  background:#17263a;
-  color:#aeb9c8;
-  font-size:12px;
-  line-height:1.8;
+.top-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.empty{
+  text-align:center;
+  padding:35px 10px;
+  color:#71879d;
 }
 
 .loading{
   text-align:center;
-  color:#8d9aad;
-  padding:20px;
-}
-
-.error{
-  color:#ff7777;
-  font-size:13px;
-  text-align:center;
-  padding:10px;
+  padding:25px;
+  color:#8fa5bd;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
 <header class="header">
-  <div class="logo">DF</div>
-  <h1>Digital Finance</h1>
-  <p>پلتفرم مالی دیجیتال</p>
+  <div class="logo">Digital Finance</div>
+  <div class="subtitle">بازار دارایی‌های دیجیتال و طلا</div>
 </header>
 
-<!-- HOME -->
-<div id="home" class="page active">
+<div class="container">
 
-  <div class="card">
-    <div class="balance-title">موجودی حساب</div>
-    <div class="balance">
-      <span id="balance">0</span>
-      <small>AFN</small>
-    </div>
-  </div>
+  <!-- HOME -->
+  <section id="homePage">
 
-  <div class="grid">
+    <div class="card">
+      <div class="top-row">
+        <div class="section-title" style="margin:0">
+          قیمت طلا
+        </div>
+        <span class="count">24K</span>
+      </div>
 
-    <div class="stat">
-      <span>ارزش طلا</span>
-      <strong id="goldPrice">0</strong>
-    </div>
+      <div class="gold-card">
+        <div class="gold-left">
+          <div class="gold-icon">Au</div>
 
-    <div class="stat">
-      <span>ارز فعال</span>
-      <strong id="marketCount">0</strong>
-    </div>
+          <div>
+            <div class="gold-name">طلای ۲۴ عیار</div>
+            <div class="small">هر گرم</div>
+          </div>
+        </div>
 
-  </div>
+        <div>
+          <div id="goldPrice" class="gold-price">
+            در حال دریافت...
+          </div>
 
-  <br>
-
-  <div class="card">
-
-    <div class="section-title">
-      بازارها
-    </div>
-
-    <div id="markets">
-      <div class="loading">در حال دریافت بازارها...</div>
+          <div class="small" style="text-align:left">
+            AFN
+          </div>
+        </div>
+      </div>
     </div>
 
-  </div>
+
+    <div class="card">
+
+      <div class="top-row">
+        <div class="section-title" style="margin:0">
+          بازارها
+        </div>
+
+        <span id="marketCount" class="count">
+          0
+        </span>
+      </div>
+
+      <input
+        id="search"
+        class="search"
+        type="text"
+        placeholder="جستجوی ارز..."
+        oninput="filterMarkets()"
+      >
+
+      <div id="markets">
+        <div class="loading">
+          در حال دریافت بازارها...
+        </div>
+      </div>
+
+      <button
+        class="refresh"
+        onclick="loadAll()"
+      >
+        🔄 بروزرسانی
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- WALLET -->
+  <section id="walletPage" class="hidden">
+
+    <div class="card">
+      <div class="section-title">
+        کیف پول
+      </div>
+
+      <div class="empty">
+        کیف پول دیجیتال شما
+        <br><br>
+        در مرحله بعد خرید، فروش و موجودی واقعی را اضافه می‌کنیم.
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- PROFILE -->
+  <section id="profilePage" class="hidden">
+
+    <div class="card">
+      <div class="section-title">
+        حساب کاربری
+      </div>
+
+      <div class="small">
+        Digital Finance
+      </div>
+
+      <div style="margin-top:15px">
+        وضعیت حساب:
+        <b style="color:#36a8ff">
+          فعال
+        </b>
+      </div>
+    </div>
+
+  </section>
 
 </div>
 
 
-<!-- WALLET -->
-<div id="wallet" class="page">
+<!-- BOTTOM NAV -->
+<div class="bottom">
 
-  <div class="card">
-
-    <div class="section-title">
-      کیف پول
-    </div>
-
-    <div class="balance-title">
-      موجودی فعلی
-    </div>
-
-    <div class="balance">
-      <span id="walletBalance">0</span>
-      <small>AFN</small>
-    </div>
-
-    <br>
-
-    <button class="primary" onclick="showDeposit()">
-      💰 شارژ حساب
-    </button>
-
-    <br><br>
-
-    <button class="secondary" onclick="showWithdraw()">
-      💸 برداشت
-    </button>
-
-  </div>
-
-  <div id="depositBox" class="card form">
-
-    <div class="section-title">
-      شارژ حساب
-    </div>
-
-    <input id="depositAmount"
-           type="number"
-           placeholder="مبلغ به AFN">
-
-    <button class="primary" onclick="deposit()">
-      ادامه
-    </button>
-
-  </div>
-
-  <div id="withdrawBox" class="card form">
-
-    <div class="section-title">
-      برداشت
-    </div>
-
-    <input id="withdrawAmount"
-           type="number"
-           placeholder="مبلغ به AFN">
-
-    <input id="withdrawWallet"
-           placeholder="آدرس کیف پول">
-
-    <button class="primary" onclick="withdraw()">
-      درخواست برداشت
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- PROFILE -->
-<div id="profile" class="page">
-
-  <div class="card">
-
-    <div class="section-title">
-      حساب من
-    </div>
-
-    <div class="stat">
-      <span>شناسه کاربر</span>
-      <strong id="userId">---</strong>
-    </div>
-
-    <br>
-
-    <div class="stat">
-      <span>موجودی</span>
-      <strong>
-        <span id="profileBalance">0</span> AFN
-      </strong>
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="section-title">
-      امنیت
-    </div>
-
-    <div class="notice">
-      اطلاعات حساب خود را در اختیار افراد دیگر قرار ندهید.
-      Digital Finance هیچ‌گاه رمز عبور یا کلید خصوصی کیف پول شما را درخواست نمی‌کند.
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- SETTINGS -->
-<div id="settings" class="page">
-
-  <div class="card">
-
-    <div class="section-title">
-      تنظیمات
-    </div>
-
-    <button class="secondary" onclick="location.reload()">
-      🔄 تازه‌سازی اطلاعات
-    </button>
-
-    <br><br>
-
-    <button class="secondary" onclick="alert('Digital Finance')">
-      ℹ️ درباره برنامه
-    </button>
-
-  </div>
-
-</div>
-
-</div>
-
-
-<!-- NAVIGATION -->
-
-<nav class="nav">
-
-  <button class="active"
-          onclick="openPage('home',this)">
-    <span class="nav-icon">🏠</span>
-    خانه
+  <button
+    class="nav active"
+    onclick="showPage('homePage',this)"
+  >
+    <span class="nav-icon">📊</span>
+    بازار
   </button>
 
-  <button onclick="openPage('wallet',this)">
+  <button
+    class="nav"
+    onclick="showPage('walletPage',this)"
+  >
     <span class="nav-icon">💰</span>
     کیف پول
   </button>
 
-  <button onclick="openPage('profile',this)">
+  <button
+    class="nav"
+    onclick="showPage('profilePage',this)"
+  >
     <span class="nav-icon">👤</span>
     حساب
   </button>
 
-  <button onclick="openPage('settings',this)">
-    <span class="nav-icon">⚙️</span>
-    تنظیمات
-  </button>
-
-</nav>
+</div>
 
 
 <script>
@@ -503,403 +444,330 @@ input{
 const API_BASE =
   "https://finance-digital-eta.vercel.app";
 
-
-/* -------------------------
-   Navigation
-------------------------- */
-
-function openPage(page,button){
-
-  document.querySelectorAll(".page")
-    .forEach(p => p.classList.remove("active"));
-
-  document.getElementById(page)
-    .classList.add("active");
-
-  document.querySelectorAll(".nav button")
-    .forEach(b => b.classList.remove("active"));
-
-  button.classList.add("active");
-
-}
+let markets = [];
 
 
-/* -------------------------
-   API helper
-------------------------- */
-
-async function api(url,options={}){
+// =====================================
+// API
+// =====================================
+async function api(url, options = {}) {
 
   const response =
-    await fetch(API_BASE + url,{
-      ...options,
-      headers:{
-        "Content-Type":"application/json",
-        ...(options.headers || {})
-      }
-    });
+    await fetch(API_BASE + url, options);
 
-  if(!response.ok){
+  const data =
+    await response.json();
+
+  if (!response.ok) {
     throw new Error(
-      "HTTP " + response.status
+      data.error || "API Error"
     );
   }
 
-  return await response.json();
-
+  return data;
 }
 
 
-/* -------------------------
-   Load markets
-------------------------- */
-
-async function loadMarkets(){
+// =====================================
+// LOAD MARKETS
+// =====================================
+async function loadMarkets() {
 
   const box =
     document.getElementById("markets");
 
-  try{
+  try {
 
+    box.innerHTML =
+      '<div class="loading">در حال دریافت بازارها...</div>';
+
+    /*
+      مهم:
+      Backend تو از action=markets استفاده می‌کند.
+    */
     const data =
-      await api("/api/markets");
+      await api("/api?action=markets");
 
-    if(!data.success){
-
-      box.innerHTML =
-        '<div class="error">بازارها دریافت نشد</div>';
-
-      return;
+    if (
+      !data.success ||
+      !Array.isArray(data.markets)
+    ) {
+      throw new Error("بازارها دریافت نشد");
     }
 
-    const markets =
-      data.markets || [];
+    markets =
+      data.markets;
 
-    document.getElementById("marketCount")
-      .innerText = markets.length;
+    document.getElementById(
+      "marketCount"
+    ).textContent =
+      markets.length;
 
-    if(markets.length === 0){
+    renderMarkets(markets);
 
-      box.innerHTML =
-        '<div class="loading">بازاری وجود ندارد</div>';
+  } catch (error) {
 
-      return;
-    }
+    console.error(error);
 
-    box.innerHTML = "";
+    box.innerHTML = `
+      <div class="error">
+        ❌ دریافت بازارها ناموفق بود
+        <br>
+        <small>${error.message}</small>
+      </div>
+    `;
+  }
+}
 
-    markets.forEach(m => {
 
-      const item =
-        document.createElement("div");
+// =====================================
+// RENDER MARKETS
+// =====================================
+function renderMarkets(list) {
 
-      item.className = "market";
+  const box =
+    document.getElementById("markets");
+
+  if (!list.length) {
+
+    box.innerHTML = `
+      <div class="empty">
+        بازاری وجود ندارد
+      </div>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    list.map(asset => {
+
+      const symbol =
+        String(asset.symbol || "");
+
+      const name =
+        String(asset.name || "");
 
       const price =
-        Number(m.price || 0);
+        Number(asset.price || 0);
 
-      item.innerHTML = `
-        <div class="market-left">
+      const isAFC =
+        symbol.toUpperCase() === "AFC";
 
-          <div class="coin">
-            ${String(m.symbol || "?").slice(0,3)}
-          </div>
+      let formatted;
 
-          <div>
-            <div class="market-name">
-              ${escapeHTML(m.name || m.symbol || "Unknown")}
+      if (price < 0.001) {
+
+        formatted =
+          price.toFixed(8);
+
+      } else if (price < 1) {
+
+        formatted =
+          price.toFixed(4);
+
+      } else {
+
+        formatted =
+          price.toLocaleString(
+            "en-US",
+            {
+              maximumFractionDigits: 4
+            }
+          );
+      }
+
+      return `
+        <div
+          class="market ${isAFC ? "afc" : ""}"
+          data-symbol="${symbol.toLowerCase()}"
+          data-name="${name.toLowerCase()}"
+        >
+
+          <div class="coin-left">
+
+            <div class="coin-icon">
+              ${symbol.substring(0,6)}
             </div>
 
-            <div class="market-sub">
-              ${escapeHTML(m.symbol || "")}
+            <div class="coin-info">
+
+              <div class="symbol">
+                ${symbol}
+              </div>
+
+              <div class="name">
+                ${name}
+              </div>
+
             </div>
+
           </div>
 
-        </div>
+          <div class="coin-right">
 
-        <div class="market-price">
+            <div class="price">
+              ${formatted}
+            </div>
 
-          <div>
-            ${formatNumber(price)}
+            <div class="afn">
+              USD
+            </div>
+
           </div>
-
-          <small class="green">
-            فعال
-          </small>
 
         </div>
       `;
 
-      box.appendChild(item);
+    }).join("");
+}
 
+
+// =====================================
+// SEARCH
+// =====================================
+function filterMarkets() {
+
+  const value =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+  if (!value) {
+
+    renderMarkets(markets);
+
+    return;
+  }
+
+  const filtered =
+    markets.filter(asset => {
+
+      const symbol =
+        String(asset.symbol || "")
+          .toLowerCase();
+
+      const name =
+        String(asset.name || "")
+          .toLowerCase();
+
+      return (
+        symbol.includes(value) ||
+        name.includes(value)
+      );
     });
 
-  }catch(error){
+  renderMarkets(filtered);
+}
+
+
+// =====================================
+// GOLD
+// =====================================
+async function loadGold() {
+
+  const element =
+    document.getElementById("goldPrice");
+
+  try {
+
+    const data =
+      await api("/api?action=gold");
+
+    if (
+      !data.success
+    ) {
+      throw new Error(
+        "قیمت طلا دریافت نشد"
+      );
+    }
+
+    const price =
+      Number(data.price || 0);
+
+    element.textContent =
+      price.toLocaleString(
+        "fa-IR"
+      );
+
+  } catch (error) {
 
     console.error(error);
 
-    box.innerHTML =
-      '<div class="error">خطا در اتصال به سرور</div>';
-
+    element.textContent =
+      "خطا";
   }
-
 }
 
 
-/* -------------------------
-   Load gold
-------------------------- */
-
-async function loadGold(){
-
-  try{
-
-    const data =
-      await api("/api/gold");
-
-    if(data.success){
-
-      document.getElementById("goldPrice")
-        .innerText =
-        formatNumber(
-          Number(data.price || 0)
-        );
-
-    }
-
-  }catch(error){
-
-    console.log("Gold API:",error);
-
-  }
-
-}
-
-
-/* -------------------------
-   Load user
-------------------------- */
-
-async function loadUser(){
-
-  /*
-    فعلاً یک شناسه آزمایشی استفاده می‌کنیم.
-    بعداً می‌توانیم آن را به Telegram Login
-    یا سیستم ثبت‌نام متصل کنیم.
-  */
-
-  const userId =
-    localStorage.getItem("df_user_id") ||
-    "100001";
-
-  localStorage.setItem(
-    "df_user_id",
-    userId
-  );
-
-  document.getElementById("userId")
-    .innerText = userId;
-
-  try{
-
-    const data =
-      await api(
-        "/api/user?user_id=" +
-        encodeURIComponent(userId)
-      );
-
-    if(data.success && data.user){
-
-      const balance =
-        Number(
-          data.user.balance || 0
-        );
-
-      setBalance(balance);
-
-    }
-
-  }catch(error){
-
-    console.log(
-      "User API:",
-      error
-    );
-
-  }
-
-}
-
-
-/* -------------------------
-   Balance
-------------------------- */
-
-function setBalance(value){
-
-  const formatted =
-    formatNumber(value);
-
-  document.getElementById("balance")
-    .innerText = formatted;
-
-  document.getElementById("walletBalance")
-    .innerText = formatted;
-
-  document.getElementById("profileBalance")
-    .innerText = formatted;
-
-}
-
-
-/* -------------------------
-   Deposit
-------------------------- */
-
-function showDeposit(){
-
-  document.getElementById("depositBox")
-    .style.display = "block";
-
-  document.getElementById("withdrawBox")
-    .style.display = "none";
-
-}
-
-
-/* -------------------------
-   Withdraw
-------------------------- */
-
-function showWithdraw(){
-
-  document.getElementById("withdrawBox")
-    .style.display = "block";
-
-  document.getElementById("depositBox")
-    .style.display = "none";
-
-}
-
-
-/* -------------------------
-   Deposit action
-------------------------- */
-
-async function deposit(){
-
-  const amount =
-    Number(
-      document.getElementById(
-        "depositAmount"
-      ).value
-    );
-
-  if(!amount || amount <= 0){
-
-    alert("مبلغ معتبر وارد کنید");
-
-    return;
-
-  }
-
-  alert(
-    "درخواست شارژ " +
-    formatNumber(amount) +
-    " AFN ثبت شد."
-  );
-
-}
-
-
-/* -------------------------
-   Withdraw action
-------------------------- */
-
-async function withdraw(){
-
-  const amount =
-    Number(
-      document.getElementById(
-        "withdrawAmount"
-      ).value
-    );
-
-  const wallet =
-    document.getElementById(
-      "withdrawWallet"
-    ).value.trim();
-
-  if(!amount || amount <= 0){
-
-    alert("مبلغ معتبر وارد کنید");
-
-    return;
-
-  }
-
-  if(!wallet){
-
-    alert("آدرس کیف پول را وارد کنید");
-
-    return;
-
-  }
-
-  alert(
-    "درخواست برداشت ثبت شد."
-  );
-
-}
-
-
-/* -------------------------
-   Number format
-------------------------- */
-
-function formatNumber(number){
-
-  return new Intl.NumberFormat(
-    "en-US",
-    {
-      maximumFractionDigits:2
-    }
-  ).format(number);
-
-}
-
-
-/* -------------------------
-   HTML security
-------------------------- */
-
-function escapeHTML(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-/* -------------------------
-   Start
-------------------------- */
-
-async function start(){
+// =====================================
+// LOAD EVERYTHING
+// =====================================
+async function loadAll() {
 
   await Promise.all([
     loadMarkets(),
-    loadGold(),
-    loadUser()
+    loadGold()
   ]);
 
 }
 
-start();
+
+// =====================================
+// NAVIGATION
+// =====================================
+function showPage(
+  pageId,
+  button
+) {
+
+  document
+    .querySelectorAll(
+      "#homePage,#walletPage,#profilePage"
+    )
+    .forEach(page => {
+
+      page.classList.add(
+        "hidden"
+      );
+
+    });
+
+  document
+    .getElementById(pageId)
+    .classList.remove(
+      "hidden"
+    );
+
+  document
+    .querySelectorAll(".nav")
+    .forEach(nav => {
+
+      nav.classList.remove(
+        "active"
+      );
+
+    });
+
+  button.classList.add(
+    "active"
+  );
+}
+
+
+// =====================================
+// START
+// =====================================
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    loadAll();
+
+  }
+);
 
 </script>
 
