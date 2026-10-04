@@ -102,193 +102,216 @@ const COINS = {
   RNDR: "render-token"
 };
 
-const BINANCE_OVERRIDES = {
+const BINANCE_SYMBOLS = {
   RNDR: "RENDERUSDT"
 };
 
-const CONFIG = {
+const INTERVALS = {
   "5m": {
-    binanceInterval: "5m",
-    limit: 100,
-    fallbackDays: 1
+    binance: "5m",
+    limit: 100
   },
+
   "1h": {
-    binanceInterval: "1h",
-    limit: 168,
-    fallbackDays: 7
+    binance: "1h",
+    limit: 100
   },
+
   "4h": {
-    binanceInterval: "4h",
-    limit: 180,
-    fallbackDays: 30
+    binance: "4h",
+    limit: 100
   },
+
   "24h": {
-    binanceInterval: "1h",
-    limit: 24,
-    fallbackDays: 1
+    binance: "1h",
+    limit: 100
   },
+
   "7d": {
-    binanceInterval: "1h",
-    limit: 168,
-    fallbackDays: 7
+    binance: "1h",
+    limit: 168
   },
+
   "30d": {
-    binanceInterval: "1d",
-    limit: 30,
-    fallbackDays: 30
+    binance: "1d",
+    limit: 30
   }
 };
 
 function send(res, status, data) {
-  res
-    .status(status)
-    .setHeader("Content-Type", "application/json")
-    .setHeader("Access-Control-Allow-Origin", "*")
-    .setHeader("Cache-Control", "no-store")
-    .end(JSON.stringify(data));
+  res.status(status);
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Cache-Control", "no-store");
+  res.end(JSON.stringify(data));
 }
 
-function getBinanceSymbol(symbol) {
-  return BINANCE_OVERRIDES[symbol] || `${symbol}USDT`;
+function binancePair(symbol) {
+  return BINANCE_SYMBOLS[symbol] || `${symbol}USDT`;
 }
 
-function finite(value) {
-  return Number.isFinite(Number(value));
-}
+async function binanceCandles(symbol, interval, limit) {
 
-async function getBinanceCandles(symbol, interval, limit) {
-  const pair = getBinanceSymbol(symbol);
+  const pair = binancePair(symbol);
 
-  const url =
-    "https://api.binance.com/api/v3/klines" +
-    "?symbol=" +
-    encodeURIComponent(pair) +
-    "&interval=" +
-    encodeURIComponent(interval) +
-    "&limit=" +
-    limit;
+  const urls = [
+    "https://data-api.binance.vision/api/v3/klines",
+    "https://api.binance.com/api/v3/klines",
+    "https://api1.binance.com/api/v3/klines"
+  ];
 
-  const response = await fetch(url, {
-    headers: {
-      accept: "application/json"
-    }
-  });
+  let lastError = "";
 
-  if (!response.ok) {
-    throw new Error(`Binance HTTP ${response.status}`);
-  }
+  for (const base of urls) {
 
-  const raw = await response.json();
+    try {
 
-  if (!Array.isArray(raw)) {
-    throw new Error("Invalid Binance response");
-  }
+      const url =
+        `${base}?symbol=${encodeURIComponent(pair)}` +
+        `&interval=${encodeURIComponent(interval)}` +
+        `&limit=${limit}`;
 
-  const candles = raw
-    .map(item => {
-      if (!Array.isArray(item) || item.length < 6) {
-        return null;
+      const response = await fetch(url, {
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const text = await response.text();
+
+      if (!response.ok) {
+        lastError =
+          `HTTP ${response.status}: ${text}`;
+        continue;
       }
 
-      return {
-        time: Math.floor(Number(item[0]) / 1000),
-        open: Number(item[1]),
-        high: Number(item[2]),
-        low: Number(item[3]),
-        close: Number(item[4]),
-        volume: Number(item[5])
-      };
-    })
-    .filter(c =>
-      c &&
-      finite(c.time) &&
-      finite(c.open) &&
-      finite(c.high) &&
-      finite(c.low) &&
-      finite(c.close) &&
-      finite(c.volume)
-    );
+      const raw = JSON.parse(text);
 
-  return {
-    candles,
-    pair
-  };
+      if (!Array.isArray(raw)) {
+        lastError = "Invalid Binance data";
+        continue;
+      }
+
+      const candles = raw
+        .map(row => {
+
+          if (!Array.isArray(row) || row.length < 6) {
+            return null;
+          }
+
+          return {
+            time: Math.floor(Number(row[0]) / 1000),
+            open: Number(row[1]),
+            high: Number(row[2]),
+            low: Number(row[3]),
+            close: Number(row[4]),
+            volume: Number(row[5])
+          };
+
+        })
+        .filter(c =>
+          c &&
+          Number.isFinite(c.time) &&
+          Number.isFinite(c.open) &&
+          Number.isFinite(c.high) &&
+          Number.isFinite(c.low) &&
+          Number.isFinite(c.close) &&
+          Number.isFinite(c.volume)
+        );
+
+      if (candles.length > 0) {
+
+        return {
+          success: true,
+          candles,
+          pair,
+          source: "Binance"
+        };
+
+      }
+
+    } catch (error) {
+
+      lastError = error.message;
+
+    }
+
+  }
+
+  throw new Error(lastError || "Binance unavailable");
 }
 
-async function getCoinGeckoData(symbol, days) {
+async function coinGeckoCandles(symbol, interval) {
+
   const coinId = COINS[symbol];
 
   if (!coinId) {
-    throw new Error("CoinGecko coin not found");
+    throw new Error("Coin not found");
+  }
+
+  let days = 1;
+
+  if (interval === "4h") {
+    days = 30;
+  }
+
+  if (interval === "7d") {
+    days = 7;
+  }
+
+  if (interval === "30d") {
+    days = 30;
   }
 
   const url =
-    "https://api.coingecko.com/api/v3/coins/" +
-    encodeURIComponent(coinId) +
-    "/market_chart?vs_currency=usd&days=" +
-    encodeURIComponent(days);
+    `https://api.coingecko.com/api/v3/coins/${coinId}` +
+    `/market_chart?vs_currency=usd&days=${days}`;
 
   const response = await fetch(url, {
     headers: {
-      accept: "application/json"
+      "Accept": "application/json"
     }
   });
 
   if (!response.ok) {
-    throw new Error(`CoinGecko HTTP ${response.status}`);
+    throw new Error(
+      `CoinGecko HTTP ${response.status}`
+    );
   }
 
   const data = await response.json();
 
-  if (
-    !data ||
-    !Array.isArray(data.prices)
-  ) {
-    throw new Error("Invalid CoinGecko response");
+  if (!data || !Array.isArray(data.prices)) {
+    throw new Error("Invalid CoinGecko data");
   }
 
-  return data;
-}
+  let seconds = 3600;
 
-function buildCoinGeckoCandles(data, intervalSeconds) {
-  const prices = Array.isArray(data.prices)
-    ? data.prices
-    : [];
+  if (interval === "5m") {
+    seconds = 300;
+  }
 
-  const volumes = Array.isArray(data.total_volumes)
-    ? data.total_volumes
-    : [];
+  if (interval === "4h") {
+    seconds = 14400;
+  }
 
-  const volumeMap = new Map();
-
-  for (const point of volumes) {
-    if (!Array.isArray(point) || point.length < 2) continue;
-
-    const timestamp = Math.floor(Number(point[0]) / 1000);
-    const volume = Number(point[1]);
-
-    if (!Number.isFinite(timestamp) || !Number.isFinite(volume)) {
-      continue;
-    }
-
-    const bucket =
-      Math.floor(timestamp / intervalSeconds) *
-      intervalSeconds;
-
-    volumeMap.set(bucket, volume);
+  if (interval === "30d") {
+    seconds = 86400;
   }
 
   const groups = new Map();
 
-  for (const point of prices) {
-    if (!Array.isArray(point) || point.length < 2) {
+  for (const point of data.prices) {
+
+    if (!Array.isArray(point)) {
       continue;
     }
 
     const timestamp =
       Math.floor(Number(point[0]) / 1000);
 
-    const price = Number(point[1]);
+    const price =
+      Number(point[1]);
 
     if (
       !Number.isFinite(timestamp) ||
@@ -298,8 +321,8 @@ function buildCoinGeckoCandles(data, intervalSeconds) {
     }
 
     const bucket =
-      Math.floor(timestamp / intervalSeconds) *
-      intervalSeconds;
+      Math.floor(timestamp / seconds) *
+      seconds;
 
     if (!groups.has(bucket)) {
       groups.set(bucket, []);
@@ -311,49 +334,66 @@ function buildCoinGeckoCandles(data, intervalSeconds) {
   const candles = [];
 
   for (const [time, values] of groups) {
-    if (!values.length) continue;
 
-    const open = values[0];
-    const close = values[values.length - 1];
-    const high = Math.max(...values);
-    const low = Math.min(...values);
+    if (!values.length) {
+      continue;
+    }
 
     candles.push({
       time,
-      open,
-      high,
-      low,
-      close,
-      volume: volumeMap.get(time) || 0
+      open: values[0],
+      high: Math.max(...values),
+      low: Math.min(...values),
+      close: values[values.length - 1],
+      volume: 0
     });
+
   }
 
-  candles.sort((a, b) => a.time - b.time);
+  candles.sort(
+    (a, b) => a.time - b.time
+  );
 
-  return candles;
+  return {
+    success: true,
+    candles,
+    source: "CoinGecko"
+  };
 }
 
-async function getTicker(symbol) {
-  const pair = getBinanceSymbol(symbol);
+async function ticker(symbol) {
 
-  try {
-    const url =
-      "https://api.binance.com/api/v3/ticker/24hr?symbol=" +
-      encodeURIComponent(pair);
+  const pair = binancePair(symbol);
 
-    const response = await fetch(url, {
-      headers: {
-        accept: "application/json"
+  const urls = [
+    "https://data-api.binance.vision/api/v3/ticker/24hr",
+    "https://api.binance.com/api/v3/ticker/24hr"
+  ];
+
+  for (const base of urls) {
+
+    try {
+
+      const response =
+        await fetch(
+          `${base}?symbol=${encodeURIComponent(pair)}`,
+          {
+            headers: {
+              "Accept": "application/json"
+            }
+          }
+        );
+
+      if (!response.ok) {
+        continue;
       }
-    });
 
-    if (response.ok) {
-      const data = await response.json();
+      const data =
+        await response.json();
 
       return {
         success: true,
         symbol,
-        pair,
         price: Number(data.lastPrice),
         change24h: Number(data.priceChangePercent),
         high24h: Number(data.highPrice),
@@ -361,221 +401,240 @@ async function getTicker(symbol) {
         volume24h: Number(data.volume),
         source: "Binance"
       };
-    }
-  } catch (error) {
-    console.error("Binance ticker error:", error.message);
+
+    } catch (error) {}
+
+  }
+
+  const coinId = COINS[symbol];
+
+  if (!coinId) {
+    return {
+      success: false,
+      message: "Price unavailable"
+    };
   }
 
   try {
-    const coinId = COINS[symbol];
 
-    if (!coinId) {
-      throw new Error("Coin not available");
-    }
+    const response =
+      await fetch(
+        `https://api.coingecko.com/api/v3/simple/price` +
+        `?ids=${coinId}` +
+        `&vs_currencies=usd` +
+        `&include_24hr_change=true`
+      );
 
-    const url =
-      "https://api.coingecko.com/api/v3/simple/price" +
-      "?ids=" +
-      encodeURIComponent(coinId) +
-      "&vs_currencies=usd" +
-      "&include_24hr_change=true" +
-      "&include_24hr_vol=true" +
-      "&include_high_24h=true" +
-      "&include_low_24h=true";
+    const data =
+      await response.json();
 
-    const response = await fetch(url, {
-      headers: {
-        accept: "application/json"
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`CoinGecko HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    const coin = data[coinId];
+    const coin =
+      data[coinId];
 
     if (!coin) {
-      throw new Error("CoinGecko price unavailable");
+      throw new Error("Price unavailable");
     }
 
     return {
       success: true,
       symbol,
       price: Number(coin.usd),
-      change24h: Number(coin.usd_24h_change || 0),
-      high24h: Number(coin.usd_24h_high || 0),
-      low24h: Number(coin.usd_24h_low || 0),
-      volume24h: Number(coin.usd_24h_vol || 0),
+      change24h: Number(
+        coin.usd_24h_change || 0
+      ),
       source: "CoinGecko"
     };
+
   } catch (error) {
+
     return {
       success: false,
-      symbol,
-      message: "Live price unavailable",
-      error: error.message
+      message: "Price unavailable"
     };
+
   }
 }
 
 module.exports = async (req, res) => {
-  if (req.method === "OPTIONS") {
-    res
-      .status(200)
-      .setHeader("Access-Control-Allow-Origin", "*")
-      .setHeader("Access-Control-Allow-Methods", "GET, OPTIONS")
-      .setHeader("Access-Control-Allow-Headers", "Content-Type")
-      .end();
 
-    return;
+  if (req.method === "OPTIONS") {
+
+    res.status(200);
+
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "*"
+    );
+
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, OPTIONS"
+    );
+
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type"
+    );
+
+    return res.end();
   }
 
   if (req.method !== "GET") {
+
     return send(res, 405, {
       success: false,
       message: "Method not allowed"
     });
+
   }
 
   try {
+
     const symbol =
-      String(req.query.symbol || "")
-        .trim()
-        .toUpperCase();
+      String(
+        req.query.symbol || ""
+      )
+      .trim()
+      .toUpperCase();
 
     const action =
-      String(req.query.action || "")
-        .trim()
-        .toLowerCase();
+      String(
+        req.query.action || ""
+      )
+      .trim()
+      .toLowerCase();
 
     if (!symbol) {
+
       return send(res, 400, {
         success: false,
         message: "Symbol is required"
       });
+
     }
 
     /*
-      LIVE TICKER
+      LIVE PRICE
     */
+
     if (action === "ticker") {
-      const ticker = await getTicker(symbol);
-      return send(res, ticker.success ? 200 : 502, ticker);
+
+      const result =
+        await ticker(symbol);
+
+      return send(
+        res,
+        result.success ? 200 : 502,
+        result
+      );
+
     }
 
     /*
-      CANDLE DATA
+      CANDLES
     */
-    const interval =
-      String(req.query.interval || "1h")
-        .trim()
-        .toLowerCase();
 
-    const config = CONFIG[interval];
+    const interval =
+      String(
+        req.query.interval || "1h"
+      )
+      .trim()
+      .toLowerCase();
+
+    const config =
+      INTERVALS[interval];
 
     if (!config) {
+
       return send(res, 400, {
         success: false,
         message: "Invalid interval",
-        allowed: Object.keys(CONFIG)
+        allowed: Object.keys(INTERVALS)
       });
+
     }
 
-    if (!COINS[symbol]) {
-      return send(res, 404, {
-        success: false,
-        message: "Candlestick data is not available for this asset",
-        symbol
+    if (symbol === "AFC") {
+
+      return send(res, 200, {
+        success: true,
+        symbol: "AFC",
+        interval,
+        candles: [],
+        count: 0,
+        source: "AFC has no exchange market yet"
       });
+
     }
 
     /*
-      AFC is intentionally not included
-      because it has no real global exchange market yet.
+      First: Binance
     */
 
     try {
-      const binance = await getBinanceCandles(
+
+      const result =
+        await binanceCandles(
+          symbol,
+          config.binance,
+          config.limit
+        );
+
+      return send(res, 200, {
+        success: true,
         symbol,
-        config.binanceInterval,
-        config.limit
+        interval,
+        count: result.candles.length,
+        candles: result.candles,
+        pair: result.pair,
+        source: result.source
+      });
+
+    } catch (binanceError) {
+
+      console.log(
+        "Binance failed:",
+        symbol,
+        binanceError.message
       );
 
-      if (binance.candles.length) {
-        return send(res, 200, {
-          success: true,
-          symbol,
-          interval,
-          count: binance.candles.length,
-          candles: binance.candles,
-          pair: binance.pair,
-          source: "Binance"
-        });
-      }
-    } catch (error) {
-      console.log(
-        `Binance fallback for ${symbol}:`,
-        error.message
-      );
     }
 
     /*
-      COINGECKO FALLBACK
+      Second: CoinGecko
     */
 
-    const data = await getCoinGeckoData(
-      symbol,
-      config.fallbackDays
-    );
+    try {
 
-    let intervalSeconds;
+      const result =
+        await coinGeckoCandles(
+          symbol,
+          interval
+        );
 
-    if (interval === "5m") {
-      intervalSeconds = 300;
-    } else if (interval === "1h") {
-      intervalSeconds = 3600;
-    } else if (interval === "4h") {
-      intervalSeconds = 14400;
-    } else if (interval === "24h") {
-      intervalSeconds = 3600;
-    } else if (interval === "7d") {
-      intervalSeconds = 3600;
-    } else if (interval === "30d") {
-      intervalSeconds = 86400;
-    } else {
-      intervalSeconds = 3600;
+      return send(res, 200, {
+        success: true,
+        symbol,
+        interval,
+        count: result.candles.length,
+        candles: result.candles,
+        source: result.source
+      });
+
+    } catch (fallbackError) {
+
+      return send(res, 502, {
+        success: false,
+        symbol,
+        interval,
+        message: "Candles unavailable",
+        error: fallbackError.message
+      });
+
     }
-
-    let candles =
-      buildCoinGeckoCandles(
-        data,
-        intervalSeconds
-      );
-
-    if (interval === "24h") {
-      candles = candles.slice(-24);
-    }
-
-    if (interval === "7d") {
-      candles = candles.slice(-168);
-    }
-
-    if (interval === "30d") {
-      candles = candles.slice(-30);
-    }
-
-    return send(res, 200, {
-      success: true,
-      symbol,
-      interval,
-      count: candles.length,
-      candles,
-      source: "CoinGecko fallback"
-    });
 
   } catch (error) {
+
     console.error(error);
 
     return send(res, 500, {
@@ -583,5 +642,7 @@ module.exports = async (req, res) => {
       message: "Server error",
       error: error.message
     });
+
   }
+
 };
