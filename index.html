@@ -1,1545 +1,2801 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Digital Finance</title>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
 body{
-  margin:0;
-  font-family:Arial,Tahoma,sans-serif;
-  background:#07111f;
-  color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#07111f;
+    color:#fff;
+    min-height:100vh;
+    padding-bottom:90px;
 }
 
 button,input{
-  font-family:inherit;
+    font-family:inherit;
 }
 
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:18px;
+button{
+    cursor:pointer;
 }
 
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
+.header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:#081525;
+    border-bottom:1px solid #1b3048;
+    padding:16px;
+}
+
+.header-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
 .logo{
-  font-size:24px;
-  font-weight:bold;
+    font-size:22px;
+    font-weight:800;
 }
 
 .logo span{
-  color:#00d084;
+    color:#00d4ff;
 }
 
-.user-box{
-  background:#111d2d;
-  padding:8px 12px;
-  border-radius:12px;
-  font-size:13px;
-  color:#b8c4d4;
+.status{
+    font-size:11px;
+    background:#10283d;
+    color:#59e6ff;
+    padding:6px 9px;
+    border-radius:20px;
 }
 
-/* =========================
-   TOTAL BALANCE
-========================= */
+.container{
+    width:100%;
+    max-width:900px;
+    margin:auto;
+    padding:14px;
+}
 
 .balance-card{
-  background:linear-gradient(135deg,#102b45,#0b1828);
-  border:1px solid #1e3852;
-  border-radius:22px;
-  padding:24px;
-  margin-bottom:18px;
-  box-shadow:0 15px 40px rgba(0,0,0,.25);
+    background:linear-gradient(135deg,#10263d,#0b1829);
+    border:1px solid #1c405d;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
 }
 
 .balance-title{
-  color:#9eacbc;
-  font-size:14px;
+    color:#91a8bc;
+    font-size:13px;
+    margin-bottom:8px;
 }
 
-.total{
-  font-size:36px;
-  font-weight:bold;
-  margin:10px 0;
+.balance{
+    font-size:34px;
+    font-weight:800;
+    margin-bottom:6px;
 }
 
-.usdt{
-  color:#00d084;
-  font-size:14px;
+.balance small{
+    font-size:16px;
+    color:#53dcff;
 }
 
-/* =========================
-   STATS
-========================= */
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:20px;
+.sub-balance{
+    color:#7890a5;
+    font-size:12px;
 }
 
-.stat{
-  background:#101c2c;
-  border:1px solid #1c2c40;
-  border-radius:16px;
-  padding:15px;
+.quick-actions{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    margin-top:18px;
 }
 
-.stat-title{
-  color:#8998aa;
-  font-size:12px;
+.quick-btn{
+    border:0;
+    border-radius:12px;
+    padding:12px 5px;
+    background:#132a40;
+    color:#fff;
+    font-weight:700;
+    font-size:12px;
 }
 
-.stat-value{
-  margin-top:7px;
-  font-size:18px;
-  font-weight:bold;
-}
-
-/* =========================
-   TABS
-========================= */
-
-.tabs{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  margin-bottom:18px;
-}
-
-.tab{
-  border:0;
-  background:#111d2d;
-  color:#9baabd;
-  padding:11px 17px;
-  border-radius:12px;
-  white-space:nowrap;
-  cursor:pointer;
-}
-
-.tab.active{
-  background:#00d084;
-  color:#06140f;
-  font-weight:bold;
+.quick-btn:hover{
+    background:#193a56;
 }
 
 .section{
-  display:none;
+    margin-top:18px;
 }
 
-.section.active{
-  display:block;
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
 }
 
-/* =========================
-   CARD
-========================= */
-
-.card{
-  background:#0e1928;
-  border:1px solid #1b2a3d;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:15px;
+.section-title h2{
+    font-size:17px;
 }
 
-.card-title{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:15px;
+.section-title span{
+    color:#6f8aa0;
+    font-size:12px;
 }
 
-/* =========================
-   ASSET
-========================= */
-
-.asset{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:15px 0;
-  border-bottom:1px solid #1b2939;
+.search{
+    width:100%;
+    background:#0c1b2c;
+    border:1px solid #20374d;
+    color:#fff;
+    border-radius:13px;
+    padding:13px;
+    outline:none;
+    margin-bottom:10px;
 }
 
-.asset:last-child{
-  border-bottom:0;
+.search:focus{
+    border-color:#00bfe8;
 }
 
-.asset-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
+.market-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.market{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#0c1b2c;
+    border:1px solid #172d42;
+    border-radius:14px;
+    padding:12px;
+}
+
+.market-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
 }
 
 .coin-icon{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#16283b;
-  font-weight:bold;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#152c43;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    color:#6ee9ff;
+    font-size:12px;
+    flex-shrink:0;
 }
 
-.coin-name{
-  font-weight:bold;
+.market-name{
+    min-width:0;
 }
 
-.coin-amount{
-  color:#8796a8;
-  font-size:12px;
-  margin-top:4px;
+.market-symbol{
+    font-weight:800;
+    font-size:14px;
 }
 
-.asset-right{
-  text-align:left;
+.market-full{
+    color:#71889c;
+    font-size:11px;
+    margin-top:3px;
+    max-width:150px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 }
 
-.asset-value{
-  font-weight:bold;
+.market-right{
+    text-align:right;
 }
 
-.profit{
-  font-size:12px;
-  margin-top:5px;
+.price{
+    font-size:14px;
+    font-weight:800;
 }
 
-.green{
-  color:#00d084;
+.market-buttons{
+    display:flex;
+    gap:5px;
+    margin-top:5px;
 }
 
-.red{
-  color:#ff5c68;
+.mini-buy,
+.mini-sell{
+    border:0;
+    padding:5px 9px;
+    border-radius:7px;
+    color:white;
+    font-size:10px;
+    font-weight:800;
 }
 
-.gray{
-  color:#9aa7b5;
+.mini-buy{
+    background:#087f5b;
 }
 
-/* =========================
-   TRADE FORM
-========================= */
-
-.trade-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.mini-sell{
+    background:#a82d43;
 }
 
-label{
-  display:block;
-  color:#9aa8b8;
-  font-size:12px;
-  margin-bottom:6px;
+.gold{
+    border-color:#806b28;
+    background:linear-gradient(135deg,#17170e,#171b20);
 }
 
-input,select{
-  width:100%;
-  border:1px solid #24374c;
-  background:#091522;
-  color:#fff;
-  border-radius:11px;
-  padding:12px;
-  outline:none;
+.gold .coin-icon{
+    background:#806b28;
+    color:#ffe889;
 }
 
-input:focus,select:focus{
-  border-color:#00d084;
+.tabs{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-top:20px;
 }
 
-.btn{
-  border:0;
-  border-radius:11px;
-  padding:12px 18px;
-  cursor:pointer;
-  font-weight:bold;
+.tab{
+    border:0;
+    padding:11px 4px;
+    background:#0d1c2d;
+    color:#7e96aa;
+    border-radius:10px;
+    font-size:11px;
+    font-weight:700;
 }
 
-.btn-buy{
-  background:#00d084;
-  color:#06140f;
+.tab.active{
+    background:#123852;
+    color:#5de3ff;
 }
 
-.btn-sell{
-  background:#ff5360;
-  color:#fff;
+.panel{
+    display:none;
 }
 
-.btn-refresh{
-  background:#18283b;
-  color:#fff;
-}
-
-.trade-buttons{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
-}
-
-.trade-buttons button{
-  flex:1;
-}
-
-/* =========================
-   TABLE
-========================= */
-
-.table-wrap{
-  overflow-x:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:600px;
-}
-
-th{
-  color:#7f8da0;
-  font-size:12px;
-  text-align:right;
-  padding:12px;
-  border-bottom:1px solid #223145;
-}
-
-td{
-  padding:13px 12px;
-  border-bottom:1px solid #182738;
-  font-size:13px;
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:8px;
-  font-size:11px;
-}
-
-.badge-buy{
-  background:rgba(0,208,132,.12);
-  color:#00d084;
-}
-
-.badge-sell{
-  background:rgba(255,83,96,.12);
-  color:#ff5360;
-}
-
-.badge-completed{
-  background:#17283a;
-  color:#aebccc;
-}
-
-/* =========================
-   ACCOUNT
-========================= */
-
-.account-row{
-  display:flex;
-  justify-content:space-between;
-  padding:13px 0;
-  border-bottom:1px solid #1b2939;
-}
-
-.account-row:last-child{
-  border-bottom:0;
-}
-
-.account-label{
-  color:#8998aa;
-}
-
-.account-value{
-  font-weight:bold;
-}
-
-/* =========================
-   LOADING
-========================= */
-
-.loading{
-  text-align:center;
-  padding:30px;
-  color:#8494a7;
+.panel.active{
+    display:block;
 }
 
 .empty{
-  text-align:center;
-  padding:30px;
-  color:#78889a;
+    text-align:center;
+    padding:30px 15px;
+    color:#71899d;
+    background:#0c1b2c;
+    border-radius:14px;
+}
+
+.asset-card,
+.order-card,
+.history-card{
+    background:#0c1b2c;
+    border:1px solid #172d42;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:8px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.label{
+    color:#71899d;
+    font-size:11px;
+}
+
+.value{
+    font-weight:800;
+    margin-top:3px;
+}
+
+.green{
+    color:#31d39b;
+}
+
+.red{
+    color:#ff667d;
+}
+
+.gold-text{
+    color:#f4d35e;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    background:rgba(0,0,0,.72);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:600px;
+    background:#0b1929;
+    border:1px solid #203a52;
+    border-radius:22px 22px 0 0;
+    padding:20px;
+    max-height:90vh;
+    overflow:auto;
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.modal-head h3{
+    font-size:20px;
+}
+
+.close{
+    width:35px;
+    height:35px;
+    border:0;
+    border-radius:50%;
+    background:#162a3d;
+    color:#fff;
+    font-size:18px;
+}
+
+.trade-info{
+    background:#0e2437;
+    border-radius:14px;
+    padding:13px;
+    margin-bottom:15px;
+}
+
+.trade-info .row{
+    margin-bottom:8px;
+}
+
+.trade-info .row:last-child{
+    margin-bottom:0;
+}
+
+.trade-type{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:12px;
+}
+
+.trade-type button{
+    border:0;
+    padding:12px;
+    border-radius:10px;
+    background:#14283b;
+    color:#91a6b8;
+    font-weight:800;
+}
+
+.trade-type button.active-buy{
+    background:#087f5b;
+    color:#fff;
+}
+
+.trade-type button.active-sell{
+    background:#a82d43;
+    color:#fff;
+}
+
+.input-group{
+    margin-bottom:13px;
+}
+
+.input-group label{
+    display:block;
+    color:#7c94a8;
+    font-size:12px;
+    margin-bottom:6px;
+}
+
+.input{
+    width:100%;
+    border:1px solid #244158;
+    background:#081522;
+    color:#fff;
+    border-radius:11px;
+    padding:13px;
+    outline:none;
+    font-size:15px;
+}
+
+.input:focus{
+    border-color:#00c9ef;
+}
+
+.trade-button{
+    width:100%;
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    background:#087f5b;
+}
+
+.trade-button.sell{
+    background:#a82d43;
+}
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:200;
+    height:70px;
+    background:#081522;
+    border-top:1px solid #1b3044;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    max-width:900px;
+    margin:auto;
+}
+
+.nav-btn{
+    border:0;
+    background:none;
+    color:#70879b;
+    font-size:10px;
+    font-weight:700;
+}
+
+.nav-btn span{
+    display:block;
+    font-size:21px;
+    margin-bottom:4px;
+}
+
+.nav-btn.active{
+    color:#4edfff;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#6d879d;
 }
 
 .error{
-  background:#3a1720;
-  color:#ff9da5;
-  border:1px solid #632832;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:15px;
+    background:#351721;
+    color:#ff8295;
+    border:1px solid #713040;
+    padding:12px;
+    border-radius:12px;
+    font-size:12px;
+    margin-bottom:10px;
 }
 
-/* =========================
-   MOBILE
-========================= */
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:85px;
+    transform:translateX(-50%) translateY(20px);
+    background:#14283b;
+    border:1px solid #294761;
+    padding:12px 18px;
+    border-radius:12px;
+    z-index:1000;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    font-size:13px;
+    max-width:90%;
+    text-align:center;
+}
 
-@media(max-width:650px){
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
 
-  .container{
-    padding:12px;
-  }
+@media(min-width:700px){
+    .modal{
+        align-items:center;
+    }
 
-  .stats{
-    grid-template-columns:1fr;
-  }
-
-  .trade-grid{
-    grid-template-columns:1fr;
-  }
-
-  .total{
-    font-size:30px;
-  }
-
-  .logo{
-    font-size:20px;
-  }
-
+    .modal-box{
+        border-radius:20px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<header class="header">
+    <div class="header-top">
+        <div class="logo">
+            Digital <span>Finance</span>
+        </div>
 
-<header>
-  <div class="logo">
-    Digital <span>Finance</span>
-  </div>
-
-  <div class="user-box" id="userBox">
-    حساب کاربر
-  </div>
+        <div class="status" id="connectionStatus">
+            Connecting...
+        </div>
+    </div>
 </header>
 
-<div id="errorBox"></div>
+<main class="container">
 
-<!-- =========================
-     BALANCE
-========================= -->
+    <!-- WALLET -->
+    <section class="balance-card">
+        <div class="balance-title">Total Wallet Balance</div>
 
-<div class="balance-card">
+        <div class="balance">
+            <span id="totalBalance">10,000.00</span>
+            <small>USDT</small>
+        </div>
 
-  <div class="balance-title">
-    ارزش کل دارایی
-  </div>
+        <div class="sub-balance">
+            Available: <span id="availableBalance">10,000.00</span> USDT
+        </div>
 
-  <div class="total" id="totalValue">
-    $0.00
-  </div>
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="openWallet()">
+                💰 Wallet
+            </button>
 
-  <div class="usdt">
-    موجودی USDT:
-    <span id="usdtBalance">$0.00</span>
-  </div>
+            <button class="quick-btn" onclick="showTab('portfolio')">
+                📊 Portfolio
+            </button>
 
-</div>
+            <button class="quick-btn" onclick="showTab('orders')">
+                📋 Orders
+            </button>
+        </div>
+    </section>
 
-<!-- =========================
-     STATS
-========================= -->
+    <!-- MARKET -->
+    <section class="section">
 
-<div class="stats">
-
-  <div class="stat">
-    <div class="stat-title">
-      ارزش ارزها
-    </div>
-
-    <div class="stat-value" id="cryptoValue">
-      $0.00
-    </div>
-  </div>
-
-  <div class="stat">
-    <div class="stat-title">
-      سود / زیان
-    </div>
-
-    <div class="stat-value" id="profitValue">
-      $0.00
-    </div>
-  </div>
-
-  <div class="stat">
-    <div class="stat-title">
-      معاملات
-    </div>
-
-    <div class="stat-value" id="tradeCount">
-      0
-    </div>
-  </div>
-
-</div>
-
-<!-- =========================
-     TABS
-========================= -->
-
-<div class="tabs">
-
-  <button class="tab active" onclick="showTab('wallet',this)">
-    💼 کیف پول
-  </button>
-
-  <button class="tab" onclick="showTab('trade',this)">
-    💱 خرید و فروش
-  </button>
-
-  <button class="tab" onclick="showTab('history',this)">
-    📜 معاملات
-  </button>
-
-  <button class="tab" onclick="showTab('orders',this)">
-    📋 سفارش‌ها
-  </button>
-
-  <button class="tab" onclick="showTab('account',this)">
-    👤 حساب
-  </button>
-
-</div>
-
-<!-- =========================
-     WALLET
-========================= -->
-
-<section id="wallet" class="section active">
-
-  <div class="card">
-
-    <div class="card-title">
-      دارایی‌های من
-    </div>
-
-    <div id="assets">
-      <div class="loading">
-        در حال دریافت اطلاعات...
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- =========================
-     TRADE
-========================= -->
-
-<section id="trade" class="section">
-
-  <div class="card">
-
-    <div class="card-title">
-      خرید و فروش ارز
-    </div>
-
-    <div class="trade-grid">
-
-      <div>
-        <label>ارز</label>
-
-        <select id="symbol">
-          <option value="BTC">BTC - Bitcoin</option>
-          <option value="ETH">ETH - Ethereum</option>
-          <option value="BNB">BNB - BNB</option>
-          <option value="SOL">SOL - Solana</option>
-          <option value="XRP">XRP - XRP</option>
-          <option value="ADA">ADA - Cardano</option>
-          <option value="DOGE">DOGE - Dogecoin</option>
-          <option value="TRX">TRX - TRON</option>
-          <option value="TON">TON - Toncoin</option>
-          <option value="AVAX">AVAX - Avalanche</option>
-          <option value="DOT">DOT - Polkadot</option>
-          <option value="LINK">LINK - Chainlink</option>
-          <option value="LTC">LTC - Litecoin</option>
-          <option value="BCH">BCH - Bitcoin Cash</option>
-          <option value="UNI">UNI - Uniswap</option>
-          <option value="MATIC">MATIC - Polygon</option>
-        </select>
-
-      </div>
-
-      <div>
-
-        <label>
-          مقدار
-        </label>
+        <div class="section-title">
+            <h2>Markets</h2>
+            <span id="marketCount">Loading...</span>
+        </div>
 
         <input
-          id="amount"
-          type="number"
-          step="any"
-          placeholder="مثلاً 0.01"
+            id="searchInput"
+            class="search"
+            type="text"
+            placeholder="Search BTC, ETH, GOLD24..."
+            oninput="renderMarkets()"
         >
 
-      </div>
+        <div id="marketList" class="market-list">
+            <div class="loading">
+                Loading markets...
+            </div>
+        </div>
+
+    </section>
+
+    <!-- TABS -->
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            onclick="showTab('markets')"
+            id="tabMarkets">
+            Markets
+        </button>
+
+        <button
+            class="tab"
+            onclick="showTab('portfolio')"
+            id="tabPortfolio">
+            Portfolio
+        </button>
+
+        <button
+            class="tab"
+            onclick="showTab('orders')"
+            id="tabOrders">
+            Orders
+        </button>
+
+        <button
+            class="tab"
+            onclick="showTab('history')"
+            id="tabHistory">
+            History
+        </button>
 
     </div>
 
-    <div class="trade-buttons">
+    <!-- PORTFOLIO -->
 
-      <button
-        class="btn btn-buy"
-        onclick="buyCoin()"
-      >
-        خرید
-      </button>
+    <section id="portfolioPanel" class="panel">
 
-      <button
-        class="btn btn-sell"
-        onclick="sellCoin()"
-      >
-        فروش
-      </button>
+        <div class="section">
+            <div class="section-title">
+                <h2>My Portfolio</h2>
+                <span id="portfolioValue">0 USDT</span>
+            </div>
+
+            <div id="portfolioList">
+                <div class="empty">
+                    No assets yet.
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ORDERS -->
+
+    <section id="ordersPanel" class="panel">
+
+        <div class="section">
+
+            <div class="section-title">
+                <h2>Orders</h2>
+                <span id="ordersCount">0</span>
+            </div>
+
+            <div id="ordersList">
+                <div class="empty">
+                    No orders.
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- HISTORY -->
+
+    <section id="historyPanel" class="panel">
+
+        <div class="section">
+
+            <div class="section-title">
+                <h2>Trade History</h2>
+                <span id="historyCount">0</span>
+            </div>
+
+            <div id="historyList">
+                <div class="empty">
+                    No trades yet.
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+    <button
+        class="nav-btn active"
+        id="navMarkets"
+        onclick="showTab('markets')">
+
+        <span>📈</span>
+        Markets
+
+    </button>
+
+    <button
+        class="nav-btn"
+        id="navPortfolio"
+        onclick="showTab('portfolio')">
+
+        <span>💼</span>
+        Portfolio
+
+    </button>
+
+    <button
+        class="nav-btn"
+        id="navOrders"
+        onclick="showTab('orders')">
+
+        <span>📋</span>
+        Orders
+
+    </button>
+
+    <button
+        class="nav-btn"
+        id="navHistory"
+        onclick="showTab('history')">
+
+        <span>📜</span>
+        History
+
+    </button>
+
+</nav>
+
+<!-- TRADE MODAL -->
+
+<div class="modal" id="tradeModal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h3 id="tradeTitle">
+                Trade
+            </h3>
+
+            <button
+                class="close"
+                onclick="closeTrade()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="trade-info">
+
+            <div class="row">
+                <div>
+                    <div class="label">Asset</div>
+                    <div class="value" id="tradeSymbol">BTC</div>
+                </div>
+
+                <div style="text-align:right">
+                    <div class="label">Price</div>
+                    <div class="value" id="tradePrice">0</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="trade-type">
+
+            <button
+                id="buyType"
+                class="active-buy"
+                onclick="setTradeType('BUY')">
+                BUY
+            </button>
+
+            <button
+                id="sellType"
+                onclick="setTradeType('SELL')">
+                SELL
+            </button>
+
+        </div>
+
+        <div class="input-group">
+
+            <label>
+                Amount in USDT
+            </label>
+
+            <input
+                id="tradeAmount"
+                class="input"
+                type="number"
+                min="0"
+                step="0.00000001"
+                placeholder="100"
+                oninput="calculateTrade()"
+            >
+
+        </div>
+
+        <div class="trade-info">
+
+            <div class="row">
+
+                <div class="label">
+                    You receive
+                </div>
+
+                <div class="value" id="receiveAmount">
+                    0
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="label">
+                    USDT balance
+                </div>
+
+                <div class="value" id="tradeBalance">
+                    10,000
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            id="tradeSubmit"
+            class="trade-button"
+            onclick="executeTrade()">
+            BUY
+        </button>
 
     </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="card-title">
-      قیمت‌های بازار
-    </div>
-
-    <div id="prices">
-      <div class="loading">
-        دریافت قیمت‌ها...
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- =========================
-     HISTORY
-========================= -->
-
-<section id="history" class="section">
-
-  <div class="card">
-
-    <div class="card-title">
-      تاریخچه معاملات
-    </div>
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>ارز</th>
-            <th>نوع</th>
-            <th>مقدار</th>
-            <th>قیمت</th>
-            <th>مجموع</th>
-            <th>تاریخ</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="trades">
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- =========================
-     ORDERS
-========================= -->
-
-<section id="orders" class="section">
-
-  <div class="card">
-
-    <div class="card-title">
-      سفارش‌های من
-    </div>
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>ارز</th>
-            <th>نوع</th>
-            <th>مقدار</th>
-            <th>قیمت</th>
-            <th>مجموع</th>
-            <th>وضعیت</th>
-            <th>تاریخ</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="ordersList">
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- =========================
-     ACCOUNT
-========================= -->
-
-<section id="account" class="section">
-
-  <div class="card">
-
-    <div class="card-title">
-      اطلاعات حساب
-    </div>
-
-    <div id="accountInfo">
-
-      <div class="loading">
-        در حال دریافت...
-      </div>
-
-    </div>
-
-  </div>
-
-  <button
-    class="btn btn-refresh"
-    onclick="loadAll()"
-    style="width:100%;"
-  >
-    🔄 بروزرسانی اطلاعات
-  </button>
-
-</section>
 
 </div>
+
+<!-- WALLET MODAL -->
+
+<div class="modal" id="walletModal">
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h3>💰 Wallet</h3>
+
+            <button
+                class="close"
+                onclick="closeWallet()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="asset-card">
+
+            <div class="label">
+                Available USDT
+            </div>
+
+            <div
+                class="value"
+                style="font-size:30px;margin-top:8px">
+
+                <span id="walletUsdt">
+                    10,000.00
+                </span>
+
+                USDT
+
+            </div>
+
+        </div>
+
+        <div class="asset-card">
+
+            <div class="row">
+
+                <div>
+                    <div class="label">
+                        Portfolio Value
+                    </div>
+
+                    <div class="value">
+                        <span id="walletPortfolio">
+                            0
+                        </span>
+                        USDT
+                    </div>
+                </div>
+
+                <div>
+                    <div class="label">
+                        Total
+                    </div>
+
+                    <div class="value">
+                        <span id="walletTotal">
+                            10,000
+                        </span>
+                        USDT
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="asset-card">
+
+            <div class="label">
+                Wallet
+            </div>
+
+            <div
+                style="
+                margin-top:10px;
+                color:#71899d;
+                font-size:12px;
+                line-height:1.7;
+                ">
+
+                Your Digital Finance demo wallet starts
+                with 10,000 USDT.
+
+                <br>
+
+                Trading is calculated automatically from
+                the market prices received from the Backend.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 
 /* =========================================================
-   CONFIG
-========================================================= */
+   DIGITAL FINANCE
+   FRONTEND
+   ========================================================= */
 
 const API_BASE =
-  "https://finance-digital-eta.vercel.app";
+    "https://finance-digital-eta.vercel.app";
 
-const USER_ID = 1;
+const tg =
+    window.Telegram &&
+    window.Telegram.WebApp
+        ? window.Telegram.WebApp
+        : null;
 
+if(tg){
+    try{
+        tg.ready();
+        tg.expand();
+    }catch(e){}
+}
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+let telegramId = "123456789";
+
+try{
+
+    if(
+        tg &&
+        tg.initDataUnsafe &&
+        tg.initDataUnsafe.user &&
+        tg.initDataUnsafe.user.id
+    ){
+
+        telegramId =
+            String(
+                tg.initDataUnsafe.user.id
+            );
+
+    }
+
+}catch(e){}
+
+/* =========================================================
+   STORAGE KEY
+   ========================================================= */
+
+const STORAGE_KEY =
+    "digital_finance_wallet_" +
+    telegramId;
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let markets = [];
+
+let wallet = {
+    usdt:10000,
+    assets:{},
+    orders:[],
+    history:[]
+};
+
+let selectedMarket = null;
+
+let tradeType = "BUY";
+
+/* =========================================================
+   LOAD LOCAL DATA
+   ========================================================= */
+
+function loadWallet(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if(saved){
+
+            const data =
+                JSON.parse(saved);
+
+            wallet = {
+
+                usdt:
+                    Number(data.usdt ?? 10000),
+
+                assets:
+                    data.assets || {},
+
+                orders:
+                    data.orders || [],
+
+                history:
+                    data.history || []
+
+            };
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Wallet load error",
+            error
+        );
+
+    }
+
+}
+
+/* =========================================================
+   SAVE WALLET
+   ========================================================= */
+
+function saveWallet(){
+
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(wallet)
+        );
+
+    }catch(error){
+
+        console.log(
+            "Wallet save error",
+            error
+        );
+
+    }
+
+}
 
 /* =========================================================
    FORMAT
-========================================================= */
-
-function money(value){
-
-  const n = Number(value || 0);
-
-  return "$" + n.toLocaleString(
-    "en-US",
-    {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    }
-  );
-}
+   ========================================================= */
 
 function numberFormat(value){
 
-  const n = Number(value || 0);
+    const n =
+        Number(value) || 0;
 
-  return n.toLocaleString(
-    "en-US",
-    {
-      maximumFractionDigits:8
+    if(n >= 1000){
+
+        return n.toLocaleString(
+            "en-US",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+
     }
-  );
-}
 
-function dateFormat(value){
+    if(n >= 1){
 
-  if(!value){
-    return "-";
-  }
+        return n.toLocaleString(
+            "en-US",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:8
+            }
+        );
 
-  const d = new Date(value);
-
-  return d.toLocaleString(
-    "fa-AF",
-    {
-      dateStyle:"short",
-      timeStyle:"short"
     }
-  );
-}
 
-
-/* =========================================================
-   API
-========================================================= */
-
-async function api(path, options={}){
-
-  const response = await fetch(
-    API_BASE + path,
-    {
-      ...options,
-      headers:{
-        "Content-Type":"application/json",
-        ...(options.headers || {})
-      }
-    }
-  );
-
-  const data = await response.json();
-
-  if(!response.ok || data.success === false){
-
-    throw new Error(
-      data.message || "خطا در ارتباط با سرور"
-    );
-  }
-
-  return data;
-}
-
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-function showError(message){
-
-  document.getElementById("errorBox").innerHTML =
-    `<div class="error">${message}</div>`;
-
-}
-
-function clearError(){
-
-  document.getElementById("errorBox").innerHTML = "";
-
-}
-
-
-/* =========================================================
-   TABS
-========================================================= */
-
-function showTab(id, button){
-
-  document
-    .querySelectorAll(".section")
-    .forEach(section => {
-      section.classList.remove("active");
-    });
-
-  document
-    .querySelectorAll(".tab")
-    .forEach(tab => {
-      tab.classList.remove("active");
-    });
-
-  document
-    .getElementById(id)
-    .classList.add("active");
-
-  button.classList.add("active");
-
-  if(id === "history"){
-    loadTrades();
-  }
-
-  if(id === "orders"){
-    loadOrders();
-  }
-
-  if(id === "account"){
-    loadAccount();
-  }
-
-  if(id === "trade"){
-    loadPrices();
-  }
-
-}
-
-
-/* =========================================================
-   WALLET
-========================================================= */
-
-async function loadWallet(){
-
-  try{
-
-    const data =
-      await api(
-        `/api/wallet?user_id=${USER_ID}`
-      );
-
-    const wallet = data.wallet;
-
-    document.getElementById("totalValue").textContent =
-      money(wallet.total_value_usdt);
-
-    document.getElementById("usdtBalance").textContent =
-      money(wallet.usdt);
-
-    document.getElementById("cryptoValue").textContent =
-      money(wallet.crypto_value_usdt);
-
-    renderAssets(data.assets);
-
-  }catch(error){
-
-    showError(error.message);
-
-  }
-
-}
-
-
-/* =========================================================
-   ASSETS
-========================================================= */
-
-function renderAssets(assets){
-
-  const box =
-    document.getElementById("assets");
-
-  if(!assets || assets.length === 0){
-
-    box.innerHTML =
-      `<div class="empty">
-        هنوز ارز خریداری نشده است.
-      </div>`;
-
-    return;
-  }
-
-  box.innerHTML =
-    assets.map(asset => {
-
-      const profit =
-        Number(asset.profit_usdt || 0);
-
-      const profitClass =
-        profit > 0
-          ? "green"
-          : profit < 0
-            ? "red"
-            : "gray";
-
-      const sign =
-        profit > 0 ? "+" : "";
-
-      return `
-
-      <div class="asset">
-
-        <div class="asset-left">
-
-          <div class="coin-icon">
-            ${asset.symbol.substring(0,1)}
-          </div>
-
-          <div>
-
-            <div class="coin-name">
-              ${asset.symbol}
-            </div>
-
-            <div class="coin-amount">
-              ${numberFormat(asset.amount)}
-              ${asset.symbol}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="asset-right">
-
-          <div class="asset-value">
-            ${money(asset.value_usdt)}
-          </div>
-
-          <div class="profit ${profitClass}">
-            ${sign}${money(profit)}
-            (${sign}${Number(asset.profit_percent || 0).toFixed(2)}%)
-          </div>
-
-        </div>
-
-      </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =========================================================
-   PRICES
-========================================================= */
-
-async function loadPrices(){
-
-  try{
-
-    const data =
-      await api("/api/prices");
-
-    const prices =
-      data.prices || {};
-
-    const box =
-      document.getElementById("prices");
-
-    box.innerHTML =
-      Object.entries(prices)
-      .map(([symbol,price]) => `
-
-        <div class="asset">
-
-          <div class="coin-name">
-            ${symbol}
-          </div>
-
-          <div class="asset-value">
-            ${money(price)}
-          </div>
-
-        </div>
-
-      `)
-      .join("");
-
-  }catch(error){
-
-    document.getElementById("prices").innerHTML =
-      `<div class="empty">
-        ${error.message}
-      </div>`;
-
-  }
-
-}
-
-
-/* =========================================================
-   BUY
-========================================================= */
-
-async function buyCoin(){
-
-  clearError();
-
-  const symbol =
-    document.getElementById("symbol").value;
-
-  const amount =
-    Number(
-      document.getElementById("amount").value
-    );
-
-  if(!amount || amount <= 0){
-
-    showError("مقدار معتبر وارد کنید.");
-
-    return;
-  }
-
-  try{
-
-    const data =
-      await api(
-        "/api/buy",
+    return n.toLocaleString(
+        "en-US",
         {
-          method:"POST",
-
-          body:JSON.stringify({
-            user_id:USER_ID,
-            symbol,
-            amount
-          })
+            minimumFractionDigits:2,
+            maximumFractionDigits:12
         }
-      );
-
-    alert(
-      `خرید موفقانه انجام شد\n\n${amount} ${symbol}`
     );
-
-    document.getElementById("amount").value = "";
-
-    await loadAll();
-
-  }catch(error){
-
-    showError(error.message);
-
-  }
 
 }
 
-
 /* =========================================================
-   SELL
-========================================================= */
+   FETCH MARKETS
+   ========================================================= */
 
-async function sellCoin(){
+async function loadMarkets(){
 
-  clearError();
-
-  const symbol =
-    document.getElementById("symbol").value;
-
-  const amount =
-    Number(
-      document.getElementById("amount").value
+    setStatus(
+        "Loading..."
     );
 
-  if(!amount || amount <= 0){
+    try{
 
-    showError("مقدار معتبر وارد کنید.");
+        const response =
+            await fetch(
+                API_BASE +
+                "/api/markets",
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
 
-    return;
-  }
+        if(!response.ok){
 
-  try{
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
 
-    const data =
-      await api(
-        "/api/sell",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-            user_id:USER_ID,
-            symbol,
-            amount
-          })
         }
-      );
 
-    alert(
-      `فروش موفقانه انجام شد\n\n${amount} ${symbol}`
-    );
+        const data =
+            await response.json();
 
-    document.getElementById("amount").value = "";
+        if(
+            !data ||
+            data.success !== true
+        ){
 
-    await loadAll();
+            throw new Error(
+                data?.error ||
+                "Markets API failed"
+            );
 
-  }catch(error){
+        }
 
-    showError(error.message);
+        markets =
+            Array.isArray(data.markets)
+                ? data.markets
+                : [];
 
-  }
+        markets =
+            markets.map(
+                (market,index)=>({
 
-}
+                    id:
+                        market.id ??
+                        index + 1,
 
+                    symbol:
+                        String(
+                            market.symbol ||
+                            ""
+                        ).toUpperCase(),
 
-/* =========================================================
-   TRADES
-========================================================= */
+                    name:
+                        market.name ||
+                        market.symbol ||
+                        "Unknown",
 
-async function loadTrades(){
+                    price:
+                        Number(
+                            market.price
+                        ) || 0,
 
-  try{
+                    active:
+                        market.active !== false
 
-    const data =
-      await api(
-        `/api/trades?user_id=${USER_ID}`
-      );
+                })
+            );
 
-    const tbody =
-      document.getElementById("trades");
+        setStatus(
+            "● Online"
+        );
 
-    document.getElementById("tradeCount").textContent =
-      data.count || 0;
+        document
+            .getElementById(
+                "marketCount"
+            )
+            .textContent =
+                markets.length +
+                " assets";
 
-    if(!data.trades || data.trades.length === 0){
+        renderMarkets();
+        renderPortfolio();
+        updateWalletUI();
 
-      tbody.innerHTML =
-        `<tr>
-          <td colspan="6" class="empty">
-            هنوز معامله‌ای انجام نشده است.
-          </td>
-        </tr>`;
+    }catch(error){
 
-      return;
+        console.error(
+            error
+        );
+
+        setStatus(
+            "Offline"
+        );
+
+        document
+            .getElementById(
+                "marketCount"
+            )
+            .textContent =
+                "Error";
+
+        document
+            .getElementById(
+                "marketList"
+            )
+            .innerHTML = `
+
+                <div class="error">
+
+                    Failed to load markets.
+
+                    <br><br>
+
+                    ${escapeHtml(
+                        error.message
+                    )}
+
+                </div>
+
+            `;
+
     }
 
-    tbody.innerHTML =
-      data.trades.map(trade => {
+}
 
-        const isBuy =
-          trade.side === "buy";
+/* =========================================================
+   STATUS
+   ========================================================= */
 
-        return `
+function setStatus(text){
 
-        <tr>
+    const el =
+        document.getElementById(
+            "connectionStatus"
+        );
 
-          <td>
-            <b>${trade.symbol}</b>
-          </td>
+    if(el){
 
-          <td>
+        el.textContent =
+            text;
 
-            <span class="badge ${
-              isBuy
-                ? "badge-buy"
-                : "badge-sell"
-            }">
+    }
 
-              ${
-                isBuy
-                  ? "خرید"
-                  : "فروش"
-              }
+}
 
-            </span>
+/* =========================================================
+   RENDER MARKETS
+   ========================================================= */
 
-          </td>
+function renderMarkets(){
 
-          <td>
-            ${numberFormat(trade.amount)}
-          </td>
+    const container =
+        document.getElementById(
+            "marketList"
+        );
 
-          <td>
-            ${money(trade.price)}
-          </td>
+    const search =
+        (
+            document.getElementById(
+                "searchInput"
+            )?.value || ""
+        )
+        .trim()
+        .toLowerCase();
 
-          <td>
-            ${money(trade.total)}
-          </td>
+    let list =
+        markets.filter(
+            market=>{
 
-          <td>
-            ${dateFormat(trade.created_at)}
-          </td>
+                if(!market.active){
 
-        </tr>
+                    return false;
+
+                }
+
+                if(!search){
+
+                    return true;
+
+                }
+
+                return (
+
+                    market.symbol
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    market.name
+                        .toLowerCase()
+                        .includes(search)
+
+                );
+
+            }
+        );
+
+    if(!list.length){
+
+        container.innerHTML = `
+
+            <div class="empty">
+                No assets found.
+            </div>
 
         `;
 
-      }).join("");
+        return;
 
-  }catch(error){
-
-    showError(error.message);
-
-  }
-
-}
-
-
-/* =========================================================
-   ORDERS
-========================================================= */
-
-async function loadOrders(){
-
-  try{
-
-    const data =
-      await api(
-        `/api/orders?user_id=${USER_ID}`
-      );
-
-    const tbody =
-      document.getElementById("ordersList");
-
-    if(!data.orders || data.orders.length === 0){
-
-      tbody.innerHTML =
-        `<tr>
-          <td colspan="7" class="empty">
-            هنوز سفارشی وجود ندارد.
-          </td>
-        </tr>`;
-
-      return;
     }
 
-    tbody.innerHTML =
-      data.orders.map(order => {
-
-        const isBuy =
-          order.side === "buy";
-
-        return `
-
-        <tr>
-
-          <td>
-            <b>${order.symbol}</b>
-          </td>
-
-          <td>
-
-            <span class="badge ${
-              isBuy
-                ? "badge-buy"
-                : "badge-sell"
-            }">
-
-              ${
-                isBuy
-                  ? "خرید"
-                  : "فروش"
-              }
-
-            </span>
-
-          </td>
-
-          <td>
-            ${numberFormat(order.amount)}
-          </td>
-
-          <td>
-            ${money(order.price)}
-          </td>
-
-          <td>
-            ${money(order.total)}
-          </td>
-
-          <td>
-
-            <span class="badge badge-completed">
-              ${order.status}
-            </span>
-
-          </td>
-
-          <td>
-            ${dateFormat(order.created_at)}
-          </td>
-
-        </tr>
-
-        `;
-
-      }).join("");
-
-  }catch(error){
-
-    showError(error.message);
-
-  }
+    container.innerHTML =
+        list
+            .map(
+                market =>
+                    marketHTML(
+                        market
+                    )
+            )
+            .join("");
 
 }
 
-
 /* =========================================================
-   ACCOUNT
-========================================================= */
+   MARKET HTML
+   ========================================================= */
 
-async function loadAccount(){
+function marketHTML(market){
 
-  try{
+    const symbol =
+        escapeHtml(
+            market.symbol
+        );
 
-    const data =
-      await api(
-        `/api/account?user_id=${USER_ID}`
-      );
+    const name =
+        escapeHtml(
+            market.name
+        );
 
-    const account =
-      data.account;
+    const price =
+        numberFormat(
+            market.price
+        );
 
-    const wallet =
-      data.wallet;
+    const isGold =
+        market.symbol ===
+        "GOLD24";
 
-    const stats =
-      data.statistics;
+    return `
 
-    document.getElementById("accountInfo").innerHTML = `
+        <div class="market ${
+            isGold ? "gold" : ""
+        }">
 
-      <div class="account-row">
+            <div class="market-left">
 
-        <div class="account-label">
-          شناسه کاربر
+                <div class="coin-icon">
+
+                    ${
+                        isGold
+                        ? "🥇"
+                        : escapeHtml(
+                            market.symbol
+                              .slice(0,4)
+                          )
+                    }
+
+                </div>
+
+                <div class="market-name">
+
+                    <div class="market-symbol">
+
+                        ${symbol}
+
+                    </div>
+
+                    <div class="market-full">
+
+                        ${name}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="market-right">
+
+                <div class="
+                    price
+                    ${
+                        isGold
+                        ? "gold-text"
+                        : ""
+                    }
+                ">
+
+                    ${price}
+
+                </div>
+
+                <div class="market-buttons">
+
+                    <button
+                        class="mini-buy"
+                        onclick="openTrade(
+                            '${safeJs(market.symbol)}',
+                            'BUY'
+                        )">
+
+                        Buy
+
+                    </button>
+
+                    <button
+                        class="mini-sell"
+                        onclick="openTrade(
+                            '${safeJs(market.symbol)}',
+                            'SELL'
+                        )">
+
+                        Sell
+
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="account-value">
-          ${account.id}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          نام کاربری
-        </div>
-
-        <div class="account-value">
-          ${account.username || "کاربر"}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          ایمیل
-        </div>
-
-        <div class="account-value">
-          ${account.email || "-"}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          موجودی USDT
-        </div>
-
-        <div class="account-value">
-          ${money(wallet.usdt)}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          ارزش کل دارایی
-        </div>
-
-        <div class="account-value">
-          ${money(wallet.total_value_usdt)}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          تعداد دارایی‌ها
-        </div>
-
-        <div class="account-value">
-          ${stats.assets}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          تعداد معاملات
-        </div>
-
-        <div class="account-value">
-          ${stats.trades}
-        </div>
-
-      </div>
-
-      <div class="account-row">
-
-        <div class="account-label">
-          تعداد سفارش‌ها
-        </div>
-
-        <div class="account-value">
-          ${stats.orders}
-        </div>
-
-      </div>
 
     `;
 
-  }catch(error){
+}
 
-    showError(error.message);
+/* =========================================================
+   FIND MARKET
+   ========================================================= */
 
-  }
+function findMarket(symbol){
+
+    return markets.find(
+        market =>
+            market.symbol ===
+            symbol
+    );
 
 }
 
-
 /* =========================================================
-   LOAD ALL
-========================================================= */
+   OPEN TRADE
+   ========================================================= */
 
-async function loadAll(){
+function openTrade(
+    symbol,
+    type="BUY"
+){
 
-  clearError();
+    const market =
+        findMarket(
+            symbol
+        );
 
-  await loadWallet();
+    if(!market){
 
-  await loadPrices();
+        showToast(
+            "Asset not found."
+        );
 
-  await loadAccount();
+        return;
 
-  await loadTrades();
+    }
+
+    selectedMarket =
+        market;
+
+    setTradeType(
+        type
+    );
+
+    document
+        .getElementById(
+            "tradeSymbol"
+        )
+        .textContent =
+            market.symbol;
+
+    document
+        .getElementById(
+            "tradePrice"
+        )
+        .textContent =
+            numberFormat(
+                market.price
+            );
+
+    document
+        .getElementById(
+            "tradeAmount"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "tradeModal"
+        )
+        .classList.add(
+            "show"
+        );
+
+    updateTradeBalance();
 
 }
 
+/* =========================================================
+   CLOSE TRADE
+   ========================================================= */
+
+function closeTrade(){
+
+    document
+        .getElementById(
+            "tradeModal"
+        )
+        .classList.remove(
+            "show"
+        );
+
+    selectedMarket =
+        null;
+
+}
 
 /* =========================================================
-   START
-========================================================= */
+   TRADE TYPE
+   ========================================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+function setTradeType(type){
 
-    document.getElementById("userBox").textContent =
-      "کاربر #" + USER_ID;
+    tradeType =
+        type;
 
-    loadAll();
+    const buy =
+        document.getElementById(
+            "buyType"
+        );
 
-  }
+    const sell =
+        document.getElementById(
+            "sellType"
+        );
+
+    const submit =
+        document.getElementById(
+            "tradeSubmit"
+        );
+
+    if(type === "BUY"){
+
+        buy.className =
+            "active-buy";
+
+        sell.className =
+            "";
+
+        submit.className =
+            "trade-button";
+
+        submit.textContent =
+            "BUY";
+
+    }else{
+
+        buy.className =
+            "";
+
+        sell.className =
+            "active-sell";
+
+        submit.className =
+            "trade-button sell";
+
+        submit.textContent =
+            "SELL";
+
+    }
+
+    calculateTrade();
+
+}
+
+/* =========================================================
+   CALCULATE TRADE
+   ========================================================= */
+
+function calculateTrade(){
+
+    if(!selectedMarket){
+
+        return;
+
+    }
+
+    const amount =
+        Number(
+            document
+                .getElementById(
+                    "tradeAmount"
+                )
+                .value
+        ) || 0;
+
+    const price =
+        Number(
+            selectedMarket.price
+        ) || 0;
+
+    const coins =
+        price > 0
+            ? amount / price
+            : 0;
+
+    document
+        .getElementById(
+            "receiveAmount"
+        )
+        .textContent =
+            numberFormat(
+                coins
+            );
+
+    updateTradeBalance();
+
+}
+
+/* =========================================================
+   TRADE BALANCE
+   ========================================================= */
+
+function updateTradeBalance(){
+
+    document
+        .getElementById(
+            "tradeBalance"
+        )
+        .textContent =
+            numberFormat(
+                wallet.usdt
+            ) +
+            " USDT";
+
+}
+
+/* =========================================================
+   EXECUTE TRADE
+   ========================================================= */
+
+function executeTrade(){
+
+    if(!selectedMarket){
+
+        return;
+
+    }
+
+    const amount =
+        Number(
+            document
+                .getElementById(
+                    "tradeAmount"
+                )
+                .value
+        );
+
+    if(!amount || amount <= 0){
+
+        showToast(
+            "Enter a valid amount."
+        );
+
+        return;
+
+    }
+
+    const price =
+        Number(
+            selectedMarket.price
+        );
+
+    if(!price || price <= 0){
+
+        showToast(
+            "Invalid market price."
+        );
+
+        return;
+
+    }
+
+    const symbol =
+        selectedMarket.symbol;
+
+    const quantity =
+        amount / price;
+
+    if(tradeType === "BUY"){
+
+        if(amount > wallet.usdt){
+
+            showToast(
+                "Insufficient USDT balance."
+            );
+
+            return;
+
+        }
+
+        wallet.usdt -=
+            amount;
+
+        wallet.assets[symbol] =
+            (
+                Number(
+                    wallet.assets[symbol]
+                ) || 0
+            ) +
+            quantity;
+
+        addOrder(
+            "BUY",
+            symbol,
+            quantity,
+            price,
+            amount
+        );
+
+        showToast(
+            "Buy order completed."
+        );
+
+    }else{
+
+        const currentQuantity =
+            Number(
+                wallet.assets[symbol]
+            ) || 0;
+
+        if(quantity >
+            currentQuantity
+        ){
+
+            showToast(
+                "Insufficient asset balance."
+            );
+
+            return;
+
+        }
+
+        wallet.assets[symbol] =
+            currentQuantity -
+            quantity;
+
+        wallet.usdt +=
+            amount;
+
+        if(
+            wallet.assets[symbol] <
+            0.0000000001
+        ){
+
+            delete wallet.assets[
+                symbol
+            ];
+
+        }
+
+        addOrder(
+            "SELL",
+            symbol,
+            quantity,
+            price,
+            amount
+        );
+
+        showToast(
+            "Sell order completed."
+        );
+
+    }
+
+    saveWallet();
+
+    closeTrade();
+
+    updateWalletUI();
+
+    renderPortfolio();
+
+    renderOrders();
+
+    renderHistory();
+
+}
+
+/* =========================================================
+   ADD ORDER
+   ========================================================= */
+
+function addOrder(
+    type,
+    symbol,
+    quantity,
+    price,
+    total
+){
+
+    const id =
+        "ORD-" +
+        Date.now();
+
+    const order = {
+
+        id:id,
+
+        type:type,
+
+        symbol:symbol,
+
+        quantity:Number(
+            quantity
+        ),
+
+        price:Number(
+            price
+        ),
+
+        total:Number(
+            total
+        ),
+
+        status:"FILLED",
+
+        time:new Date()
+            .toISOString()
+
+    };
+
+    wallet.orders.unshift(
+        order
+    );
+
+    wallet.history.unshift(
+        order
+    );
+
+    if(
+        wallet.orders.length >
+        100
+    ){
+
+        wallet.orders =
+            wallet.orders.slice(
+                0,
+                100
+            );
+
+    }
+
+    if(
+        wallet.history.length >
+        100
+    ){
+
+        wallet.history =
+            wallet.history.slice(
+                0,
+                100
+            );
+
+    }
+
+}
+
+/* =========================================================
+   PORTFOLIO VALUE
+   ========================================================= */
+
+function calculatePortfolioValue(){
+
+    let total = 0;
+
+    Object.keys(
+        wallet.assets
+    ).forEach(
+        symbol=>{
+
+            const quantity =
+                Number(
+                    wallet.assets[
+                        symbol
+                    ]
+                ) || 0;
+
+            const market =
+                findMarket(
+                    symbol
+                );
+
+            if(market){
+
+                total +=
+                    quantity *
+                    Number(
+                        market.price
+                    );
+
+            }
+
+        }
+    );
+
+    return total;
+
+}
+
+/* =========================================================
+   TOTAL WALLET
+   ========================================================= */
+
+function calculateTotalBalance(){
+
+    return (
+        Number(
+            wallet.usdt
+        ) || 0
+    ) +
+    calculatePortfolioValue();
+
+}
+
+/* =========================================================
+   UPDATE WALLET UI
+   ========================================================= */
+
+function updateWalletUI(){
+
+    const portfolio =
+        calculatePortfolioValue();
+
+    const total =
+        calculateTotalBalance();
+
+    document
+        .getElementById(
+            "availableBalance"
+        )
+        .textContent =
+            numberFormat(
+                wallet.usdt
+            );
+
+    document
+        .getElementById(
+            "totalBalance"
+        )
+        .textContent =
+            numberFormat(
+                total
+            );
+
+    document
+        .getElementById(
+            "walletUsdt"
+        )
+        .textContent =
+            numberFormat(
+                wallet.usdt
+            );
+
+    document
+        .getElementById(
+            "walletPortfolio"
+        )
+        .textContent =
+            numberFormat(
+                portfolio
+            );
+
+    document
+        .getElementById(
+            "walletTotal"
+        )
+        .textContent =
+            numberFormat(
+                total
+            );
+
+}
+
+/* =========================================================
+   PORTFOLIO
+   ========================================================= */
+
+function renderPortfolio(){
+
+    const container =
+        document.getElementById(
+            "portfolioList"
+        );
+
+    const symbols =
+        Object.keys(
+            wallet.assets
+        ).filter(
+            symbol =>
+                Number(
+                    wallet.assets[
+                        symbol
+                    ]
+                ) > 0
+        );
+
+    const portfolio =
+        calculatePortfolioValue();
+
+    document
+        .getElementById(
+            "portfolioValue"
+        )
+        .textContent =
+            numberFormat(
+                portfolio
+            ) +
+            " USDT";
+
+    if(!symbols.length){
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                No assets yet.
+
+                <br><br>
+
+                Buy an asset from Markets.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        symbols.map(
+            symbol=>{
+
+                const quantity =
+                    Number(
+                        wallet.assets[
+                            symbol
+                        ]
+                    );
+
+                const market =
+                    findMarket(
+                        symbol
+                    );
+
+                const price =
+                    market
+                        ? Number(
+                            market.price
+                          )
+                        : 0;
+
+                const value =
+                    quantity *
+                    price;
+
+                return `
+
+                    <div class="asset-card">
+
+                        <div class="row">
+
+                            <div>
+
+                                <div class="value">
+
+                                    ${escapeHtml(
+                                        symbol
+                                    )}
+
+                                </div>
+
+                                <div class="label">
+
+                                    ${numberFormat(
+                                        quantity
+                                    )}
+                                    units
+
+                                </div>
+
+                            </div>
+
+                            <div
+                                style="text-align:right">
+
+                                <div class="value">
+
+                                    ${numberFormat(
+                                        value
+                                    )}
+                                    USDT
+
+                                </div>
+
+                                <div class="label">
+
+                                    Price:
+                                    ${numberFormat(
+                                        price
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+/* =========================================================
+   ORDERS
+   ========================================================= */
+
+function renderOrders(){
+
+    const container =
+        document.getElementById(
+            "ordersList"
+        );
+
+    const orders =
+        wallet.orders || [];
+
+    document
+        .getElementById(
+            "ordersCount"
+        )
+        .textContent =
+            orders.length;
+
+    if(!orders.length){
+
+        container.innerHTML = `
+
+            <div class="empty">
+                No orders yet.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        orders.map(
+            order=>`
+
+                <div class="order-card">
+
+                    <div class="row">
+
+                        <div>
+
+                            <div class="value ${
+                                order.type ===
+                                "BUY"
+                                ? "green"
+                                : "red"
+                            }">
+
+                                ${order.type}
+                                ${escapeHtml(
+                                    order.symbol
+                                )}
+
+                            </div>
+
+                            <div class="label">
+
+                                ${formatDate(
+                                    order.time
+                                )}
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            style="text-align:right">
+
+                            <div class="value">
+
+                                ${numberFormat(
+                                    order.total
+                                )}
+                                USDT
+
+                            </div>
+
+                            <div class="label">
+
+                                ${numberFormat(
+                                    order.quantity
+                                )}
+                                units
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+function renderHistory(){
+
+    const container =
+        document.getElementById(
+            "historyList"
+        );
+
+    const history =
+        wallet.history || [];
+
+    document
+        .getElementById(
+            "historyCount"
+        )
+        .textContent =
+            history.length;
+
+    if(!history.length){
+
+        container.innerHTML = `
+
+            <div class="empty">
+                No trades yet.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        history.map(
+            trade=>`
+
+                <div class="history-card">
+
+                    <div class="row">
+
+                        <div>
+
+                            <div class="value ${
+                                trade.type ===
+                                "BUY"
+                                ? "green"
+                                : "red"
+                            }">
+
+                                ${trade.type}
+
+                                ${escapeHtml(
+                                    trade.symbol
+                                )}
+
+                            </div>
+
+                            <div class="label">
+
+                                ${formatDate(
+                                    trade.time
+                                )}
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            style="text-align:right">
+
+                            <div class="value">
+
+                                ${numberFormat(
+                                    trade.total
+                                )}
+                                USDT
+
+                            </div>
+
+                            <div class="label">
+
+                                Price:
+                                ${numberFormat(
+                                    trade.price
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+function showTab(tab){
+
+    const panels = {
+
+        markets:null,
+
+        portfolio:
+            document.getElementById(
+                "portfolioPanel"
+            ),
+
+        orders:
+            document.getElementById(
+                "ordersPanel"
+            ),
+
+        history:
+            document.getElementById(
+                "historyPanel"
+            )
+
+    };
+
+    document
+        .getElementById(
+            "portfolioPanel"
+        )
+        .classList.remove(
+            "active"
+        );
+
+    document
+        .getElementById(
+            "ordersPanel"
+        )
+        .classList.remove(
+            "active"
+        );
+
+    document
+        .getElementById(
+            "historyPanel"
+        )
+        .classList.remove(
+            "active"
+        );
+
+    if(tab === "portfolio"){
+
+        panels.portfolio
+            .classList.add(
+                "active"
+            );
+
+        renderPortfolio();
+
+    }
+
+    if(tab === "orders"){
+
+        panels.orders
+            .classList.add(
+                "active"
+            );
+
+        renderOrders();
+
+    }
+
+    if(tab === "history"){
+
+        panels.history
+            .classList.add(
+                "active"
+            );
+
+        renderHistory();
+
+    }
+
+    if(tab === "markets"){
+
+        renderMarkets();
+
+    }
+
+    document
+        .querySelectorAll(
+            ".tab"
+        )
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "active"
+                )
+        );
+
+    const tabMap = {
+
+        markets:"tabMarkets",
+
+        portfolio:"tabPortfolio",
+
+        orders:"tabOrders",
+
+        history:"tabHistory"
+
+    };
+
+    const activeTab =
+        document.getElementById(
+            tabMap[tab]
+        );
+
+    if(activeTab){
+
+        activeTab.classList.add(
+            "active"
+        );
+
+    }
+
+    document
+        .querySelectorAll(
+            ".nav-btn"
+        )
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "active"
+                )
+        );
+
+    const navMap = {
+
+        markets:"navMarkets",
+
+        portfolio:"navPortfolio",
+
+        orders:"navOrders",
+
+        history:"navHistory"
+
+    };
+
+    const activeNav =
+        document.getElementById(
+            navMap[tab]
+        );
+
+    if(activeNav){
+
+        activeNav.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+/* =========================================================
+   WALLET
+   ========================================================= */
+
+function openWallet(){
+
+    updateWalletUI();
+
+    document
+        .getElementById(
+            "walletModal"
+        )
+        .classList.add(
+            "show"
+        );
+
+}
+
+function closeWallet(){
+
+    document
+        .getElementById(
+            "walletModal"
+        )
+        .classList.remove(
+            "show"
+        );
+
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer = null;
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(
+            ()=>{
+                toast.classList.remove(
+                    "show"
+                );
+            },
+            2500
+        );
+
+}
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+function formatDate(date){
+
+    try{
+
+        return new Date(
+            date
+        ).toLocaleString(
+            "en-US",
+            {
+                year:"numeric",
+                month:"short",
+                day:"numeric",
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+    }catch(e){
+
+        return "";
+
+    }
+
+}
+
+/* =========================================================
+   SECURITY HELPERS
+   ========================================================= */
+
+function escapeHtml(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+function safeJs(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
+    .replace(
+        /'/g,
+        "\\'"
+    );
+
+}
+
+/* =========================================================
+   MODAL CLICK OUTSIDE
+   ========================================================= */
+
+document
+    .getElementById(
+        "tradeModal"
+    )
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target ===
+                this
+            ){
+
+                closeTrade();
+
+            }
+
+        }
+    );
+
+document
+    .getElementById(
+        "walletModal"
+    )
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target ===
+                this
+            ){
+
+                closeWallet();
+
+            }
+
+        }
+    );
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+loadWallet();
+
+updateWalletUI();
+
+renderPortfolio();
+
+renderOrders();
+
+renderHistory();
+
+loadMarkets();
+
+/* =========================================================
+   REFRESH MARKETS
+   ========================================================= */
+
+setInterval(
+    async ()=>{
+
+        await loadMarkets();
+
+    },
+    30000
 );
 
 </script>
