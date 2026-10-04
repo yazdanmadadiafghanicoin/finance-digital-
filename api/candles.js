@@ -1,4 +1,5 @@
 const COINS = {
+
   BTC: "bitcoin",
   ETH: "ethereum",
   BNB: "binancecoin",
@@ -10,7 +11,6 @@ const COINS = {
   TRX: "tron",
   LINK: "chainlink",
   DOT: "polkadot",
-  MATIC: "matic-network",
   SHIB: "shiba-inu",
   LTC: "litecoin",
   BCH: "bitcoin-cash",
@@ -32,7 +32,7 @@ const COINS = {
   AAVE: "aave",
   MKR: "maker",
   GRT: "the-graph",
-  THETA: "theta-token",
+  THETA: "theta",
   EOS: "eos",
   XTZ: "tezos",
   FLOW: "flow",
@@ -78,6 +78,8 @@ const COINS = {
   GALA: "gala",
   APE: "apecoin",
   GMT: "stepn",
+  LUNC: "terra-luna",
+  USTC: "terraclassicusd",
   FTM: "fantom",
   SFP: "safepal",
   CAKE: "pancakeswap-token",
@@ -91,6 +93,8 @@ const COINS = {
   STX: "blockstack",
   RPL: "rocket-pool",
   BLUR: "blur",
+  CYBER: "cyberconnect",
+  JUP: "jupiter-exchange-solana",
   WLD: "worldcoin-wld",
   ONDO: "ondo-finance",
   PYTH: "pyth-network",
@@ -100,142 +104,460 @@ const COINS = {
   MANTA: "manta-network",
   FET: "fetch-ai",
   RNDR: "render-token"
+
 };
 
-function send(res, status, data) {
-  res.status(status).setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Cache-Control", "no-store");
-  res.end(JSON.stringify(data));
-}
 
-module.exports = async (req, res) => {
+/*
+  Convert market-chart price points
+  into OHLC candles.
+*/
 
-  if (req.method === "OPTIONS") {
-    res.status(200).setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    return res.end();
+function buildCandles(
+  prices,
+  intervalSeconds
+){
+
+  if(
+    !Array.isArray(prices) ||
+    !prices.length
+  ){
+
+    return [];
+
   }
 
-  if (req.method !== "GET") {
-    return send(res, 405, {
-      success: false,
-      message: "Method not allowed"
-    });
-  }
 
-  try {
+  const buckets =
+    new Map();
 
-    const symbol = String(
-      req.query.symbol || ""
-    ).toUpperCase();
 
-    const days = String(
-      req.query.days || "1"
-    );
+  for(
+    const point of prices
+  ){
 
-    const coinId = COINS[symbol];
+    if(
+      !Array.isArray(point) ||
+      point.length < 2
+    ){
 
-    if (!coinId) {
-
-      return send(res, 404, {
-        success: false,
-        message: "Candlestick data is not available for this asset",
-        symbol
-      });
+      continue;
 
     }
 
-    const allowedDays = ["1", "7", "30"];
 
-    const selectedDays =
-      allowedDays.includes(days)
-        ? days
-        : "1";
+    const timestamp =
+      Number(point[0]);
 
-    const url =
-      "https://api.coingecko.com/api/v3/coins/" +
-      encodeURIComponent(coinId) +
-      "/ohlc?vs_currency=usd&days=" +
-      selectedDays;
+    const price =
+      Number(point[1]);
 
-    const response = await fetch(url, {
-      headers: {
-        accept: "application/json"
-      }
-    });
 
-    if (!response.ok) {
+    if(
+      !Number.isFinite(timestamp) ||
+      !Number.isFinite(price) ||
+      price <= 0
+    ){
 
-      const errorText =
-        await response.text();
-
-      return send(res, response.status, {
-        success: false,
-        message: "CoinGecko OHLC request failed",
-        details: errorText
-      });
+      continue;
 
     }
 
-    const raw = await response.json();
 
-    if (!Array.isArray(raw)) {
-
-      return send(res, 502, {
-        success: false,
-        message: "Invalid OHLC response"
-      });
-
-    }
-
-    const candles = raw
-      .map(item => {
-
-        if (
-          !Array.isArray(item) ||
-          item.length < 5
-        ) {
-          return null;
-        }
-
-        return {
-          time: Math.floor(Number(item[0]) / 1000),
-          open: Number(item[1]),
-          high: Number(item[2]),
-          low: Number(item[3]),
-          close: Number(item[4])
-        };
-
-      })
-      .filter(Boolean)
-      .filter(c =>
-        Number.isFinite(c.time) &&
-        Number.isFinite(c.open) &&
-        Number.isFinite(c.high) &&
-        Number.isFinite(c.low) &&
-        Number.isFinite(c.close)
+    const seconds =
+      Math.floor(
+        timestamp / 1000
       );
 
-    return send(res, 200, {
-      success: true,
-      symbol,
-      coin_id: coinId,
-      days: selectedDays,
-      count: candles.length,
-      candles,
-      source: "CoinGecko"
+
+    const bucket =
+      Math.floor(
+        seconds / intervalSeconds
+      ) *
+      intervalSeconds;
+
+
+    if(
+      !buckets.has(bucket)
+    ){
+
+      buckets.set(
+        bucket,
+        {
+          time:bucket,
+          open:price,
+          high:price,
+          low:price,
+          close:price
+        }
+      );
+
+    }else{
+
+      const candle =
+        buckets.get(bucket);
+
+
+      candle.high =
+        Math.max(
+          candle.high,
+          price
+        );
+
+
+      candle.low =
+        Math.min(
+          candle.low,
+          price
+        );
+
+
+      candle.close =
+        price;
+
+    }
+
+  }
+
+
+  return Array
+    .from(
+      buckets.values()
+    )
+    .sort(
+      (a,b) =>
+        a.time - b.time
+    );
+
+}
+
+
+/*
+  Fetch market chart from CoinGecko.
+*/
+
+async function getMarketChart(
+  coinId,
+  days
+){
+
+  const url =
+    "https://api.coingecko.com/api/v3/coins/" +
+    encodeURIComponent(
+      coinId
+    ) +
+    "/market_chart?vs_currency=usd&days=" +
+    encodeURIComponent(
+      days
+    );
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        headers:{
+          "accept":
+            "application/json"
+        }
+      }
+    );
+
+
+  if(!response.ok){
+
+    const text =
+      await response.text();
+
+    throw new Error(
+      "CoinGecko HTTP " +
+      response.status +
+      ": " +
+      text.slice(0,300)
+    );
+
+  }
+
+
+  return await response.json();
+
+}
+
+
+/*
+  GET /api/candles
+
+  Examples:
+
+  /api/candles?symbol=BTC&interval=5m
+  /api/candles?symbol=BTC&interval=1h
+  /api/candles?symbol=BTC&interval=4h
+  /api/candles?symbol=BTC&interval=24h
+  /api/candles?symbol=BTC&interval=7d
+*/
+
+module.exports = async function handler(
+  req,
+  res
+){
+
+  /*
+    CORS
+  */
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+
+
+  if(
+    req.method === "OPTIONS"
+  ){
+
+    return res.status(200).end();
+
+  }
+
+
+  if(
+    req.method !== "GET"
+  ){
+
+    return res.status(405).json({
+      success:false,
+      error:"Method not allowed"
     });
 
-  } catch (error) {
+  }
 
-    console.error(error);
 
-    return send(res, 500, {
-      success: false,
-      message: "Server error",
-      error: error.message
+  try{
+
+    const symbol =
+      String(
+        req.query.symbol || ""
+      )
+      .trim()
+      .toUpperCase();
+
+
+    const interval =
+      String(
+        req.query.interval || "24h"
+      )
+      .trim()
+      .toLowerCase();
+
+
+    if(!symbol){
+
+      return res.status(400).json({
+        success:false,
+        error:"symbol is required"
+      });
+
+    }
+
+
+    if(
+      !COINS[symbol]
+    ){
+
+      return res.status(404).json({
+        success:false,
+        error:
+          "No CoinGecko mapping for " +
+          symbol
+      });
+
+    }
+
+
+    /*
+      Choose source period.
+
+      5m:
+      1 day source
+
+      1h:
+      1 day source
+
+      4h:
+      7 day source
+
+      24h:
+      30 day source
+
+      7d:
+      90 day source
+    */
+
+    let sourceDays = 1;
+    let intervalSeconds = 300;
+
+
+    if(interval === "5m"){
+
+      sourceDays = 1;
+      intervalSeconds = 5 * 60;
+
+    }
+
+    else if(interval === "1h"){
+
+      sourceDays = 1;
+      intervalSeconds = 60 * 60;
+
+    }
+
+    else if(interval === "4h"){
+
+      sourceDays = 7;
+      intervalSeconds = 4 * 60 * 60;
+
+    }
+
+    else if(interval === "24h"){
+
+      sourceDays = 30;
+      intervalSeconds = 24 * 60 * 60;
+
+    }
+
+    else if(interval === "7d"){
+
+      sourceDays = 90;
+      intervalSeconds = 7 * 24 * 60 * 60;
+
+    }
+
+    else{
+
+      return res.status(400).json({
+        success:false,
+        error:
+          "Invalid interval. Use 5m, 1h, 4h, 24h or 7d."
+      });
+
+    }
+
+
+    /*
+      Get price history.
+    */
+
+    const data =
+      await getMarketChart(
+        COINS[symbol],
+        sourceDays
+      );
+
+
+    if(
+      !data ||
+      !Array.isArray(
+        data.prices
+      ) ||
+      !data.prices.length
+    ){
+
+      return res.status(404).json({
+        success:false,
+        error:
+          "No market price history available"
+      });
+
+    }
+
+
+    /*
+      Convert prices to OHLC.
+    */
+
+    let candles =
+      buildCandles(
+        data.prices,
+        intervalSeconds
+      );
+
+
+    /*
+      Keep response reasonable.
+    */
+
+    const MAX_CANDLES = 500;
+
+
+    if(
+      candles.length >
+      MAX_CANDLES
+    ){
+
+      candles =
+        candles.slice(
+          candles.length -
+          MAX_CANDLES
+        );
+
+    }
+
+
+    return res.status(200).json({
+
+      success:true,
+
+      symbol:symbol,
+
+      coin_id:
+        COINS[symbol],
+
+      interval:interval,
+
+      source_days:
+        sourceDays,
+
+      count:
+        candles.length,
+
+      candles:candles,
+
+      source:"CoinGecko market_chart"
+
+    });
+
+
+  }catch(error){
+
+    console.error(
+      "CANDLES ERROR:",
+      error
+    );
+
+
+    return res.status(500).json({
+
+      success:false,
+
+      error:
+        "Unable to load candle data",
+
+      details:
+        String(
+          error.message ||
+          error
+        ).slice(0,300)
+
     });
 
   }
