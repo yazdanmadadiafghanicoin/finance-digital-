@@ -7,22 +7,32 @@
 
 <title>Digital Finance</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Lightweight Charts -->
+<script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
 *{
   box-sizing:border-box;
 }
 
-body{
+html,body{
   margin:0;
-  font-family:Arial,Tahoma,sans-serif;
+  padding:0;
   background:#07111f;
   color:#fff;
+  font-family:Arial,Tahoma,sans-serif;
+}
+
+body{
+  min-height:100vh;
 }
 
 button,input{
   font-family:inherit;
+}
+
+button{
+  cursor:pointer;
 }
 
 .app{
@@ -31,6 +41,10 @@ button,input{
   min-height:100vh;
   padding-bottom:80px;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 .header{
   padding:18px 16px;
@@ -54,6 +68,14 @@ button,input{
   border-radius:50%;
   font-size:20px;
 }
+
+.refresh:active{
+  transform:scale(.94);
+}
+
+/* =========================
+   GOLD
+========================= */
 
 .gold{
   margin:15px;
@@ -79,6 +101,10 @@ button,input{
   margin-top:5px;
 }
 
+/* =========================
+   SEARCH
+========================= */
+
 .search{
   margin:15px;
 }
@@ -97,6 +123,10 @@ button,input{
 .search input::placeholder{
   color:#8294a8;
 }
+
+/* =========================
+   MARKET
+========================= */
 
 .section-title{
   padding:5px 16px 12px;
@@ -136,7 +166,8 @@ button,input{
   justify-content:center;
   align-items:center;
   font-weight:bold;
-  font-size:13px;
+  font-size:11px;
+  overflow:hidden;
 }
 
 .coin-name{
@@ -172,6 +203,10 @@ button,input{
   background:linear-gradient(135deg,#0d2b20,#0d1d30);
 }
 
+/* =========================
+   LOADING / ERROR
+========================= */
+
 .loading{
   text-align:center;
   color:#8294a8;
@@ -184,12 +219,16 @@ button,input{
   background:#35171b;
   color:#ff8d96;
   border-radius:12px;
+  line-height:1.8;
 }
 
-/* DETAIL */
+/* =========================
+   DETAIL
+========================= */
 
 .detail{
   display:none;
+  min-height:100vh;
 }
 
 .detail-header{
@@ -199,6 +238,9 @@ button,input{
   gap:12px;
   background:#0b1a2b;
   border-bottom:1px solid #19334d;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
 .back{
@@ -208,7 +250,12 @@ button,input{
   border-radius:12px;
   background:#183b5d;
   color:white;
-  font-size:22px;
+  font-size:28px;
+  line-height:1;
+}
+
+.back:active{
+  transform:scale(.94);
 }
 
 .detail-name{
@@ -223,19 +270,27 @@ button,input{
 }
 
 .detail-main{
-  padding:20px 15px;
+  padding:20px 15px 5px;
 }
 
 .big-price{
   font-size:34px;
   font-weight:bold;
+  direction:ltr;
+  text-align:right;
 }
 
 .big-change{
   margin-top:7px;
   font-size:15px;
   font-weight:bold;
+  direction:ltr;
+  text-align:right;
 }
+
+/* =========================
+   CANDLE CHART
+========================= */
 
 .chart-card{
   margin:15px;
@@ -254,6 +309,7 @@ button,input{
 
 .chart-title{
   font-weight:bold;
+  font-size:15px;
 }
 
 .periods{
@@ -263,10 +319,11 @@ button,input{
 
 .period{
   border:0;
-  padding:7px 10px;
+  padding:7px 11px;
   border-radius:8px;
   background:#162d44;
   color:#aab8c6;
+  font-size:12px;
 }
 
 .period.active{
@@ -275,9 +332,44 @@ button,input{
 }
 
 .chart-wrap{
-  height:280px;
+  height:320px;
   position:relative;
+  direction:ltr;
+  width:100%;
+  overflow:hidden;
+  border-radius:10px;
 }
+
+#priceChart{
+  width:100%;
+  height:320px;
+  min-height:320px;
+}
+
+.chart-loading{
+  height:320px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#8294a8;
+  font-size:13px;
+}
+
+.chart-error{
+  height:320px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#ff8d96;
+  padding:20px;
+  font-size:13px;
+  line-height:1.8;
+}
+
+/* =========================
+   STATS
+========================= */
 
 .stats{
   display:grid;
@@ -302,7 +394,13 @@ button,input{
   margin-top:7px;
   font-weight:bold;
   font-size:15px;
+  direction:ltr;
+  text-align:right;
 }
+
+/* =========================
+   TRADE
+========================= */
 
 .trade-buttons{
   display:flex;
@@ -328,6 +426,15 @@ button,input{
   background:#b63842;
 }
 
+.buy:active,
+.sell:active{
+  transform:scale(.98);
+}
+
+/* =========================
+   NOTICE
+========================= */
+
 .notice{
   margin:15px;
   padding:13px;
@@ -337,6 +444,10 @@ button,input{
   font-size:12px;
   line-height:1.8;
 }
+
+/* =========================
+   BOTTOM NAV
+========================= */
 
 .bottom{
   position:fixed;
@@ -359,6 +470,7 @@ button,input{
   text-align:center;
   font-size:12px;
   cursor:pointer;
+  min-width:80px;
 }
 
 .nav-icon{
@@ -369,6 +481,29 @@ button,input{
 .nav.active{
   color:#36a8ff;
 }
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:480px){
+
+  .big-price{
+    font-size:30px;
+  }
+
+  .chart-wrap,
+  #priceChart{
+    height:290px;
+    min-height:290px;
+  }
+
+  .chart-loading,
+  .chart-error{
+    height:290px;
+  }
+
+}
 </style>
 </head>
 
@@ -376,27 +511,60 @@ button,input{
 
 <div class="app">
 
-  <!-- MAIN PAGE -->
+  <!-- =========================
+       MAIN PAGE
+  ========================== -->
+
   <div id="mainPage">
 
     <div class="header">
-      <div class="logo">💠 Digital Finance</div>
-      <button class="refresh" onclick="loadAll()">↻</button>
+
+      <div class="logo">
+        💠 Digital Finance
+      </div>
+
+      <button
+        class="refresh"
+        onclick="loadAll()"
+        title="تازه‌سازی"
+      >
+        ↻
+      </button>
+
     </div>
+
+    <!-- GOLD -->
 
     <div class="gold">
-      <div class="gold-title">🥇 طلای 24 عیار</div>
-      <div class="gold-price" id="goldPrice">در حال دریافت...</div>
-      <div class="gold-small">قیمت هر گرم به AFN</div>
+
+      <div class="gold-title">
+        🥇 طلای 24 عیار
+      </div>
+
+      <div
+        class="gold-price"
+        id="goldPrice"
+      >
+        در حال دریافت...
+      </div>
+
+      <div class="gold-small">
+        قیمت هر گرم به AFN
+      </div>
+
     </div>
 
+    <!-- SEARCH -->
+
     <div class="search">
+
       <input
         id="searchInput"
         type="text"
         placeholder="جستجوی ارز..."
         oninput="filterMarkets()"
       >
+
     </div>
 
     <div class="section-title">
@@ -404,43 +572,88 @@ button,input{
     </div>
 
     <div id="markets">
-      <div class="loading">در حال دریافت قیمت‌ها...</div>
+
+      <div class="loading">
+        در حال دریافت قیمت‌ها...
+      </div>
+
     </div>
 
   </div>
 
-  <!-- DETAIL PAGE -->
-  <div id="detailPage" class="detail">
+
+  <!-- =========================
+       DETAIL PAGE
+  ========================== -->
+
+  <div
+    id="detailPage"
+    class="detail"
+  >
+
+    <!-- DETAIL HEADER -->
 
     <div class="detail-header">
 
-      <button class="back" onclick="closeDetail()">‹</button>
+      <button
+        class="back"
+        onclick="closeDetail()"
+      >
+        ‹
+      </button>
 
       <div>
-        <div class="detail-name" id="detailName">Bitcoin</div>
-        <div class="detail-symbol" id="detailSymbol">BTC</div>
+
+        <div
+          class="detail-name"
+          id="detailName"
+        >
+          Bitcoin
+        </div>
+
+        <div
+          class="detail-symbol"
+          id="detailSymbol"
+        >
+          BTC
+        </div>
+
       </div>
 
     </div>
 
+
+    <!-- PRICE -->
+
     <div class="detail-main">
 
-      <div class="big-price" id="detailPrice">
+      <div
+        class="big-price"
+        id="detailPrice"
+      >
         $0
       </div>
 
-      <div class="big-change" id="detailChange">
+      <div
+        class="big-change"
+        id="detailChange"
+      >
         0.00%
       </div>
 
     </div>
+
+
+    <!-- =========================
+         CANDLE CHART
+    ========================== -->
 
     <div class="chart-card">
 
       <div class="chart-top">
 
         <div class="chart-title">
-          نمودار قیمت
+          📊 نمودار کندلی
         </div>
 
         <div class="periods">
@@ -466,34 +679,85 @@ button,input{
       </div>
 
       <div class="chart-wrap">
-        <canvas id="priceChart"></canvas>
+
+        <div id="priceChart"></div>
+
       </div>
 
     </div>
+
+
+    <!-- STATS -->
 
     <div class="stats">
 
       <div class="stat">
-        <div class="stat-label">قیمت فعلی</div>
-        <div class="stat-value" id="statCurrent">-</div>
+
+        <div class="stat-label">
+          قیمت فعلی
+        </div>
+
+        <div
+          class="stat-value"
+          id="statCurrent"
+        >
+          -
+        </div>
+
       </div>
 
-      <div class="stat">
-        <div class="stat-label">تغییر 24 ساعت</div>
-        <div class="stat-value" id="statChange">-</div>
-      </div>
 
       <div class="stat">
-        <div class="stat-label">بالاترین</div>
-        <div class="stat-value" id="statHigh">-</div>
+
+        <div class="stat-label">
+          تغییر 24 ساعت
+        </div>
+
+        <div
+          class="stat-value"
+          id="statChange"
+        >
+          -
+        </div>
+
       </div>
 
+
       <div class="stat">
-        <div class="stat-label">پایین‌ترین</div>
-        <div class="stat-value" id="statLow">-</div>
+
+        <div class="stat-label">
+          بالاترین
+        </div>
+
+        <div
+          class="stat-value"
+          id="statHigh"
+        >
+          -
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-label">
+          پایین‌ترین
+        </div>
+
+        <div
+          class="stat-value"
+          id="statLow"
+        >
+          -
+        </div>
+
       </div>
 
     </div>
+
+
+    <!-- TRADE -->
 
     <div class="trade-buttons">
 
@@ -513,49 +777,91 @@ button,input{
 
     </div>
 
+
     <div class="notice">
+
       قیمت‌ها از بازار جهانی دریافت می‌شوند.
-      نمودار برای نمایش روند قیمت استفاده می‌شود.
-      سیستم خرید و فروش را در مرحله بعد به کیف پول واقعی داخل Digital Finance متصل می‌کنیم.
+      نمودار کندلی از داده‌های OHLC دریافت می‌شود.
+      سیستم خرید و فروش در مرحله بعد به کیف پول و معاملات Digital Finance متصل می‌شود.
+
     </div>
 
   </div>
 
 </div>
 
-<!-- BOTTOM NAV -->
+
+<!-- =========================
+     BOTTOM NAV
+========================= -->
 
 <div class="bottom">
 
-  <div class="nav active" onclick="showMain()">
-    <div class="nav-icon">📈</div>
+  <div
+    class="nav active"
+    id="navMarket"
+    onclick="showMain()"
+  >
+
+    <div class="nav-icon">
+      📈
+    </div>
+
     بازار
+
   </div>
 
-  <div class="nav" onclick="tradeMessage('کیف پول')">
-    <div class="nav-icon">💰</div>
+
+  <div
+    class="nav"
+    onclick="tradeMessage('کیف پول')"
+  >
+
+    <div class="nav-icon">
+      💰
+    </div>
+
     کیف پول
+
   </div>
 
-  <div class="nav" onclick="tradeMessage('حساب')">
-    <div class="nav-icon">👤</div>
+
+  <div
+    class="nav"
+    onclick="tradeMessage('حساب')"
+  >
+
+    <div class="nav-icon">
+      👤
+    </div>
+
     حساب
+
   </div>
 
 </div>
 
+
 <script>
+
+/* =====================================================
+   CONFIG
+===================================================== */
 
 const API_BASE = "";
 
 let allMarkets = [];
 let selectedAsset = null;
-let priceChart = null;
+
+let candleChart = null;
+let candleSeries = null;
+
 let currentPeriod = 24;
 
-/* =========================
+
+/* =====================================================
    FORMAT PRICE
-========================= */
+===================================================== */
 
 function formatPrice(value){
 
@@ -565,287 +871,501 @@ function formatPrice(value){
     return "$0";
   }
 
+  if(n === 0){
+    return "$0";
+  }
+
   if(n < 0.000001){
+
     return "$" + n.toFixed(10);
+
   }
 
   if(n < 0.001){
+
     return "$" + n.toFixed(8);
+
   }
 
   if(n < 1){
+
     return "$" + n.toFixed(6);
+
   }
 
   if(n < 1000){
-    return "$" + n.toLocaleString("en-US",{
-      maximumFractionDigits:4
-    });
+
+    return "$" +
+      n.toLocaleString("en-US",{
+        maximumFractionDigits:4
+      });
+
   }
 
-  return "$" + n.toLocaleString("en-US",{
-    maximumFractionDigits:2
-  });
+  return "$" +
+    n.toLocaleString("en-US",{
+      maximumFractionDigits:2
+    });
 
 }
 
-/* =========================
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* =====================================================
    LOAD ALL
-========================= */
+===================================================== */
 
 async function loadAll(){
 
   try{
 
-    const marketsResponse = await fetch(
-      API_BASE + "/api?action=markets"
-    );
+    const marketsResponse =
+      await fetch(
+        API_BASE +
+        "/api?action=markets",
+        {
+          cache:"no-store"
+        }
+      );
 
-    const marketsData = await marketsResponse.json();
+    if(!marketsResponse.ok){
 
-    if(!marketsData.success){
-      throw new Error("Market API error");
+      throw new Error(
+        "Market HTTP " +
+        marketsResponse.status
+      );
+
     }
 
-    allMarkets = marketsData.markets || [];
+    const marketsData =
+      await marketsResponse.json();
+
+    if(!marketsData.success){
+
+      throw new Error(
+        "Market API error"
+      );
+
+    }
+
+    allMarkets =
+      marketsData.markets || [];
 
     renderMarkets(allMarkets);
 
+
+    /* =========================
+       GOLD
+    ========================== */
+
     try{
 
-      const goldResponse = await fetch(
-        API_BASE + "/api?action=gold"
-      );
+      const goldResponse =
+        await fetch(
+          API_BASE +
+          "/api?action=gold",
+          {
+            cache:"no-store"
+          }
+        );
 
-      const goldData = await goldResponse.json();
+      if(!goldResponse.ok){
+        throw new Error("Gold error");
+      }
 
-      if(goldData.success){
+      const goldData =
+        await goldResponse.json();
 
-        document.getElementById("goldPrice").textContent =
-          Number(goldData.price).toLocaleString("en-US") + " AFN";
+      if(
+        goldData.success &&
+        Number.isFinite(Number(goldData.price))
+      ){
+
+        document
+          .getElementById("goldPrice")
+          .textContent =
+          Number(goldData.price)
+            .toLocaleString("en-US") +
+          " AFN";
+
+      }else{
+
+        document
+          .getElementById("goldPrice")
+          .textContent =
+          "در دسترس نیست";
 
       }
 
     }catch(e){
 
-      document.getElementById("goldPrice").textContent =
+      document
+        .getElementById("goldPrice")
+        .textContent =
         "در دسترس نیست";
 
     }
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "LOAD ERROR:",
+      error
+    );
 
-    document.getElementById("markets").innerHTML =
-      '<div class="error">خطا در دریافت قیمت‌ها. دوباره تلاش کنید.</div>';
+    document
+      .getElementById("markets")
+      .innerHTML =
+      '<div class="error">' +
+      'خطا در دریافت قیمت‌ها.<br>' +
+      'لطفاً دوباره تلاش کنید.' +
+      '</div>';
 
   }
 
 }
 
-/* =========================
+
+/* =====================================================
    RENDER MARKETS
-========================= */
+===================================================== */
 
 function renderMarkets(list){
 
-  const container = document.getElementById("markets");
+  const container =
+    document.getElementById("markets");
 
-  if(!list.length){
+  if(!list || !list.length){
 
     container.innerHTML =
-      '<div class="loading">ارزی پیدا نشد.</div>';
+      '<div class="loading">' +
+      'ارزی پیدا نشد.' +
+      '</div>';
 
     return;
+
   }
 
-  container.innerHTML = list.map(asset => {
 
-    const price = Number(asset.price || 0);
+  container.innerHTML =
+    list.map(asset => {
 
-    const change = Number(
-      asset.change_24h ||
-      asset.change24h ||
-      asset.usd_24h_change ||
-      0
+      const price =
+        Number(asset.price || 0);
+
+      const change =
+        Number(
+          asset.change_24h ??
+          asset.change24h ??
+          asset.usd_24h_change ??
+          0
+        );
+
+
+      let changeClass = "";
+
+      if(change > 0){
+        changeClass = "up";
+      }
+
+      if(change < 0){
+        changeClass = "down";
+      }
+
+
+      let changeText = "";
+
+      if(Number.isFinite(change)){
+
+        changeText =
+          (change > 0 ? "+" : "") +
+          change.toFixed(2) +
+          "%";
+
+      }else{
+
+        changeText =
+          "قیمت فعلی";
+
+      }
+
+
+      const symbol =
+        String(asset.symbol || "")
+          .toUpperCase();
+
+      const afcClass =
+        symbol === "AFC"
+          ? " afc"
+          : "";
+
+
+      return `
+
+        <div
+          class="market${afcClass}"
+          data-symbol="${escapeHtml(symbol)}"
+        >
+
+          <div class="market-left">
+
+            <div class="coin-icon">
+              ${escapeHtml(symbol)}
+            </div>
+
+            <div>
+
+              <div class="coin-name">
+                ${escapeHtml(asset.name || symbol)}
+              </div>
+
+              <div class="coin-symbol">
+                ${escapeHtml(symbol)}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="price">
+
+            <div>
+              ${formatPrice(price)}
+            </div>
+
+            <div class="change ${changeClass}">
+              ${changeText}
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+
+  /*
+    We attach click events after rendering.
+    This is safer than putting the entire JSON
+    object directly inside onclick.
+  */
+
+  const elements =
+    container.querySelectorAll(".market");
+
+
+  elements.forEach((element,index) => {
+
+    element.addEventListener(
+      "click",
+      function(){
+
+        openDetail(
+          list[index]
+        );
+
+      }
     );
 
-    let changeClass = "";
-
-    if(change > 0){
-      changeClass = "up";
-    }
-
-    if(change < 0){
-      changeClass = "down";
-    }
-
-    let changeText = "";
-
-    if(change !== 0){
-
-      changeText =
-        (change > 0 ? "+" : "") +
-        change.toFixed(2) +
-        "%";
-
-    }else{
-
-      changeText = "قیمت فعلی";
-
-    }
-
-    const afcClass =
-      asset.symbol === "AFC" ? " afc" : "";
-
-    return `
-
-      <div
-        class="market${afcClass}"
-        onclick='openDetail(${JSON.stringify(asset)})'
-      >
-
-        <div class="market-left">
-
-          <div class="coin-icon">
-            ${escapeHtml(asset.symbol)}
-          </div>
-
-          <div>
-
-            <div class="coin-name">
-              ${escapeHtml(asset.name)}
-            </div>
-
-            <div class="coin-symbol">
-              ${escapeHtml(asset.symbol)}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="price">
-
-          <div>
-            ${formatPrice(price)}
-          </div>
-
-          <div class="change ${changeClass}">
-            ${changeText}
-          </div>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }).join("");
+  });
 
 }
 
-/* =========================
+
+/* =====================================================
    SEARCH
-========================= */
+===================================================== */
 
 function filterMarkets(){
 
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
   const query =
-    document.getElementById("searchInput")
-      .value
+    input.value
       .trim()
       .toLowerCase();
+
 
   if(!query){
 
     renderMarkets(allMarkets);
 
     return;
+
   }
 
-  const filtered = allMarkets.filter(asset => {
 
-    return (
-      String(asset.symbol)
-        .toLowerCase()
-        .includes(query)
-      ||
-      String(asset.name)
-        .toLowerCase()
-        .includes(query)
-    );
+  const filtered =
+    allMarkets.filter(asset => {
 
-  });
+      const symbol =
+        String(
+          asset.symbol || ""
+        ).toLowerCase();
+
+      const name =
+        String(
+          asset.name || ""
+        ).toLowerCase();
+
+      return (
+        symbol.includes(query) ||
+        name.includes(query)
+      );
+
+    });
+
 
   renderMarkets(filtered);
 
 }
 
-/* =========================
+
+/* =====================================================
    OPEN DETAIL
-========================= */
+===================================================== */
 
 function openDetail(asset){
 
-  selectedAsset = asset;
+  if(!asset){
+    return;
+  }
 
-  document.getElementById("mainPage").style.display =
+  selectedAsset =
+    asset;
+
+
+  document
+    .getElementById("mainPage")
+    .style.display =
     "none";
 
-  document.getElementById("detailPage").style.display =
+
+  document
+    .getElementById("detailPage")
+    .style.display =
     "block";
 
-  document.getElementById("detailName").textContent =
-    asset.name;
 
-  document.getElementById("detailSymbol").textContent =
-    asset.symbol;
+  document
+    .getElementById("detailName")
+    .textContent =
+    asset.name || asset.symbol;
 
-  const price = Number(asset.price || 0);
 
-  document.getElementById("detailPrice").textContent =
+  document
+    .getElementById("detailSymbol")
+    .textContent =
+    String(asset.symbol || "")
+      .toUpperCase();
+
+
+  const price =
+    Number(asset.price || 0);
+
+
+  document
+    .getElementById("detailPrice")
+    .textContent =
     formatPrice(price);
 
-  const change = Number(
-    asset.change_24h ||
-    asset.change24h ||
-    asset.usd_24h_change ||
-    0
-  );
+
+  const change =
+    Number(
+      asset.change_24h ??
+      asset.change24h ??
+      asset.usd_24h_change ??
+      0
+    );
+
 
   const changeElement =
-    document.getElementById("detailChange");
+    document.getElementById(
+      "detailChange"
+    );
+
 
   changeElement.textContent =
     (change >= 0 ? "+" : "") +
     change.toFixed(2) +
     "%";
 
+
   changeElement.className =
     "big-change " +
-    (change >= 0 ? "up" : "down");
+    (
+      change >= 0
+        ? "up"
+        : "down"
+    );
 
-  document.getElementById("statCurrent").textContent =
+
+  document
+    .getElementById("statCurrent")
+    .textContent =
     formatPrice(price);
 
-  document.getElementById("statChange").textContent =
+
+  document
+    .getElementById("statChange")
+    .textContent =
     (change >= 0 ? "+" : "") +
     change.toFixed(2) +
     "%";
 
-  document.getElementById("statHigh").textContent =
+
+  document
+    .getElementById("statHigh")
+    .textContent =
     "در حال دریافت...";
 
-  document.getElementById("statLow").textContent =
+
+  document
+    .getElementById("statLow")
+    .textContent =
     "در حال دریافت...";
 
-  currentPeriod = 24;
+
+  currentPeriod =
+    24;
+
 
   setActivePeriod();
 
-  loadChart(asset.symbol,24);
+
+  showChartLoading();
+
+
+  /*
+    Load REAL OHLC candles
+    from our backend.
+  */
+
+  loadChart(
+    asset.symbol,
+    24
+  );
+
 
   window.scrollTo({
     top:0,
@@ -854,25 +1374,31 @@ function openDetail(asset){
 
 }
 
-/* =========================
+
+/* =====================================================
    CLOSE DETAIL
-========================= */
+===================================================== */
 
 function closeDetail(){
 
-  document.getElementById("detailPage").style.display =
+  document
+    .getElementById("detailPage")
+    .style.display =
     "none";
 
-  document.getElementById("mainPage").style.display =
+
+  document
+    .getElementById("mainPage")
+    .style.display =
     "block";
 
-  if(priceChart){
 
-    priceChart.destroy();
+  destroyChart();
 
-    priceChart = null;
 
-  }
+  selectedAsset =
+    null;
+
 
   window.scrollTo({
     top:0,
@@ -881,9 +1407,74 @@ function closeDetail(){
 
 }
 
-/* =========================
-   CHART
-========================= */
+
+/* =====================================================
+   DESTROY CHART
+===================================================== */
+
+function destroyChart(){
+
+  if(candleChart){
+
+    try{
+
+      candleChart.remove();
+
+    }catch(e){
+
+      console.log(e);
+
+    }
+
+  }
+
+  candleChart = null;
+  candleSeries = null;
+
+}
+
+
+/* =====================================================
+   SHOW CHART LOADING
+===================================================== */
+
+function showChartLoading(){
+
+  const box =
+    document.getElementById(
+      "priceChart"
+    );
+
+  box.innerHTML =
+    '<div class="chart-loading">' +
+    'در حال دریافت نمودار کندلی...' +
+    '</div>';
+
+}
+
+
+/* =====================================================
+   SHOW CHART ERROR
+===================================================== */
+
+function showChartError(message){
+
+  const box =
+    document.getElementById(
+      "priceChart"
+    );
+
+  box.innerHTML =
+    '<div class="chart-error">' +
+    escapeHtml(message) +
+    '</div>';
+
+}
+
+
+/* =====================================================
+   LOAD CANDLE CHART
+===================================================== */
 
 async function loadChart(symbol,hours){
 
@@ -891,337 +1482,538 @@ async function loadChart(symbol,hours){
     return;
   }
 
-  const coinId =
-    getCoinGeckoId(symbol);
 
-  const canvas =
-    document.getElementById("priceChart");
+  destroyChart();
 
-  if(priceChart){
 
-    priceChart.destroy();
-
-    priceChart = null;
-
-  }
-
-  if(!coinId){
-
-    drawFallbackChart(
-      Number(selectedAsset.price || 0),
-      hours
+  const container =
+    document.getElementById(
+      "priceChart"
     );
+
+
+  container.innerHTML =
+    "";
+
+
+  /*
+    Backend accepts:
+    days=1
+    days=7
+  */
+
+  const days =
+    hours === 24
+      ? 1
+      : 7;
+
+
+  const cleanSymbol =
+    String(symbol || "")
+      .trim()
+      .toUpperCase();
+
+
+  /*
+    AFC is not a real global market yet.
+    Therefore we do NOT create fake candles.
+  */
+
+  if(cleanSymbol === "AFC"){
+
+    showChartError(
+      "برای AFC هنوز بازار واقعی و داده OHLC وجود ندارد."
+    );
+
+    document
+      .getElementById("statHigh")
+      .textContent =
+      "—";
+
+    document
+      .getElementById("statLow")
+      .textContent =
+      "—";
 
     return;
 
   }
 
+
   try{
 
-    /*
-      CoinGecko market chart.
-
-      We call it directly from the browser.
-      If the public endpoint is unavailable,
-      fallback chart will still display.
-    */
-
-    const days =
-      hours === 24 ? 1 : 7;
-
-    const url =
-      "https://api.coingecko.com/api/v3/coins/" +
-      encodeURIComponent(coinId) +
-      "/market_chart?vs_currency=usd&days=" +
-      days;
-
     const response =
-      await fetch(url);
+      await fetch(
+        API_BASE +
+        "/api/candles?symbol=" +
+        encodeURIComponent(cleanSymbol) +
+        "&days=" +
+        days,
+        {
+          cache:"no-store"
+        }
+      );
+
 
     if(!response.ok){
 
       throw new Error(
-        "Chart API unavailable"
+        "Candle HTTP " +
+        response.status
       );
 
     }
+
 
     const data =
       await response.json();
 
+
     if(
       !data ||
-      !Array.isArray(data.prices) ||
-      !data.prices.length
+      !data.success ||
+      !Array.isArray(data.candles) ||
+      !data.candles.length
     ){
 
       throw new Error(
-        "No chart data"
+        data?.error ||
+        "No candle data"
       );
 
     }
 
-    const points =
-      data.prices;
 
-    const labels =
-      points.map(p =>
-        new Date(p[0]).toLocaleTimeString(
-          "fa-AF",
-          {
-            hour:"2-digit",
-            minute:"2-digit"
-          }
-        )
+    const candles =
+      normalizeCandles(
+        data.candles
       );
 
-    const values =
-      points.map(p =>
-        Number(p[1])
+
+    if(!candles.length){
+
+      throw new Error(
+        "داده کندلی معتبر دریافت نشد."
       );
 
-    updateStats(values);
+    }
 
-    priceChart =
-      new Chart(canvas,{
 
-        type:"line",
+    /*
+      Create Lightweight Chart
+    */
 
-        data:{
+    candleChart =
+      LightweightCharts.createChart(
+        container,
+        {
 
-          labels:labels,
+          width:
+            container.clientWidth,
 
-          datasets:[{
+          height:320,
 
-            data:values,
-
-            borderWidth:2,
-
-            pointRadius:0,
-
-            tension:.25,
-
-            fill:false
-
-          }]
-
-        },
-
-        options:{
-
-          responsive:true,
-
-          maintainAspectRatio:false,
-
-          plugins:{
-
-            legend:{
-              display:false
-            }
-
+          layout:{
+            background:{
+              type:
+                LightweightCharts.ColorType.Solid,
+              color:
+                "#0d1d30"
+            },
+            textColor:"#8294a8"
           },
 
-          scales:{
-
-            x:{
-              display:false
+          grid:{
+            vertLines:{
+              color:
+                "rgba(255,255,255,.04)"
             },
-
-            y:{
-
-              ticks:{
-
-                color:"#8294a8",
-
-                callback:function(value){
-
-                  return formatPrice(value);
-
-                }
-
-              },
-
-              grid:{
-                color:"rgba(255,255,255,.06)"
-              }
-
+            horzLines:{
+              color:
+                "rgba(255,255,255,.06)"
             }
+          },
 
+          crosshair:{
+            mode:
+              LightweightCharts.CrosshairMode.Normal
+          },
+
+          rightPriceScale:{
+            borderColor:
+              "#19334d"
+          },
+
+          timeScale:{
+            borderColor:
+              "#19334d",
+            timeVisible:true,
+            secondsVisible:false
+          },
+
+          localization:{
+            priceFormatter:
+              function(price){
+                return formatChartPrice(price);
+              }
           }
 
         }
+      );
+
+
+    /*
+      Candlestick series
+    */
+
+    candleSeries =
+      candleChart.addCandlestickSeries({
+
+        upColor:"#2bd576",
+
+        downColor:"#ff5964",
+
+        borderUpColor:"#2bd576",
+
+        borderDownColor:"#ff5964",
+
+        wickUpColor:"#2bd576",
+
+        wickDownColor:"#ff5964"
 
       });
 
+
+    candleSeries.setData(
+      candles
+    );
+
+
+    /*
+      Fit chart to available data
+    */
+
+    candleChart
+      .timeScale()
+      .fitContent();
+
+
+    /*
+      Update high / low from REAL candles
+    */
+
+    updateCandleStats(
+      candles
+    );
+
+
+    /*
+      Resize automatically
+    */
+
+    setTimeout(
+      resizeCandleChart,
+      100
+    );
+
+
   }catch(error){
 
-    console.log(
-      "Live chart unavailable:",
+    console.error(
+      "CANDLE ERROR:",
       error
     );
 
-    const current =
-      Number(selectedAsset.price || 0);
 
-    drawFallbackChart(
-      current,
-      hours
+    showChartError(
+      "داده نمودار فعلاً در دسترس نیست. دوباره تلاش کنید."
     );
+
+
+    document
+      .getElementById("statHigh")
+      .textContent =
+      "—";
+
+
+    document
+      .getElementById("statLow")
+      .textContent =
+      "—";
 
   }
 
 }
 
-/* =========================
-   FALLBACK CHART
-========================= */
 
-function drawFallbackChart(current,hours){
+/* =====================================================
+   NORMALIZE CANDLES
+===================================================== */
 
-  const canvas =
-    document.getElementById("priceChart");
+function normalizeCandles(data){
 
-  const count =
-    hours === 24 ? 24 : 42;
+  const result = [];
 
-  const values = [];
 
-  let value = current;
+  data.forEach(item => {
 
-  for(let i=0;i<count;i++){
+    if(!item){
+      return;
+    }
 
-    const movement =
-      (Math.random() - .5) *
-      Math.max(current * .03,0.000001);
 
-    value =
-      Math.max(
-        current * .5,
-        value + movement
-      );
+    const time =
+      Number(item.time);
 
-    values.push(value);
 
-  }
+    const open =
+      Number(item.open);
 
-  values[values.length-1] =
-    current;
 
-  const labels =
-    values.map((_,i) =>
-      i + 1
-    );
+    const high =
+      Number(item.high);
 
-  updateStats(values);
 
-  priceChart =
-    new Chart(canvas,{
+    const low =
+      Number(item.low);
 
-      type:"line",
 
-      data:{
+    const close =
+      Number(item.close);
 
-        labels:labels,
 
-        datasets:[{
+    if(
+      !Number.isFinite(time) ||
+      !Number.isFinite(open) ||
+      !Number.isFinite(high) ||
+      !Number.isFinite(low) ||
+      !Number.isFinite(close)
+    ){
 
-          data:values,
+      return;
 
-          borderWidth:2,
+    }
 
-          pointRadius:0,
 
-          tension:.3,
+    /*
+      Lightweight Charts requires
+      Unix timestamp in seconds.
+    */
 
-          fill:false
+    let seconds =
+      Math.floor(time);
 
-        }]
 
-      },
+    if(seconds > 100000000000){
 
-      options:{
+      seconds =
+        Math.floor(
+          seconds / 1000
+        );
 
-        responsive:true,
+    }
 
-        maintainAspectRatio:false,
 
-        plugins:{
+    result.push({
 
-          legend:{
-            display:false
-          }
+      time:seconds,
 
-        },
+      open:open,
 
-        scales:{
+      high:high,
 
-          x:{
-            display:false
-          },
+      low:low,
 
-          y:{
-
-            ticks:{
-
-              color:"#8294a8",
-
-              callback:function(value){
-
-                return formatPrice(value);
-
-              }
-
-            },
-
-            grid:{
-              color:"rgba(255,255,255,.06)"
-            }
-
-          }
-
-        }
-
-      }
+      close:close
 
     });
 
+  });
+
+
+  /*
+    Remove duplicate timestamps.
+  */
+
+  const unique =
+    new Map();
+
+
+  result.forEach(candle => {
+
+    unique.set(
+      candle.time,
+      candle
+    );
+
+  });
+
+
+  return Array
+    .from(unique.values())
+    .sort(
+      (a,b) =>
+        a.time - b.time
+    );
+
 }
 
-/* =========================
-   UPDATE STATS
-========================= */
 
-function updateStats(values){
+/* =====================================================
+   CHART PRICE FORMAT
+===================================================== */
 
-  if(!values || !values.length){
-    return;
+function formatChartPrice(value){
+
+  const n =
+    Number(value);
+
+
+  if(!Number.isFinite(n)){
+    return "0";
   }
 
-  const high =
-    Math.max(...values);
 
-  const low =
-    Math.min(...values);
+  if(n < 0.000001){
 
-  document.getElementById("statHigh").textContent =
-    formatPrice(high);
+    return n.toFixed(10);
 
-  document.getElementById("statLow").textContent =
-    formatPrice(low);
+  }
+
+
+  if(n < 0.001){
+
+    return n.toFixed(8);
+
+  }
+
+
+  if(n < 1){
+
+    return n.toFixed(6);
+
+  }
+
+
+  if(n < 1000){
+
+    return n.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:4
+      }
+    );
+
+  }
+
+
+  return n.toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:2
+    }
+  );
 
 }
 
-/* =========================
-   PERIOD
-========================= */
+
+/* =====================================================
+   UPDATE CANDLE STATS
+===================================================== */
+
+function updateCandleStats(candles){
+
+  if(
+    !candles ||
+    !candles.length
+  ){
+
+    return;
+
+  }
+
+
+  let high =
+    -Infinity;
+
+
+  let low =
+    Infinity;
+
+
+  candles.forEach(candle => {
+
+    if(
+      Number.isFinite(
+        candle.high
+      )
+    ){
+
+      high =
+        Math.max(
+          high,
+          candle.high
+        );
+
+    }
+
+
+    if(
+      Number.isFinite(
+        candle.low
+      )
+    ){
+
+      low =
+        Math.min(
+          low,
+          candle.low
+        );
+
+    }
+
+  });
+
+
+  if(Number.isFinite(high)){
+
+    document
+      .getElementById("statHigh")
+      .textContent =
+      formatPrice(high);
+
+  }
+
+
+  if(Number.isFinite(low)){
+
+    document
+      .getElementById("statLow")
+      .textContent =
+      formatPrice(low);
+
+  }
+
+}
+
+
+/* =====================================================
+   PERIOD CHANGE
+===================================================== */
 
 function changePeriod(hours){
 
-  currentPeriod = hours;
+  currentPeriod =
+    hours;
+
 
   setActivePeriod();
 
+
   if(selectedAsset){
+
+    showChartLoading();
+
 
     loadChart(
       selectedAsset.symbol,
@@ -1232,6 +2024,11 @@ function changePeriod(hours){
 
 }
 
+
+/* =====================================================
+   ACTIVE PERIOD
+===================================================== */
+
 function setActivePeriod(){
 
   document
@@ -1240,6 +2037,7 @@ function setActivePeriod(){
       "active",
       currentPeriod === 24
     );
+
 
   document
     .getElementById("btn7")
@@ -1250,129 +2048,56 @@ function setActivePeriod(){
 
 }
 
-/* =========================
-   COINGECKO IDs
-========================= */
 
-function getCoinGeckoId(symbol){
+/* =====================================================
+   RESIZE CHART
+===================================================== */
 
-  const ids = {
+function resizeCandleChart(){
 
-    BTC:"bitcoin",
-    ETH:"ethereum",
-    BNB:"binancecoin",
-    SOL:"solana",
-    XRP:"ripple",
-    DOGE:"dogecoin",
-    ADA:"cardano",
-    AVAX:"avalanche-2",
-    TRX:"tron",
-    LINK:"chainlink",
-    DOT:"polkadot",
-    MATIC:"matic-network",
-    SHIB:"shiba-inu",
-    LTC:"litecoin",
-    BCH:"bitcoin-cash",
-    UNI:"uniswap",
-    ATOM:"cosmos",
-    ETC:"ethereum-classic",
-    XLM:"stellar",
-    FIL:"filecoin",
-    APT:"aptos",
-    ARB:"arbitrum",
-    OP:"optimism",
-    NEAR:"near",
-    ALGO:"algorand",
-    VET:"vechain",
-    ICP:"internet-computer",
-    HBAR:"hedera-hashgraph",
-    SAND:"the-sandbox",
-    MANA:"decentraland",
-    AAVE:"aave",
-    MKR:"maker",
-    GRT:"the-graph",
-    THETA:"theta",
-    EOS:"eos",
-    XTZ:"tezos",
-    FLOW:"flow",
-    EGLD:"elrond-erd-2",
-    AXS:"axie-infinity",
-    SNX:"havven",
-    CRV:"curve-dao-token",
-    LDO:"lido-staked-ether",
-    RUNE:"thorchain",
-    INJ:"injective-protocol",
-    SUI:"sui",
-    SEI:"sei-network",
-    TIA:"celestia",
-    KAS:"kaspa",
-    PEPE:"pepe",
-    FLOKI:"floki",
-    BONK:"bonk",
-    WIF:"dogwifcoin",
-    JASMY:"jasmycoin",
-    IOTA:"iota",
-    NEO:"neo",
-    QTUM:"qtum",
-    DASH:"dash",
-    ZEC:"zcash",
-    XMR:"monero",
-    KAVA:"kava",
-    ONE:"harmony",
-    BAT:"basic-attention-token",
-    ENJ:"enjincoin",
-    CHZ:"chiliz",
-    HOT:"holotoken",
-    ZIL:"zilliqa",
-    CELO:"celo",
-    MINA:"mina-protocol",
-    ROSE:"oasis-network",
-    KSM:"kusama",
-    COMP:"compound-governance-token",
-    YFI:"yearn-finance",
-    SUSHI:"sushi",
-    "1INCH":"1inch",
-    ENS:"ethereum-name-service",
-    IMX:"immutable-x",
-    GALA:"gala",
-    APE:"apecoin",
-    GMT:"stepn",
-    LUNC:"terra-luna",
-    USTC:"terraclassicusd",
-    FTM:"fantom",
-    SFP:"safepal",
-    CAKE:"pancakeswap-token",
-    TWT:"trust-wallet-token",
-    MASK:"mask-network",
-    WOO:"woo-network",
-    ANKR:"ankr",
-    SKL:"skale",
-    LPT:"livepeer",
-    AR:"arweave",
-    STX:"blockstack",
-    RPL:"rocket-pool",
-    BLUR:"blur",
-    CYBER:"cyberconnect",
-    JUP:"jupiter-exchange-solana",
-    WLD:"worldcoin-wld",
-    ONDO:"ondo-finance",
-    PYTH:"pyth-network",
-    ENA:"ethena",
-    TAO:"bittensor",
-    QNT:"quant-network",
-    MANTA:"manta-network",
-    FET:"fetch-ai",
-    RNDR:"render-token"
+  if(
+    !candleChart ||
+    !document.getElementById(
+      "priceChart"
+    )
+  ){
 
-  };
+    return;
 
-  return ids[symbol] || null;
+  }
+
+
+  const container =
+    document.getElementById(
+      "priceChart"
+    );
+
+
+  try{
+
+    candleChart.resize(
+      container.clientWidth,
+      320
+    );
+
+  }catch(e){
+
+    console.log(e);
+
+  }
 
 }
 
-/* =========================
-   BUTTONS
-========================= */
+
+window.addEventListener(
+  "resize",
+  resizeCandleChart
+);
+
+
+/* =====================================================
+   TRADE BUTTON
+===================================================== */
 
 function tradeMessage(action){
 
@@ -1383,9 +2108,10 @@ function tradeMessage(action){
 
 }
 
-/* =========================
+
+/* =====================================================
    MAIN
-========================= */
+===================================================== */
 
 function showMain(){
 
@@ -1393,24 +2119,10 @@ function showMain(){
 
 }
 
-/* =========================
-   HTML SECURITY
-========================= */
 
-function escapeHtml(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-/* =========================
+/* =====================================================
    START
-========================= */
+===================================================== */
 
 loadAll();
 
