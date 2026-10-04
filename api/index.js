@@ -744,6 +744,47 @@ module.exports = async (req, res) => {
     }
 
     const action = getAction(req);
+    // -----------------------------------------------
+    // DIRECT MARKETS ENDPOINT
+    // GET /api/markets
+    // -----------------------------------------------
+
+    const requestPath = (req.url || "").split("?")[0];
+
+    if (
+      req.method === "GET" &&
+      requestPath.endsWith("/markets")
+    ) {
+      await setupDatabase();
+
+      const markets = await getMarkets();
+
+      return json(res, 200, {
+        success: true,
+        count: markets.length,
+        markets
+      });
+    }
+
+    // -----------------------------------------------
+    // GOLD
+    // GET /api/gold
+    // -----------------------------------------------
+
+    if (
+      req.method === "GET" &&
+      requestPath.endsWith("/gold")
+    ) {
+      return json(res, 200, {
+        success: true,
+        symbol: "GOLD",
+        name: "24K Gold",
+        price: 6850,
+        currency: "AFN",
+        unit: "gram",
+        purity: "24K"
+      });
+    }
 
     // -----------------------------------------------
     // MARKETS
