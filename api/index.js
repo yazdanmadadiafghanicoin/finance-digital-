@@ -2,10 +2,15 @@ const { neon } = require("@neondatabase/serverless");
 
 const sql = neon(process.env.DF_DATABASE_URL);
 
+/* =========================================================
+   DIGITAL FINANCE
+   COMPLETE BACKEND
+   ========================================================= */
+
 const DEMO_STARTING_USDT = 10000;
 
 /* =========================================================
-   COINGECKO COINS
+   COINGECKO IDs
    ========================================================= */
 
 const COINS = {
@@ -14,1678 +19,1158 @@ const COINS = {
   BNB: "binancecoin",
   SOL: "solana",
   XRP: "ripple",
-  DOGE: "dogecoin",
   ADA: "cardano",
-  AVAX: "avalanche-2",
+  DOGE: "dogecoin",
   TRX: "tron",
-  LINK: "chainlink",
+  TON: "the-open-network",
+  AVAX: "avalanche-2",
   DOT: "polkadot",
-  MATIC: "matic-network",
-  SHIB: "shiba-inu",
+  LINK: "chainlink",
   LTC: "litecoin",
   BCH: "bitcoin-cash",
   UNI: "uniswap",
-  ATOM: "cosmos",
-  ETC: "ethereum-classic",
-  XLM: "stellar",
-  FIL: "filecoin",
-  APT: "aptos",
-  ARB: "arbitrum",
-  OP: "optimism",
-  NEAR: "near",
-  ALGO: "algorand",
-  VET: "vechain",
-  ICP: "internet-computer",
-  HBAR: "hedera-hashgraph",
-  SAND: "the-sandbox",
-  MANA: "decentraland",
-  AAVE: "aave",
-  MKR: "maker",
-  GRT: "the-graph",
-  THETA: "theta-token",
-  EOS: "eos",
-  XTZ: "tezos",
-  FLOW: "flow",
-  EGLD: "elrond-erd-2",
-  AXS: "axie-infinity",
-  SNX: "havven",
-  CRV: "curve-dao-token",
-  LDO: "lido-staked-ether",
-  RUNE: "thorchain",
-  INJ: "injective-protocol",
-  SUI: "sui",
-  SEI: "sei-network",
-  TIA: "celestia",
-  KAS: "kaspa",
-  PEPE: "pepe",
-  FLOKI: "floki",
-  BONK: "bonk",
-  WIF: "dogwifhat",
-  JASMY: "jasmycoin",
-  IOTA: "iota",
-  NEO: "neo",
-  QTUM: "qtum",
-  DASH: "dash",
-  ZEC: "zcash",
-  XMR: "monero",
-  KAVA: "kava",
-  ONE: "harmony",
-  BAT: "basic-attention-token",
-  ENJ: "enjincoin",
-  CHZ: "chiliz",
-  HOT: "holotoken",
-  ZIL: "zilliqa",
-  CELO: "celo",
-  MINA: "mina-protocol",
-  ROSE: "oasis-network",
-  KSM: "kusama",
-  COMP: "compound-governance-token",
-  YFI: "yearn-finance",
-  SUSHI: "sushi",
-  "1INCH": "1inch",
-  ENS: "ethereum-name-service",
-  IMX: "immutable-x",
-  GALA: "gala",
-  APE: "apecoin",
-  GMT: "stepn",
-  LUNC: "terra-luna",
-  USTC: "terrausd",
-  FTM: "fantom",
-  SFP: "safepal",
-  CAKE: "pancakeswap-token",
-  TWT: "trust-wallet-token",
-  MASK: "mask-network",
-  WOO: "woo-network",
-  ANKR: "ankr",
-  SKL: "skale",
-  LPT: "livepeer",
-  AR: "arweave",
-  STX: "blockstack",
-  RPL: "rocket-pool",
-  BLUR: "blur",
-  CYBER: "cyberconnect",
-  JUP: "jupiter-exchange-solana",
-  WLD: "worldcoin-wld",
-  ONDO: "ondo-finance",
-  PYTH: "pyth-network",
-  ENA: "ethena",
-  TAO: "bittensor",
-  QNT: "quant-network",
-  MANTA: "manta-network",
-  FET: "fetch-ai",
-  RNDR: "render-token"
+  MATIC: "matic-network"
 };
-
 
 /* =========================================================
-   ASSET NAMES
+   HELPERS
    ========================================================= */
 
-const NAMES = {
-  BTC: "Bitcoin",
-  ETH: "Ethereum",
-  BNB: "BNB",
-  SOL: "Solana",
-  XRP: "XRP",
-  DOGE: "Dogecoin",
-  ADA: "Cardano",
-  AVAX: "Avalanche",
-  TRX: "TRON",
-  LINK: "Chainlink",
-  DOT: "Polkadot",
-  MATIC: "Polygon",
-  SHIB: "Shiba Inu",
-  LTC: "Litecoin",
-  BCH: "Bitcoin Cash",
-  UNI: "Uniswap",
-  ATOM: "Cosmos",
-  ETC: "Ethereum Classic",
-  XLM: "Stellar",
-  FIL: "Filecoin",
-  APT: "Aptos",
-  ARB: "Arbitrum",
-  OP: "Optimism",
-  NEAR: "NEAR Protocol",
-  ALGO: "Algorand",
-  VET: "VeChain",
-  ICP: "Internet Computer",
-  HBAR: "Hedera",
-  SAND: "The Sandbox",
-  MANA: "Decentraland",
-  AAVE: "Aave",
-  MKR: "Maker",
-  GRT: "The Graph",
-  THETA: "Theta Network",
-  EOS: "EOS",
-  XTZ: "Tezos",
-  FLOW: "Flow",
-  EGLD: "MultiversX",
-  AXS: "Axie Infinity",
-  SNX: "Synthetix",
-  CRV: "Curve",
-  LDO: "Lido DAO",
-  RUNE: "THORChain",
-  INJ: "Injective",
-  SUI: "Sui",
-  SEI: "Sei",
-  TIA: "Celestia",
-  KAS: "Kaspa",
-  PEPE: "Pepe",
-  FLOKI: "Floki",
-  BONK: "Bonk",
-  WIF: "dogwifhat",
-  JASMY: "JasmyCoin",
-  IOTA: "IOTA",
-  NEO: "NEO",
-  QTUM: "Qtum",
-  DASH: "Dash",
-  ZEC: "Zcash",
-  XMR: "Monero",
-  KAVA: "Kava",
-  ONE: "Harmony",
-  BAT: "Basic Attention Token",
-  ENJ: "Enjin Coin",
-  CHZ: "Chiliz",
-  HOT: "Holo",
-  ZIL: "Zilliqa",
-  CELO: "Celo",
-  MINA: "Mina",
-  ROSE: "Oasis Network",
-  KSM: "Kusama",
-  COMP: "Compound",
-  YFI: "yearn.finance",
-  SUSHI: "SushiSwap",
-  "1INCH": "1inch",
-  ENS: "Ethereum Name Service",
-  IMX: "Immutable",
-  GALA: "Gala",
-  APE: "ApeCoin",
-  GMT: "STEPN",
-  LUNC: "Terra Luna Classic",
-  USTC: "TerraClassicUSD",
-  FTM: "Fantom",
-  SFP: "SafePal",
-  CAKE: "PancakeSwap",
-  TWT: "Trust Wallet Token",
-  MASK: "Mask Network",
-  WOO: "WOO Network",
-  ANKR: "Ankr",
-  SKL: "SKALE",
-  LPT: "Livepeer",
-  AR: "Arweave",
-  STX: "Stacks",
-  RPL: "Rocket Pool",
-  BLUR: "Blur",
-  CYBER: "CyberConnect",
-  JUP: "Jupiter",
-  WLD: "Worldcoin",
-  ONDO: "Ondo",
-  PYTH: "Pyth Network",
-  ENA: "Ethena",
-  TAO: "Bittensor",
-  AFC: "Afghani Coin",
-  QNT: "Quant",
-  MANTA: "Manta Network",
-  FET: "Fetch.ai",
-  RNDR: "Render"
-};
+function json(res, status, data) {
+  res.status(status);
+  res.setHeader("Content-Type", "application/json");
+  return res.end(JSON.stringify(data));
+}
 
+function methodNotAllowed(res) {
+  return json(res, 405, {
+    success: false,
+    message: "Method not allowed"
+  });
+}
+
+function badRequest(res, message) {
+  return json(res, 400, {
+    success: false,
+    message
+  });
+}
+
+function serverError(res, error) {
+  console.error(error);
+
+  return json(res, 500, {
+    success: false,
+    message: "Server error",
+    error: error?.message || String(error)
+  });
+}
+
+function getQuery(req) {
+  return req.query || {};
+}
+
+function getBody(req) {
+  return req.body || {};
+}
+
+function number(value, fallback = 0) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function round(value, decimals = 8) {
+  const n = number(value);
+  return Number(n.toFixed(decimals));
+}
+
+function normalizeSymbol(symbol) {
+  return String(symbol || "").trim().toUpperCase();
+}
+
+function validCoin(symbol) {
+  return Boolean(COINS[symbol]);
+}
 
 /* =========================================================
    DATABASE SETUP
    ========================================================= */
 
 async function setupDatabase() {
-
   await sql`
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS df_users (
       id SERIAL PRIMARY KEY,
-      telegram_id TEXT UNIQUE NOT NULL,
       username TEXT,
-      created_at TIMESTAMP DEFAULT NOW()
+      email TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS assets (
+    CREATE TABLE IF NOT EXISTS df_wallets (
       id SERIAL PRIMARY KEY,
-      symbol TEXT UNIQUE NOT NULL,
-      name TEXT NOT NULL,
-      price NUMERIC DEFAULT 0,
-      active BOOLEAN DEFAULT TRUE,
-      created_at TIMESTAMP DEFAULT NOW()
+      user_id INTEGER UNIQUE NOT NULL REFERENCES df_users(id) ON DELETE CASCADE,
+      usdt NUMERIC(30,12) DEFAULT 10000,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS balances (
+    CREATE TABLE IF NOT EXISTS df_assets (
       id SERIAL PRIMARY KEY,
-      user_id INTEGER NOT NULL,
-      asset_id INTEGER NOT NULL,
-      amount NUMERIC DEFAULT 0,
-      UNIQUE(user_id, asset_id)
+      user_id INTEGER NOT NULL REFERENCES df_users(id) ON DELETE CASCADE,
+      symbol TEXT NOT NULL,
+      amount NUMERIC(30,12) DEFAULT 0,
+      average_price NUMERIC(30,12) DEFAULT 0,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE(user_id, symbol)
     )
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS orders (
+    CREATE TABLE IF NOT EXISTS df_trades (
       id SERIAL PRIMARY KEY,
-      user_id INTEGER NOT NULL,
-      asset_id INTEGER NOT NULL,
+      user_id INTEGER NOT NULL REFERENCES df_users(id) ON DELETE CASCADE,
+      symbol TEXT NOT NULL,
       side TEXT NOT NULL,
-      amount NUMERIC NOT NULL,
-      price NUMERIC NOT NULL,
-      status TEXT DEFAULT 'filled',
-      created_at TIMESTAMP DEFAULT NOW()
+      amount NUMERIC(30,12) NOT NULL,
+      price NUMERIC(30,12) NOT NULL,
+      total NUMERIC(30,12) NOT NULL,
+      fee NUMERIC(30,12) DEFAULT 0,
+      status TEXT DEFAULT 'completed',
+      created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS trades (
+    CREATE TABLE IF NOT EXISTS df_orders (
       id SERIAL PRIMARY KEY,
-      user_id INTEGER NOT NULL,
-      asset_id INTEGER NOT NULL,
+      user_id INTEGER NOT NULL REFERENCES df_users(id) ON DELETE CASCADE,
+      symbol TEXT NOT NULL,
       side TEXT NOT NULL,
-      amount NUMERIC NOT NULL,
-      price NUMERIC NOT NULL,
-      total NUMERIC NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW()
+      order_type TEXT DEFAULT 'market',
+      amount NUMERIC(30,12) NOT NULL,
+      price NUMERIC(30,12) DEFAULT 0,
+      total NUMERIC(30,12) DEFAULT 0,
+      status TEXT DEFAULT 'completed',
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
-  const symbols = Object.keys(NAMES);
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_df_assets_user
+    ON df_assets(user_id)
+  `;
 
-  for (const symbol of symbols) {
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_df_trades_user
+    ON df_trades(user_id)
+  `;
 
-    const exists = await sql`
-      SELECT id
-      FROM assets
-      WHERE symbol = ${symbol}
-      LIMIT 1
-    `;
+  await sql`
+    CREATE INDEX IF NOT EXISTS idx_df_orders_user
+    ON df_orders(user_id)
+  `;
 
-    if (!exists.length) {
+  return true;
+}
 
-      await sql`
-        INSERT INTO assets
-        (symbol, name, price, active)
-        VALUES (
-          ${symbol},
-          ${NAMES[symbol]},
-          ${symbol === "AFC" ? 1 : 0},
-          TRUE
-        )
-      `;
+/* =========================================================
+   CREATE / GET USER
+   ========================================================= */
 
-    } else {
-
-      await sql`
-        UPDATE assets
-        SET
-          name = ${NAMES[symbol]},
-          active = TRUE
-        WHERE symbol = ${symbol}
-      `;
-    }
-  }
-
-  const usdt = await sql`
-    SELECT id
-    FROM assets
-    WHERE symbol = 'USDT'
+async function getOrCreateUser(userId, username = null, email = null) {
+  let rows = await sql`
+    SELECT *
+    FROM df_users
+    WHERE id = ${userId}
     LIMIT 1
   `;
 
-  if (!usdt.length) {
-
-    await sql`
-      INSERT INTO assets
-      (symbol, name, price, active)
-      VALUES
-      ('USDT', 'Tether', 1, TRUE)
-    `;
+  if (rows.length > 0) {
+    return rows[0];
   }
+
+  const inserted = await sql`
+    INSERT INTO df_users (username, email)
+    VALUES (${username}, ${email})
+    RETURNING *
+  `;
+
+  return inserted[0];
 }
 
+async function ensureWallet(userId) {
+  const rows = await sql`
+    SELECT *
+    FROM df_wallets
+    WHERE user_id = ${userId}
+    LIMIT 1
+  `;
 
-/* =========================================================
-   COINGECKO MARKET DATA
-   ========================================================= */
-
-async function updateGlobalPrices() {
-
-  const symbols = Object.keys(COINS);
-
-  const ids = symbols
-    .map(symbol => COINS[symbol])
-    .filter(Boolean);
-
-  if (!ids.length) {
-    return {};
+  if (rows.length > 0) {
+    return rows[0];
   }
 
-  const url =
-    "https://api.coingecko.com/api/v3/coins/markets" +
-    "?vs_currency=usd" +
-    "&ids=" +
-    encodeURIComponent(ids.join(",")) +
-    "&order=market_cap_desc" +
-    "&per_page=250" +
-    "&page=1" +
-    "&sparkline=false" +
-    "&price_change_percentage=24h";
+  const inserted = await sql`
+    INSERT INTO df_wallets (user_id, usdt)
+    VALUES (${userId}, ${DEMO_STARTING_USDT})
+    RETURNING *
+  `;
 
-  const response = await fetch(url);
+  return inserted[0];
+}
+
+/* =========================================================
+   PRICE API
+   ========================================================= */
+
+async function getMarketPrices() {
+  const ids = Object.values(COINS).join(",");
+
+  const response = await fetch(
+    `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
+      ids
+    )}&vs_currencies=usd`
+  );
 
   if (!response.ok) {
-
-    throw new Error(
-      "CoinGecko HTTP " + response.status
-    );
+    throw new Error("CoinGecko price request failed");
   }
 
   const data = await response.json();
 
-  const result = {};
+  const prices = {};
 
-  for (const coin of data) {
+  for (const symbol of Object.keys(COINS)) {
+    const id = COINS[symbol];
 
-    const symbol =
-      symbols.find(
-        s => COINS[s] === coin.id
-      );
-
-    if (!symbol) continue;
-
-    const price =
-      Number(coin.current_price || 0);
-
-    if (!price) continue;
-
-    result[symbol] = {
-
-      price,
-
-      change_24h:
-        Number(
-          coin.price_change_percentage_24h || 0
-        ),
-
-      market_cap:
-        coin.market_cap == null
-          ? null
-          : Number(coin.market_cap),
-
-      total_volume:
-        coin.total_volume == null
-          ? null
-          : Number(coin.total_volume),
-
-      circulating_supply:
-        coin.circulating_supply == null
-          ? null
-          : Number(coin.circulating_supply),
-
-      total_supply:
-        coin.total_supply == null
-          ? null
-          : Number(coin.total_supply),
-
-      max_supply:
-        coin.max_supply == null
-          ? null
-          : Number(coin.max_supply),
-
-      high_24h:
-        coin.high_24h == null
-          ? null
-          : Number(coin.high_24h),
-
-      low_24h:
-        coin.low_24h == null
-          ? null
-          : Number(coin.low_24h),
-
-      last_updated:
-        coin.last_updated || null
-    };
-
-    await sql`
-      UPDATE assets
-      SET price = ${price}
-      WHERE symbol = ${symbol}
-    `;
+    prices[symbol] = number(data?.[id]?.usd, 0);
   }
 
-  return result;
+  return prices;
 }
-
 
 /* =========================================================
-   GOLD
+   HOME / HEALTH
    ========================================================= */
 
-async function getLiveGold() {
-
-  try {
-
-    const response = await fetch(
-      "https://xaus.com/api/v1/spot?currency=AFN&unit=gram"
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Gold API HTTP " + response.status
-      );
-    }
-
-    const data = await response.json();
-
-    if (
-      !data.xau ||
-      typeof data.xau.price !== "number"
-    ) {
-      throw new Error(
-        "Invalid gold response"
-      );
-    }
-
-    return {
-
-      success: true,
-
-      metal: "Gold",
-
-      purity: "24K",
-
-      currency: "AFN",
-
-      unit: "gram",
-
-      price: data.xau.price,
-
-      usd_per_gram:
-        data.per_gram_usd || null,
-
-      spot_usd_oz:
-        data.spot_usd_oz || null,
-
-      updated_at:
-        data.updated_at || null,
-
-      data_state:
-        data.data_state || null,
-
-      source: "XAUS"
-    };
-
-  } catch (error) {
-
-    return {
-
-      success: false,
-
-      metal: "Gold",
-
-      purity: "24K",
-
-      currency: "AFN",
-
-      unit: "gram",
-
-      price: 0,
-
-      source: "unavailable",
-
-      error: error.message
-    };
-  }
+async function handleHome(req, res) {
+  return json(res, 200, {
+    success: true,
+    message: "Digital Finance Backend is running!",
+    service: "Digital Finance",
+    currency: "USDT",
+    gold: "24K",
+    demo_starting_usdt: DEMO_STARTING_USDT,
+    endpoints: [
+      "/api/setup",
+      "/api/markets",
+      "/api/prices",
+      "/api/user",
+      "/api/wallet",
+      "/api/portfolio",
+      "/api/assets",
+      "/api/trades",
+      "/api/orders",
+      "/api/buy",
+      "/api/sell"
+    ]
+  });
 }
 
+/* =========================================================
+   SETUP
+   ========================================================= */
+
+async function handleSetup(req, res) {
+  try {
+    await setupDatabase();
+
+    return json(res, 200, {
+      success: true,
+      message: "Digital Finance database is ready!"
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
 
 /* =========================================================
    USER
    ========================================================= */
 
-async function getOrCreateUser(
-  telegramId,
-  username = null
-) {
+async function handleUser(req, res) {
+  try {
+    const q = getQuery(req);
 
-  if (!telegramId) {
-    telegramId = "123456789";
+    const userId = number(q.user_id || q.id, 0);
+
+    const username = q.username || null;
+    const email = q.email || null;
+
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
+
+    const user = await getOrCreateUser(userId, username, email);
+    const wallet = await ensureWallet(user.id);
+
+    return json(res, 200, {
+      success: true,
+      user,
+      wallet
+    });
+  } catch (error) {
+    return serverError(res, error);
   }
-
-  let rows = await sql`
-    SELECT *
-    FROM users
-    WHERE telegram_id = ${telegramId}
-    LIMIT 1
-  `;
-
-  if (!rows.length) {
-
-    rows = await sql`
-      INSERT INTO users
-      (telegram_id, username)
-      VALUES
-      (${telegramId}, ${username})
-      RETURNING *
-    `;
-  }
-
-  const user = rows[0];
-
-  const usdtAsset = await sql`
-    SELECT id
-    FROM assets
-    WHERE symbol = 'USDT'
-    LIMIT 1
-  `;
-
-  if (!usdtAsset.length) {
-
-    await sql`
-      INSERT INTO assets
-      (symbol, name, price, active)
-      VALUES
-      ('USDT', 'Tether', 1, TRUE)
-    `;
-  }
-
-  const usdt = await sql`
-    SELECT id
-    FROM assets
-    WHERE symbol = 'USDT'
-    LIMIT 1
-  `;
-
-  const balanceExists = await sql`
-    SELECT id
-    FROM balances
-    WHERE user_id = ${user.id}
-      AND asset_id = ${usdt[0].id}
-    LIMIT 1
-  `;
-
-  if (!balanceExists.length) {
-
-    await sql`
-      INSERT INTO balances
-      (user_id, asset_id, amount)
-      VALUES
-      (${user.id}, ${usdt[0].id}, ${DEMO_STARTING_USDT})
-    `;
-  }
-
-  return user;
 }
 
+/* =========================================================
+   WALLET
+   ========================================================= */
+
+async function handleWallet(req, res) {
+  try {
+    const q = getQuery(req);
+
+    const userId = number(q.user_id || q.id, 0);
+
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
+
+    const user = await getOrCreateUser(userId);
+    const wallet = await ensureWallet(user.id);
+
+    const assets = await sql`
+      SELECT
+        id,
+        symbol,
+        amount,
+        average_price,
+        created_at,
+        updated_at
+      FROM df_assets
+      WHERE user_id = ${user.id}
+      ORDER BY symbol ASC
+    `;
+
+    let prices = {};
+
+    try {
+      prices = await getMarketPrices();
+    } catch (e) {
+      console.error("Price error:", e);
+    }
+
+    let assetValue = 0;
+
+    const formattedAssets = assets.map((asset) => {
+      const symbol = normalizeSymbol(asset.symbol);
+
+      const amount = number(asset.amount);
+      const averagePrice = number(asset.average_price);
+      const currentPrice = number(prices[symbol], averagePrice);
+
+      const value = amount * currentPrice;
+      const invested = amount * averagePrice;
+
+      assetValue += value;
+
+      return {
+        id: asset.id,
+        symbol,
+        amount: round(amount),
+        average_price: round(averagePrice),
+        current_price: round(currentPrice, 8),
+        value_usdt: round(value, 8),
+        invested_usdt: round(invested, 8),
+        profit_usdt: round(value - invested, 8),
+        profit_percent:
+          invested > 0
+            ? round(((value - invested) / invested) * 100, 2)
+            : 0
+      };
+    });
+
+    const usdt = number(wallet.usdt);
+
+    return json(res, 200, {
+      success: true,
+
+      wallet: {
+        user_id: user.id,
+        usdt: round(usdt, 8),
+        crypto_value_usdt: round(assetValue, 8),
+        total_value_usdt: round(usdt + assetValue, 8)
+      },
+
+      assets: formattedAssets
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
+
+/* =========================================================
+   ASSETS
+   ========================================================= */
+
+async function handleAssets(req, res) {
+  try {
+    const q = getQuery(req);
+
+    const userId = number(q.user_id || q.id, 0);
+
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
+
+    const assets = await sql`
+      SELECT *
+      FROM df_assets
+      WHERE user_id = ${userId}
+      ORDER BY symbol ASC
+    `;
+
+    return json(res, 200, {
+      success: true,
+      count: assets.length,
+      assets
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
+
+/* =========================================================
+   PORTFOLIO
+   ========================================================= */
+
+async function handlePortfolio(req, res) {
+  try {
+    const q = getQuery(req);
+
+    const userId = number(q.user_id || q.id, 0);
+
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
+
+    const user = await getOrCreateUser(userId);
+    const wallet = await ensureWallet(user.id);
+
+    const assets = await sql`
+      SELECT *
+      FROM df_assets
+      WHERE user_id = ${user.id}
+      ORDER BY symbol ASC
+    `;
+
+    const prices = await getMarketPrices();
+
+    let cryptoValue = 0;
+    let investedValue = 0;
+
+    const portfolio = assets.map((asset) => {
+      const symbol = normalizeSymbol(asset.symbol);
+
+      const amount = number(asset.amount);
+      const averagePrice = number(asset.average_price);
+
+      const currentPrice = number(prices[symbol], 0);
+
+      const value = amount * currentPrice;
+      const invested = amount * averagePrice;
+
+      cryptoValue += value;
+      investedValue += invested;
+
+      return {
+        symbol,
+        amount: round(amount),
+        average_price: round(averagePrice),
+        current_price: round(currentPrice),
+        value_usdt: round(value),
+        invested_usdt: round(invested),
+        profit_usdt: round(value - invested),
+        profit_percent:
+          invested > 0
+            ? round(((value - invested) / invested) * 100, 2)
+            : 0
+      };
+    });
+
+    const usdt = number(wallet.usdt);
+
+    const totalValue = usdt + cryptoValue;
+
+    return json(res, 200, {
+      success: true,
+
+      portfolio,
+
+      summary: {
+        usdt: round(usdt),
+        crypto_value_usdt: round(cryptoValue),
+        total_value_usdt: round(totalValue),
+        invested_crypto_usdt: round(investedValue),
+        total_profit_usdt: round(cryptoValue - investedValue),
+        total_profit_percent:
+          investedValue > 0
+            ? round(((cryptoValue - investedValue) / investedValue) * 100, 2)
+            : 0
+      }
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
 
 /* =========================================================
    MARKETS
    ========================================================= */
 
-async function getMarkets() {
-
-  return await sql`
-    SELECT *
-    FROM assets
-    WHERE active = TRUE
-    ORDER BY id ASC
-  `;
-}
-
-
-/* =========================================================
-   BALANCES
-   ========================================================= */
-
-async function getBalances(telegramId) {
-
-  const user =
-    await getOrCreateUser(
-      telegramId
-    );
-
-  return await sql`
-    SELECT
-      b.id,
-      b.amount,
-      a.symbol,
-      a.name,
-      a.price
-    FROM balances b
-    JOIN assets a
-      ON a.id = b.asset_id
-    WHERE b.user_id = ${user.id}
-    ORDER BY b.amount DESC
-  `;
-}
-
-
-/* =========================================================
-   TRADES
-   ========================================================= */
-
-async function getTrades(telegramId) {
-
-  const user =
-    await getOrCreateUser(
-      telegramId
-    );
-
-  return await sql`
-    SELECT
-      t.*,
-      a.symbol,
-      a.name
-    FROM trades t
-    JOIN assets a
-      ON a.id = t.asset_id
-    WHERE t.user_id = ${user.id}
-    ORDER BY t.created_at DESC
-    LIMIT 100
-  `;
-}
-
-
-/* =========================================================
-   ORDERS
-   ========================================================= */
-
-async function getOrders(telegramId) {
-
-  const user =
-    await getOrCreateUser(
-      telegramId
-    );
-
-  return await sql`
-    SELECT
-      o.*,
-      a.symbol,
-      a.name
-    FROM orders o
-    JOIN assets a
-      ON a.id = o.asset_id
-    WHERE o.user_id = ${user.id}
-    ORDER BY o.created_at DESC
-    LIMIT 100
-  `;
-}
-
-
-/* =========================================================
-   MARKET TRADE STATISTICS
-   ========================================================= */
-
-async function getMarketTradeStats() {
-
+async function handleMarkets(req, res) {
   try {
+    const prices = await getMarketPrices();
 
-    const rows = await sql`
+    const markets = Object.keys(COINS).map((symbol, index) => ({
+      id: index + 1,
+      symbol,
+      name: symbol,
+      price: round(prices[symbol], 8),
+      active: true
+    }));
 
-      SELECT
-
-        a.symbol,
-
-        COUNT(t.id)::INTEGER
-          AS trade_count,
-
-        COALESCE(
-          SUM(
-            CASE
-              WHEN LOWER(t.side) = 'buy'
-              THEN t.amount
-              ELSE 0
-            END
-          ),
-          0
-        ) AS buy_volume,
-
-        COALESCE(
-          SUM(
-            CASE
-              WHEN LOWER(t.side) = 'sell'
-              THEN t.amount
-              ELSE 0
-            END
-          ),
-          0
-        ) AS sell_volume,
-
-        COALESCE(
-          SUM(
-            CASE
-              WHEN LOWER(t.side) = 'buy'
-              THEN t.total
-              ELSE 0
-            END
-          ),
-          0
-        ) AS buy_total,
-
-        COALESCE(
-          SUM(
-            CASE
-              WHEN LOWER(t.side) = 'sell'
-              THEN t.total
-              ELSE 0
-            END
-          ),
-          0
-        ) AS sell_total
-
-      FROM trades t
-
-      JOIN assets a
-        ON a.id = t.asset_id
-
-      WHERE
-        t.created_at >= NOW() - INTERVAL '24 hours'
-
-      GROUP BY
-        a.symbol
-    `;
-
-    const map = {};
-
-    for (const row of rows) {
-
-      const buyVolume =
-        Number(row.buy_volume || 0);
-
-      const sellVolume =
-        Number(row.sell_volume || 0);
-
-      const total =
-        buyVolume + sellVolume;
-
-      map[
-        String(row.symbol).toUpperCase()
-      ] = {
-
-        trade_count:
-          Number(row.trade_count || 0),
-
-        buy_volume:
-          buyVolume,
-
-        sell_volume:
-          sellVolume,
-
-        buy_total:
-          Number(row.buy_total || 0),
-
-        sell_total:
-          Number(row.sell_total || 0),
-
-        buy_percent:
-          total > 0
-            ? Number(
-                (
-                  buyVolume /
-                  total *
-                  100
-                ).toFixed(2)
-              )
-            : 0,
-
-        sell_percent:
-          total > 0
-            ? Number(
-                (
-                  sellVolume /
-                  total *
-                  100
-                ).toFixed(2)
-              )
-            : 0
-      };
-    }
-
-    return map;
-
+    return json(res, 200, {
+      success: true,
+      count: markets.length,
+      markets
+    });
   } catch (error) {
-
-    console.log(
-      "Trade statistics error:",
-      error.message
-    );
-
-    return {};
+    return serverError(res, error);
   }
 }
 
+/* =========================================================
+   PRICES
+   ========================================================= */
+
+async function handlePrices(req, res) {
+  try {
+    const prices = await getMarketPrices();
+
+    return json(res, 200, {
+      success: true,
+      prices
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
 
 /* =========================================================
    BUY
    ========================================================= */
 
-async function buyAsset(
-  telegramId,
-  symbol,
-  amount
-) {
+async function handleBuy(req, res) {
+  try {
+    const body = getBody(req);
 
-  const user =
-    await getOrCreateUser(
-      telegramId
-    );
+    const userId = number(body.user_id || body.id, 0);
+    const symbol = normalizeSymbol(body.symbol);
 
-  amount = Number(amount);
+    const amount = number(body.amount, 0);
 
-  if (
-    !symbol ||
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
 
-    throw new Error(
-      "Invalid buy request"
-    );
-  }
+    if (!validCoin(symbol)) {
+      return badRequest(res, "Invalid cryptocurrency symbol");
+    }
 
-  const assetRows = await sql`
-    SELECT *
-    FROM assets
-    WHERE symbol = ${symbol}
-      AND active = TRUE
-    LIMIT 1
-  `;
+    if (amount <= 0) {
+      return badRequest(res, "amount must be greater than 0");
+    }
 
-  if (!assetRows.length) {
-    throw new Error(
-      "Asset not found"
-    );
-  }
+    const user = await getOrCreateUser(userId);
+    const wallet = await ensureWallet(user.id);
 
-  const asset = assetRows[0];
+    const prices = await getMarketPrices();
 
-  const usdtRows = await sql`
-    SELECT *
-    FROM assets
-    WHERE symbol = 'USDT'
-    LIMIT 1
-  `;
+    const price = number(prices[symbol]);
 
-  const usdt = usdtRows[0];
+    if (price <= 0) {
+      return badRequest(res, "Price unavailable");
+    }
 
-  const balanceRows = await sql`
-    SELECT *
-    FROM balances
-    WHERE user_id = ${user.id}
-      AND asset_id = ${usdt.id}
-    LIMIT 1
-  `;
+    const total = amount * price;
 
-  const usdtBalance =
-    balanceRows.length
-      ? Number(balanceRows[0].amount)
-      : 0;
+    const currentUSDT = number(wallet.usdt);
 
-  const price =
-    Number(asset.price);
+    if (currentUSDT < total) {
+      return badRequest(res, "Insufficient USDT balance");
+    }
 
-  if (!price || price <= 0) {
-    throw new Error(
-      "Asset price unavailable"
-    );
-  }
-
-  const total =
-    amount * price;
-
-  if (usdtBalance < total) {
-    throw new Error(
-      "Insufficient USDT balance"
-    );
-  }
-
-  await sql`
-    UPDATE balances
-    SET amount = amount - ${total}
-    WHERE user_id = ${user.id}
-      AND asset_id = ${usdt.id}
-  `;
-
-  const existing = await sql`
-    SELECT *
-    FROM balances
-    WHERE user_id = ${user.id}
-      AND asset_id = ${asset.id}
-    LIMIT 1
-  `;
-
-  if (existing.length) {
-
-    await sql`
-      UPDATE balances
-      SET amount = amount + ${amount}
+    const existing = await sql`
+      SELECT *
+      FROM df_assets
       WHERE user_id = ${user.id}
-        AND asset_id = ${asset.id}
+      AND symbol = ${symbol}
+      LIMIT 1
     `;
 
-  } else {
+    let newAmount = amount;
+    let newAveragePrice = price;
+
+    if (existing.length > 0) {
+      const oldAmount = number(existing[0].amount);
+      const oldAverage = number(existing[0].average_price);
+
+      newAmount = oldAmount + amount;
+
+      newAveragePrice =
+        oldAmount + amount > 0
+          ? (oldAmount * oldAverage + amount * price) /
+            (oldAmount + amount)
+          : price;
+
+      await sql`
+        UPDATE df_assets
+        SET
+          amount = ${newAmount},
+          average_price = ${newAveragePrice},
+          updated_at = NOW()
+        WHERE user_id = ${user.id}
+        AND symbol = ${symbol}
+      `;
+    } else {
+      await sql`
+        INSERT INTO df_assets
+        (
+          user_id,
+          symbol,
+          amount,
+          average_price
+        )
+        VALUES
+        (
+          ${user.id},
+          ${symbol},
+          ${amount},
+          ${price}
+        )
+      `;
+    }
+
+    const newUSDT = currentUSDT - total;
 
     await sql`
-      INSERT INTO balances
-      (user_id, asset_id, amount)
-      VALUES
-      (${user.id}, ${asset.id}, ${amount})
+      UPDATE df_wallets
+      SET
+        usdt = ${newUSDT},
+        updated_at = NOW()
+      WHERE user_id = ${user.id}
     `;
+
+    const trade = await sql`
+      INSERT INTO df_trades
+      (
+        user_id,
+        symbol,
+        side,
+        amount,
+        price,
+        total,
+        fee,
+        status
+      )
+      VALUES
+      (
+        ${user.id},
+        ${symbol},
+        'buy',
+        ${amount},
+        ${price},
+        ${total},
+        0,
+        'completed'
+      )
+      RETURNING *
+    `;
+
+    const order = await sql`
+      INSERT INTO df_orders
+      (
+        user_id,
+        symbol,
+        side,
+        order_type,
+        amount,
+        price,
+        total,
+        status
+      )
+      VALUES
+      (
+        ${user.id},
+        ${symbol},
+        'buy',
+        'market',
+        ${amount},
+        ${price},
+        ${total},
+        'completed'
+      )
+      RETURNING *
+    `;
+
+    return json(res, 200, {
+      success: true,
+      message: `Bought ${amount} ${symbol}`,
+      trade: trade[0],
+      order: order[0],
+      wallet: {
+        usdt: round(newUSDT)
+      }
+    });
+  } catch (error) {
+    return serverError(res, error);
   }
-
-  await sql`
-    INSERT INTO orders
-    (
-      user_id,
-      asset_id,
-      side,
-      amount,
-      price,
-      status
-    )
-    VALUES
-    (
-      ${user.id},
-      ${asset.id},
-      'buy',
-      ${amount},
-      ${price},
-      'filled'
-    )
-  `;
-
-  await sql`
-    INSERT INTO trades
-    (
-      user_id,
-      asset_id,
-      side,
-      amount,
-      price,
-      total
-    )
-    VALUES
-    (
-      ${user.id},
-      ${asset.id},
-      'buy',
-      ${amount},
-      ${price},
-      ${total}
-    )
-  `;
-
-  return {
-
-    success: true,
-
-    side: "buy",
-
-    symbol,
-
-    amount,
-
-    price,
-
-    total
-  };
 }
-
 
 /* =========================================================
    SELL
    ========================================================= */
 
-async function sellAsset(
-  telegramId,
-  symbol,
-  amount
-) {
+async function handleSell(req, res) {
+  try {
+    const body = getBody(req);
 
-  const user =
-    await getOrCreateUser(
-      telegramId
-    );
+    const userId = number(body.user_id || body.id, 0);
+    const symbol = normalizeSymbol(body.symbol);
 
-  amount = Number(amount);
+    const amount = number(body.amount, 0);
 
-  if (
-    !symbol ||
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
 
-    throw new Error(
-      "Invalid sell request"
-    );
-  }
+    if (!validCoin(symbol)) {
+      return badRequest(res, "Invalid cryptocurrency symbol");
+    }
 
-  const assetRows = await sql`
-    SELECT *
-    FROM assets
-    WHERE symbol = ${symbol}
-      AND active = TRUE
-    LIMIT 1
-  `;
+    if (amount <= 0) {
+      return badRequest(res, "amount must be greater than 0");
+    }
 
-  if (!assetRows.length) {
-    throw new Error(
-      "Asset not found"
-    );
-  }
+    const user = await getOrCreateUser(userId);
+    const wallet = await ensureWallet(user.id);
 
-  const asset = assetRows[0];
-
-  const balanceRows = await sql`
-    SELECT *
-    FROM balances
-    WHERE user_id = ${user.id}
-      AND asset_id = ${asset.id}
-    LIMIT 1
-  `;
-
-  const current =
-    balanceRows.length
-      ? Number(balanceRows[0].amount)
-      : 0;
-
-  if (current < amount) {
-
-    throw new Error(
-      "Insufficient asset balance"
-    );
-  }
-
-  const price =
-    Number(asset.price);
-
-  if (!price || price <= 0) {
-
-    throw new Error(
-      "Asset price unavailable"
-    );
-  }
-
-  const total =
-    amount * price;
-
-  const usdtRows = await sql`
-    SELECT *
-    FROM assets
-    WHERE symbol = 'USDT'
-    LIMIT 1
-  `;
-
-  const usdt = usdtRows[0];
-
-  await sql`
-    UPDATE balances
-    SET amount = amount - ${amount}
-    WHERE user_id = ${user.id}
-      AND asset_id = ${asset.id}
-  `;
-
-  const usdtBalance = await sql`
-    SELECT *
-    FROM balances
-    WHERE user_id = ${user.id}
-      AND asset_id = ${usdt.id}
-    LIMIT 1
-  `;
-
-  if (usdtBalance.length) {
-
-    await sql`
-      UPDATE balances
-      SET amount = amount + ${total}
+    const assetRows = await sql`
+      SELECT *
+      FROM df_assets
       WHERE user_id = ${user.id}
-        AND asset_id = ${usdt.id}
+      AND symbol = ${symbol}
+      LIMIT 1
     `;
 
-  } else {
+    if (assetRows.length === 0) {
+      return badRequest(res, `You don't own any ${symbol}`);
+    }
+
+    const asset = assetRows[0];
+
+    const currentAmount = number(asset.amount);
+
+    if (currentAmount < amount) {
+      return badRequest(res, "Insufficient asset balance");
+    }
+
+    const prices = await getMarketPrices();
+
+    const price = number(prices[symbol]);
+
+    if (price <= 0) {
+      return badRequest(res, "Price unavailable");
+    }
+
+    const total = amount * price;
+
+    const newAmount = currentAmount - amount;
+
+    if (newAmount <= 0) {
+      await sql`
+        DELETE FROM df_assets
+        WHERE user_id = ${user.id}
+        AND symbol = ${symbol}
+      `;
+    } else {
+      await sql`
+        UPDATE df_assets
+        SET
+          amount = ${newAmount},
+          updated_at = NOW()
+        WHERE user_id = ${user.id}
+        AND symbol = ${symbol}
+      `;
+    }
+
+    const oldUSDT = number(wallet.usdt);
+    const newUSDT = oldUSDT + total;
 
     await sql`
-      INSERT INTO balances
-      (user_id, asset_id, amount)
-      VALUES
-      (${user.id}, ${usdt.id}, ${total})
+      UPDATE df_wallets
+      SET
+        usdt = ${newUSDT},
+        updated_at = NOW()
+      WHERE user_id = ${user.id}
     `;
+
+    const trade = await sql`
+      INSERT INTO df_trades
+      (
+        user_id,
+        symbol,
+        side,
+        amount,
+        price,
+        total,
+        fee,
+        status
+      )
+      VALUES
+      (
+        ${user.id},
+        ${symbol},
+        'sell',
+        ${amount},
+        ${price},
+        ${total},
+        0,
+        'completed'
+      )
+      RETURNING *
+    `;
+
+    const order = await sql`
+      INSERT INTO df_orders
+      (
+        user_id,
+        symbol,
+        side,
+        order_type,
+        amount,
+        price,
+        total,
+        status
+      )
+      VALUES
+      (
+        ${user.id},
+        ${symbol},
+        'sell',
+        'market',
+        ${amount},
+        ${price},
+        ${total},
+        'completed'
+      )
+      RETURNING *
+    `;
+
+    return json(res, 200, {
+      success: true,
+      message: `Sold ${amount} ${symbol}`,
+      trade: trade[0],
+      order: order[0],
+      wallet: {
+        usdt: round(newUSDT)
+      }
+    });
+  } catch (error) {
+    return serverError(res, error);
   }
-
-  await sql`
-    INSERT INTO orders
-    (
-      user_id,
-      asset_id,
-      side,
-      amount,
-      price,
-      status
-    )
-    VALUES
-    (
-      ${user.id},
-      ${asset.id},
-      'sell',
-      ${amount},
-      ${price},
-      'filled'
-    )
-  `;
-
-  await sql`
-    INSERT INTO trades
-    (
-      user_id,
-      asset_id,
-      side,
-      amount,
-      price,
-      total
-    )
-    VALUES
-    (
-      ${user.id},
-      ${asset.id},
-      'sell',
-      ${amount},
-      ${price},
-      ${total}
-    )
-  `;
-
-  return {
-
-    success: true,
-
-    side: "sell",
-
-    symbol,
-
-    amount,
-
-    price,
-
-    total
-  };
 }
 
-
 /* =========================================================
-   MAIN API
+   TRADES
    ========================================================= */
 
-module.exports = async function handler(
-  req,
-  res
-) {
-
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,POST,OPTIONS"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type"
-  );
-
-  if (req.method === "OPTIONS") {
-
-    return res
-      .status(200)
-      .end();
-  }
-
+async function handleTrades(req, res) {
   try {
+    const q = getQuery(req);
 
-    await setupDatabase();
+    const userId = number(q.user_id || q.id, 0);
 
-    const action =
-      req.query.action ||
-      req.body?.action ||
-      "";
-
-
-    /* =====================================================
-       ROOT
-       ===================================================== */
-
-    if (!action) {
-
-      return res.status(200).json({
-
-        success: true,
-
-        message:
-          "Digital Finance Backend is running!",
-
-        service:
-          "Digital Finance",
-
-        currency:
-          "AFN",
-
-        gold:
-          "24K",
-
-        markets:
-          "/api?action=markets",
-
-        gold_api:
-          "/api?action=gold"
-      });
+    if (!userId) {
+      return badRequest(res, "user_id is required");
     }
 
-
-    /* =====================================================
-       MARKETS
-       ===================================================== */
-
-    if (action === "markets") {
-
-      let livePrices = {};
-
-      try {
-
-        livePrices =
-          await updateGlobalPrices();
-
-      } catch (error) {
-
-        console.log(
-          "CoinGecko update failed:",
-          error.message
-        );
-      }
-
-      const markets =
-        await getMarkets();
-
-      const tradeStats =
-        await getMarketTradeStats();
-
-
-      const result =
-        markets.map(asset => {
-
-          const symbol =
-            String(
-              asset.symbol
-            ).toUpperCase();
-
-          const live =
-            livePrices[symbol];
-
-          const stats =
-            tradeStats[symbol] || {
-
-              trade_count: 0,
-
-              buy_volume: 0,
-
-              sell_volume: 0,
-
-              buy_total: 0,
-
-              sell_total: 0,
-
-              buy_percent: 0,
-
-              sell_percent: 0
-            };
-
-
-          return {
-
-            id:
-              asset.id,
-
-            symbol,
-
-            name:
-              asset.name,
-
-            active:
-              asset.active,
-
-            price:
-              live
-                ? live.price
-                : Number(asset.price || 0),
-
-            change_24h:
-              live
-                ? live.change_24h
-                : 0,
-
-
-            /* MARKET DATA */
-
-            market_cap:
-              live
-                ? live.market_cap
-                : null,
-
-            total_volume:
-              live
-                ? live.total_volume
-                : null,
-
-            circulating_supply:
-              live
-                ? live.circulating_supply
-                : null,
-
-            total_supply:
-              live
-                ? live.total_supply
-                : null,
-
-            max_supply:
-              live
-                ? live.max_supply
-                : null,
-
-            high_24h:
-              live
-                ? live.high_24h
-                : null,
-
-            low_24h:
-              live
-                ? live.low_24h
-                : null,
-
-
-            /* DIGITAL FINANCE TRADING DATA */
-
-            trade_count:
-              stats.trade_count,
-
-            buy_volume:
-              stats.buy_volume,
-
-            sell_volume:
-              stats.sell_volume,
-
-            buy_total:
-              stats.buy_total,
-
-            sell_total:
-              stats.sell_total,
-
-            buy_percent:
-              stats.buy_percent,
-
-            sell_percent:
-              stats.sell_percent,
-
-            updated_at:
-              live
-                ? live.last_updated
-                : null
-          };
-        });
-
-
-      return res.status(200).json({
-
-        success: true,
-
-        count:
-          result.length,
-
-        markets:
-          result,
-
-        source:
-          "CoinGecko + Digital Finance",
-
-        updated_at:
-          new Date().toISOString()
-      });
-    }
-
-
-    /* =====================================================
-       GOLD
-       ===================================================== */
-
-    if (action === "gold") {
-
-      const gold =
-        await getLiveGold();
-
-      return res.status(200).json(
-        gold
-      );
-    }
-
-
-    /* =====================================================
-       USER
-       ===================================================== */
-
-    if (action === "user") {
-
-      const telegramId =
-        req.query.telegram_id ||
-        req.body?.telegram_id ||
-        "123456789";
-
-      const username =
-        req.query.username ||
-        req.body?.username ||
-        null;
-
-      const user =
-        await getOrCreateUser(
-          telegramId,
-          username
-        );
-
-      return res.status(200).json({
-
-        success: true,
-
-        user
-      });
-    }
-
-
-    /* =====================================================
-       BALANCES
-       ===================================================== */
-
-    if (action === "balances") {
-
-      const telegramId =
-        req.query.telegram_id ||
-        req.body?.telegram_id ||
-        "123456789";
-
-      const balances =
-        await getBalances(
-          telegramId
-        );
-
-      return res.status(200).json({
-
-        success: true,
-
-        balances
-      });
-    }
-
-
-    /* =====================================================
-       TRADES
-       ===================================================== */
-
-    if (action === "trades") {
-
-      const telegramId =
-        req.query.telegram_id ||
-        req.body?.telegram_id ||
-        "123456789";
-
-      const trades =
-        await getTrades(
-          telegramId
-        );
-
-      return res.status(200).json({
-
-        success: true,
-
-        trades
-      });
-    }
-
-
-    /* =====================================================
-       ORDERS
-       ===================================================== */
-
-    if (action === "orders") {
-
-      const telegramId =
-        req.query.telegram_id ||
-        req.body?.telegram_id ||
-        "123456789";
-
-      const orders =
-        await getOrders(
-          telegramId
-        );
-
-      return res.status(200).json({
-
-        success: true,
-
-        orders
-      });
-    }
-
-
-    /* =====================================================
-       BUY
-       ===================================================== */
-
-    if (
-      action === "buy" &&
-      req.method === "POST"
-    ) {
-
-      const telegramId =
-        req.body?.telegram_id ||
-        req.query.telegram_id ||
-        "123456789";
-
-      const symbol =
-        String(
-          req.body?.symbol ||
-          req.query.symbol ||
-          ""
-        ).toUpperCase();
-
-      const amount =
-        Number(
-          req.body?.amount ||
-          req.query.amount ||
-          0
-        );
-
-      const result =
-        await buyAsset(
-          telegramId,
-          symbol,
-          amount
-        );
-
-      return res.status(200).json(
-        result
-      );
-    }
-
-
-    /* =====================================================
-       SELL
-       ===================================================== */
-
-    if (
-      action === "sell" &&
-      req.method === "POST"
-    ) {
-
-      const telegramId =
-        req.body?.telegram_id ||
-        req.query.telegram_id ||
-        "123456789";
-
-      const symbol =
-        String(
-          req.body?.symbol ||
-          req.query.symbol ||
-          ""
-        ).toUpperCase();
-
-      const amount =
-        Number(
-          req.body?.amount ||
-          req.query.amount ||
-          0
-        );
-
-      const result =
-        await sellAsset(
-          telegramId,
-          symbol,
-          amount
-        );
-
-      return res.status(200).json(
-        result
-      );
-    }
-
-
-    /* =====================================================
-       UNKNOWN ACTION
-       ===================================================== */
-
-    return res.status(404).json({
-
-      success: false,
-
-      error:
-        "Unknown action"
-    });
-
-
-  } catch (error) {
-
-    console.error(
-      "API ERROR:",
-      error
+    const limit = Math.min(
+      Math.max(number(q.limit, 50), 1),
+      200
     );
 
-    return res.status(500).json({
+    const trades = await sql`
+      SELECT *
+      FROM df_trades
+      WHERE user_id = ${userId}
+      ORDER BY created_at DESC
+      LIMIT ${limit}
+    `;
 
-      success: false,
-
-      error:
-        error.message
+    return json(res, 200, {
+      success: true,
+      count: trades.length,
+      trades
     });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
+
+/* =========================================================
+   ORDERS
+   ========================================================= */
+
+async function handleOrders(req, res) {
+  try {
+    const q = getQuery(req);
+
+    const userId = number(q.user_id || q.id, 0);
+
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
+
+    const status = q.status;
+
+    let orders;
+
+    if (status) {
+      orders = await sql`
+        SELECT *
+        FROM df_orders
+        WHERE user_id = ${userId}
+        AND status = ${status}
+        ORDER BY created_at DESC
+      `;
+    } else {
+      orders = await sql`
+        SELECT *
+        FROM df_orders
+        WHERE user_id = ${userId}
+        ORDER BY created_at DESC
+      `;
+    }
+
+    return json(res, 200, {
+      success: true,
+      count: orders.length,
+      orders
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
+
+/* =========================================================
+   ACCOUNT SUMMARY
+   ========================================================= */
+
+async function handleAccount(req, res) {
+  try {
+    const q = getQuery(req);
+
+    const userId = number(q.user_id || q.id, 0);
+
+    if (!userId) {
+      return badRequest(res, "user_id is required");
+    }
+
+    const user = await getOrCreateUser(userId);
+    const wallet = await ensureWallet(user.id);
+
+    const assets = await sql`
+      SELECT *
+      FROM df_assets
+      WHERE user_id = ${user.id}
+    `;
+
+    const trades = await sql`
+      SELECT COUNT(*)::INTEGER AS count
+      FROM df_trades
+      WHERE user_id = ${user.id}
+    `;
+
+    const orders = await sql`
+      SELECT COUNT(*)::INTEGER AS count
+      FROM df_orders
+      WHERE user_id = ${user.id}
+    `;
+
+    const prices = await getMarketPrices();
+
+    let cryptoValue = 0;
+
+    for (const asset of assets) {
+      const symbol = normalizeSymbol(asset.symbol);
+
+      cryptoValue +=
+        number(asset.amount) *
+        number(prices[symbol], number(asset.average_price));
+    }
+
+    const usdt = number(wallet.usdt);
+
+    return json(res, 200, {
+      success: true,
+
+      account: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        created_at: user.created_at
+      },
+
+      wallet: {
+        usdt: round(usdt),
+        crypto_value_usdt: round(cryptoValue),
+        total_value_usdt: round(usdt + cryptoValue)
+      },
+
+      statistics: {
+        assets: assets.length,
+        trades: number(trades[0]?.count),
+        orders: number(orders[0]?.count)
+      }
+    });
+  } catch (error) {
+    return serverError(res, error);
+  }
+}
+
+/* =========================================================
+   MAIN ROUTER
+   ========================================================= */
+
+module.exports = async (req, res) => {
+  try {
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "*"
+    );
+
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,OPTIONS"
+    );
+
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type"
+    );
+
+    if (req.method === "OPTIONS") {
+      return res.status(200).end();
+    }
+
+    const url = req.url || "/";
+
+    const path = url
+      .split("?")[0]
+      .replace(/\/+$/, "") || "/";
+
+    /* -------------------------
+       GET
+       ------------------------- */
+
+    if (req.method === "GET") {
+      if (path === "/api" || path === "/api/") {
+        return handleHome(req, res);
+      }
+
+      if (path === "/api/setup") {
+        return handleSetup(req, res);
+      }
+
+      if (path === "/api/user") {
+        return handleUser(req, res);
+      }
+
+      if (path === "/api/wallet") {
+        return handleWallet(req, res);
+      }
+
+      if (path === "/api/assets") {
+        return handleAssets(req, res);
+      }
+
+      if (path === "/api/portfolio") {
+        return handlePortfolio(req, res);
+      }
+
+      if (path === "/api/markets") {
+        return handleMarkets(req, res);
+      }
+
+      if (path === "/api/prices") {
+        return handlePrices(req, res);
+      }
+
+      if (path === "/api/trades") {
+        return handleTrades(req, res);
+      }
+
+      if (path === "/api/orders") {
+        return handleOrders(req, res);
+      }
+
+      if (path === "/api/account") {
+        return handleAccount(req, res);
+      }
+
+      return json(res, 404, {
+        success: false,
+        message: "API endpoint not found",
+        path
+      });
+    }
+
+    /* -------------------------
+       POST
+       ------------------------- */
+
+    if (req.method === "POST") {
+      if (path === "/api/setup") {
+        return handleSetup(req, res);
+      }
+
+      if (path === "/api/buy") {
+        return handleBuy(req, res);
+      }
+
+      if (path === "/api/sell") {
+        return handleSell(req, res);
+      }
+
+      return json(res, 404, {
+        success: false,
+        message: "POST endpoint not found",
+        path
+      });
+    }
+
+    return methodNotAllowed(res);
+  } catch (error) {
+    return serverError(res, error);
   }
 };
