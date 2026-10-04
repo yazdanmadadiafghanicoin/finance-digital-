@@ -3,30 +3,31 @@ const { neon } = require("@neondatabase/serverless");
 const sql = neon(process.env.DF_DATABASE_URL);
 
 const DEMO_STARTING_USDT = 10000;
-const GOLD_START_PRICE = 6850;
+const GOLD_PRICE = 6850;
 
 /* =========================================================
    DIGITAL FINANCE
-   103+ CRYPTO MARKETS
+   103 CRYPTO MARKETS
    ========================================================= */
 
 const MARKETS = [
-  ["BTC", "Bitcoin", 65000],
-  ["ETH", "Ethereum", 3200],
-  ["BNB", "BNB", 600],
-  ["SOL", "Solana", 150],
-  ["XRP", "XRP", 0.55],
-  ["ADA", "Cardano", 0.35],
-  ["DOGE", "Dogecoin", 0.12],
-  ["TRX", "TRON", 0.12],
-  ["TON", "Toncoin", 5.2],
-  ["AVAX", "Avalanche", 25],
-  ["DOT", "Polkadot", 4.5],
-  ["LINK", "Chainlink", 12],
-  ["LTC", "Litecoin", 70],
-  ["BCH", "Bitcoin Cash", 350],
-  ["UNI", "Uniswap", 7],
-  ["MATIC", "Polygon", 0.45],
+  ["BTC", "Bitcoin", 85055],
+  ["ETH", "Ethereum", 2699.15],
+  ["BNB", "BNB", 788.9],
+  ["SOL", "Solana", 121],
+  ["XRP", "XRP", 1.5],
+  ["ADA", "Cardano", 0.245125],
+  ["DOGE", "Dogecoin", 0.093215],
+  ["TRX", "TRON", 0.335139],
+  ["TON", "Toncoin", 1.53],
+  ["AVAX", "Avalanche", 11.02],
+  ["DOT", "Polkadot", 1.18],
+  ["LINK", "Chainlink", 14.06],
+  ["LTC", "Litecoin", 70.41],
+  ["BCH", "Bitcoin Cash", 318.54],
+  ["UNI", "Uniswap", 9.06],
+  ["MATIC", "Polygon", 0.126156],
+
   ["ATOM", "Cosmos", 4.5],
   ["ETC", "Ethereum Classic", 18],
   ["XLM", "Stellar", 0.09],
@@ -67,9 +68,7 @@ const MARKETS = [
   ["FLOKI", "FLOKI", 0.00012],
   ["MEME", "Memecoin", 0.015],
   ["ORDI", "ORDI", 35],
-  ["SATS", "SATS", 0.0000005],
   ["STX", "Stacks", 1.5],
-  ["THOR", "THORChain", 2.5],
   ["QNT", "Quant", 70],
   ["MANTA", "Manta Network", 1],
   ["FET", "Artificial Superintelligence Alliance", 1.2],
@@ -85,7 +84,6 @@ const MARKETS = [
   ["DOGS", "DOGS", 0.001],
   ["HMSTR", "Hamster Kombat", 0.003],
   ["TURBO", "Turbo", 0.006],
-  ["FLOKI", "FLOKI", 0.00012],
   ["CAKE", "PancakeSwap", 2],
   ["COMP", "Compound", 45],
   ["SUSHI", "SushiSwap", 0.8],
@@ -114,7 +112,6 @@ const MARKETS = [
   ["API3", "API3", 1.5],
   ["ENS", "Ethereum Name Service", 20],
   ["MASK", "Mask Network", 3],
-  ["GMT", "GMT", 0.2],
   ["ASTR", "Astar", 0.08],
   ["CFX", "Conflux", 0.15],
   ["KSM", "Kusama", 20],
@@ -128,7 +125,7 @@ const MARKETS = [
 ];
 
 /* =========================================================
-   COINGECKO IDS
+   COINGECKO LIVE PRICE IDs
    ========================================================= */
 
 const COINGECKO = {
@@ -211,6 +208,7 @@ const COINGECKO = {
   CHZ: "chiliz",
   GALA: "gala",
   APE: "apecoin",
+  GMT: "stepn",
   LUNC: "terra-luna",
   USTC: "terrausd",
   NEO: "neo",
@@ -224,6 +222,7 @@ const COINGECKO = {
   IOTA: "iota",
   MINA: "mina-protocol",
   WOO: "woo-network",
+  API3: "api3",
   ENS: "ethereum-name-service",
   MASK: "mask-network",
   ASTR: "astar",
@@ -238,7 +237,7 @@ const COINGECKO = {
 };
 
 /* =========================================================
-   DATABASE
+   DATABASE SETUP
    ========================================================= */
 
 async function setupDatabase() {
@@ -254,7 +253,7 @@ async function setupDatabase() {
     CREATE TABLE IF NOT EXISTS df_wallets (
       id SERIAL PRIMARY KEY,
       user_id INTEGER UNIQUE REFERENCES df_users(id) ON DELETE CASCADE,
-      usdt NUMERIC(30,12) DEFAULT 10000,
+      usdt NUMERIC(40,18) DEFAULT 10000,
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW()
     )
@@ -313,17 +312,27 @@ async function setupDatabase() {
     INSERT INTO df_gold
       (id, symbol, name, price, unit, purity)
     VALUES
-      (1, 'GOLD24', 'Gold 24K', ${GOLD_START_PRICE}, 'gram', '24K')
-    ON CONFLICT (id) DO NOTHING
+      (1, 'GOLD24', 'Gold 24K', ${GOLD_PRICE}, 'gram', '24K')
+    ON CONFLICT (id)
+    DO UPDATE SET
+      name = EXCLUDED.name,
+      unit = EXCLUDED.unit,
+      purity = EXCLUDED.purity
   `;
 }
 
 /* =========================================================
-   ENSURE MARKETS
+   INSERT MISSING MARKETS
+   IMPORTANT:
+   Existing prices are NOT overwritten.
    ========================================================= */
 
 async function ensureMarkets() {
-  for (const [symbol, name, price] of MARKETS) {
+  for (const market of MARKETS) {
+    const symbol = market[0];
+    const name = market[1];
+    const price = market[2];
+
     await sql`
       INSERT INTO markets
         (symbol, name, price, active)
@@ -331,7 +340,6 @@ async function ensureMarkets() {
         (${symbol}, ${name}, ${price}, true)
       ON CONFLICT (symbol)
       DO UPDATE SET
-        name = EXCLUDED.name,
         active = true
     `;
   }
@@ -344,60 +352,62 @@ async function ensureMarkets() {
 async function ensureUser(externalId) {
   const id = String(externalId || "1");
 
-  let rows = await sql`
+  let users = await sql`
     SELECT *
     FROM df_users
     WHERE external_id = ${id}
     LIMIT 1
   `;
 
-  if (!rows.length) {
-    rows = await sql`
+  if (!users.length) {
+    users = await sql`
       INSERT INTO df_users (external_id)
       VALUES (${id})
       RETURNING *
     `;
-
-    await sql`
-      INSERT INTO df_wallets (user_id, usdt)
-      VALUES (${rows[0].id}, ${DEMO_STARTING_USDT})
-      ON CONFLICT (user_id) DO NOTHING
-    `;
-  } else {
-    await sql`
-      INSERT INTO df_wallets (user_id, usdt)
-      VALUES (${rows[0].id}, ${DEMO_STARTING_USDT})
-      ON CONFLICT (user_id) DO NOTHING
-    `;
   }
 
-  return rows[0];
+  await sql`
+    INSERT INTO df_wallets
+      (user_id, usdt)
+    VALUES
+      (${users[0].id}, ${DEMO_STARTING_USDT})
+    ON CONFLICT (user_id)
+    DO NOTHING
+  `;
+
+  return users[0];
 }
 
 /* =========================================================
-   MARKET PRICE
+   COINGECKO PRICES
    ========================================================= */
 
-async function getCoinGeckoPrices() {
+async function getLivePrices() {
   const ids = Object.values(COINGECKO);
 
   if (!ids.length) return {};
 
   try {
-    const url =
+    const response = await fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=" +
       encodeURIComponent(ids.join(",")) +
-      "&vs_currencies=usd";
+      "&vs_currencies=usd"
+    );
 
-    const response = await fetch(url);
-
-    if (!response.ok) return {};
+    if (!response.ok) {
+      return {};
+    }
 
     return await response.json();
   } catch (error) {
     return {};
   }
 }
+
+/* =========================================================
+   MARKETS
+   ========================================================= */
 
 async function getMarkets() {
   const rows = await sql`
@@ -407,19 +417,23 @@ async function getMarkets() {
     ORDER BY id ASC
   `;
 
-  const live = await getCoinGeckoPrices();
+  const live = await getLivePrices();
 
-  return rows.map((market) => {
-    const id = COINGECKO[market.symbol];
+  return rows.map((row) => {
+    const coinId = COINGECKO[row.symbol];
 
-    let price = Number(market.price);
+    let price = Number(row.price);
 
-    if (id && live[id] && live[id].usd) {
-      price = Number(live[id].usd);
+    if (
+      coinId &&
+      live[coinId] &&
+      live[coinId].usd
+    ) {
+      price = Number(live[coinId].usd);
     }
 
     return {
-      ...market,
+      ...row,
       price
     };
   });
@@ -434,16 +448,22 @@ async function getMarket(symbol) {
     LIMIT 1
   `;
 
-  if (!rows.length) return null;
+  if (!rows.length) {
+    return null;
+  }
 
   const market = rows[0];
-  const id = COINGECKO[market.symbol];
 
-  if (id) {
-    const live = await getCoinGeckoPrices();
+  const coinId = COINGECKO[market.symbol];
 
-    if (live[id] && live[id].usd) {
-      market.price = Number(live[id].usd);
+  if (coinId) {
+    const live = await getLivePrices();
+
+    if (
+      live[coinId] &&
+      live[coinId].usd
+    ) {
+      market.price = Number(live[coinId].usd);
     }
   }
 
@@ -462,33 +482,14 @@ async function getGold() {
     LIMIT 1
   `;
 
-  if (!rows.length) {
-    await sql`
-      INSERT INTO df_gold
-        (id, symbol, name, price, unit, purity)
-      VALUES
-        (1, 'GOLD24', 'Gold 24K', ${GOLD_START_PRICE}, 'gram', '24K')
-      ON CONFLICT (id) DO NOTHING
-    `;
-
-    return {
-      success: true,
-      symbol: "GOLD24",
-      name: "Gold 24K",
-      price: GOLD_START_PRICE,
-      unit: "gram",
-      purity: "24K"
-    };
-  }
-
   return {
     success: true,
-    symbol: rows[0].symbol,
-    name: rows[0].name,
-    price: Number(rows[0].price),
-    unit: rows[0].unit,
-    purity: rows[0].purity,
-    updated_at: rows[0].updated_at
+    symbol: "GOLD24",
+    name: "Gold 24K",
+    price: Number(rows[0]?.price || GOLD_PRICE),
+    unit: "gram",
+    purity: "24K",
+    currency: "AFN"
   };
 }
 
@@ -499,7 +500,7 @@ async function getGold() {
 async function getWallet(externalId) {
   const user = await ensureUser(externalId);
 
-  const wallet = await sql`
+  const walletRows = await sql`
     SELECT *
     FROM df_wallets
     WHERE user_id = ${user.id}
@@ -526,11 +527,15 @@ async function getWallet(externalId) {
 
   prices.GOLD24 = Number(gold.price);
 
-  let portfolioValue = Number(wallet[0]?.usdt || 0);
+  let portfolioValue =
+    Number(walletRows[0]?.usdt || 0);
 
   const holdings = assets.map((asset) => {
-    const price = prices[asset.symbol] || 0;
     const amount = Number(asset.amount);
+    const price = Number(
+      prices[asset.symbol] || 0
+    );
+
     const value = amount * price;
 
     portfolioValue += value;
@@ -538,7 +543,9 @@ async function getWallet(externalId) {
     return {
       symbol: asset.symbol,
       amount,
-      average_price: Number(asset.average_price || 0),
+      average_price: Number(
+        asset.average_price || 0
+      ),
       price,
       value
     };
@@ -548,7 +555,7 @@ async function getWallet(externalId) {
     success: true,
     user_id: user.id,
     external_id: user.external_id,
-    usdt: Number(wallet[0]?.usdt || 0),
+    usdt: Number(walletRows[0]?.usdt || 0),
     portfolio_value: portfolioValue,
     assets: holdings
   };
@@ -558,7 +565,11 @@ async function getWallet(externalId) {
    BUY
    ========================================================= */
 
-async function buy(externalId, symbol, amount) {
+async function buy(
+  externalId,
+  symbol,
+  amount
+) {
   const user = await ensureUser(externalId);
 
   const market = await getMarket(symbol);
@@ -569,7 +580,10 @@ async function buy(externalId, symbol, amount) {
 
   const qty = Number(amount);
 
-  if (!Number.isFinite(qty) || qty <= 0) {
+  if (
+    !Number.isFinite(qty) ||
+    qty <= 0
+  ) {
     throw new Error("مقدار خرید نادرست است");
   }
 
@@ -583,11 +597,13 @@ async function buy(externalId, symbol, amount) {
     LIMIT 1
   `;
 
-  const balance = Number(walletRows[0].usdt);
+  const balance = Number(
+    walletRows[0]?.usdt || 0
+  );
 
   if (balance < total) {
     throw new Error(
-      `موجودی USDT کافی نیست. موجودی فعلی: ${balance.toFixed(2)} USDT`
+      `موجودی USDT کافی نیست. موجودی: ${balance.toFixed(2)} USDT`
     );
   }
 
@@ -615,13 +631,20 @@ async function buy(externalId, symbol, amount) {
         (${user.id}, ${market.symbol}, ${qty}, ${price})
     `;
   } else {
-    const oldAmount = Number(oldAsset[0].amount);
-    const oldAverage = Number(oldAsset[0].average_price);
+    const oldAmount =
+      Number(oldAsset[0].amount);
 
-    const newAmount = oldAmount + qty;
+    const oldAverage =
+      Number(oldAsset[0].average_price);
+
+    const newAmount =
+      oldAmount + qty;
 
     const newAverage =
-      ((oldAmount * oldAverage) + (qty * price)) / newAmount;
+      (
+        oldAmount * oldAverage +
+        qty * price
+      ) / newAmount;
 
     await sql`
       UPDATE df_assets
@@ -637,14 +660,28 @@ async function buy(externalId, symbol, amount) {
     INSERT INTO df_trades
       (user_id, symbol, side, amount, price, total)
     VALUES
-      (${user.id}, ${market.symbol}, 'BUY', ${qty}, ${price}, ${total})
+      (
+        ${user.id},
+        ${market.symbol},
+        'BUY',
+        ${qty},
+        ${price},
+        ${total}
+      )
   `;
 
   await sql`
     INSERT INTO df_orders
       (user_id, symbol, side, amount, price, status)
     VALUES
-      (${user.id}, ${market.symbol}, 'BUY', ${qty}, ${price}, 'FILLED')
+      (
+        ${user.id},
+        ${market.symbol},
+        'BUY',
+        ${qty},
+        ${price},
+        'FILLED'
+      )
   `;
 
   return {
@@ -661,7 +698,11 @@ async function buy(externalId, symbol, amount) {
    SELL
    ========================================================= */
 
-async function sell(externalId, symbol, amount) {
+async function sell(
+  externalId,
+  symbol,
+  amount
+) {
   const user = await ensureUser(externalId);
 
   const market = await getMarket(symbol);
@@ -672,11 +713,14 @@ async function sell(externalId, symbol, amount) {
 
   const qty = Number(amount);
 
-  if (!Number.isFinite(qty) || qty <= 0) {
+  if (
+    !Number.isFinite(qty) ||
+    qty <= 0
+  ) {
     throw new Error("مقدار فروش نادرست است");
   }
 
-  const asset = await sql`
+  const assetRows = await sql`
     SELECT *
     FROM df_assets
     WHERE user_id = ${user.id}
@@ -684,22 +728,26 @@ async function sell(externalId, symbol, amount) {
     LIMIT 1
   `;
 
-  if (!asset.length) {
-    throw new Error("این ارز در کیف پول شما موجود نیست");
+  if (!assetRows.length) {
+    throw new Error(
+      "این ارز در کیف پول شما موجود نیست"
+    );
   }
 
-  const owned = Number(asset[0].amount);
+  const owned =
+    Number(assetRows[0].amount);
 
   if (owned < qty) {
     throw new Error(
-      `مقدار کافی ندارید. موجودی شما: ${owned}`
+      `موجودی کافی نیست. موجودی شما: ${owned}`
     );
   }
 
   const price = Number(market.price);
   const total = qty * price;
 
-  const newAmount = owned - qty;
+  const newAmount =
+    owned - qty;
 
   await sql`
     UPDATE df_assets
@@ -720,14 +768,28 @@ async function sell(externalId, symbol, amount) {
     INSERT INTO df_trades
       (user_id, symbol, side, amount, price, total)
     VALUES
-      (${user.id}, ${market.symbol}, 'SELL', ${qty}, ${price}, ${total})
+      (
+        ${user.id},
+        ${market.symbol},
+        'SELL',
+        ${qty},
+        ${price},
+        ${total}
+      )
   `;
 
   await sql`
     INSERT INTO df_orders
       (user_id, symbol, side, amount, price, status)
     VALUES
-      (${user.id}, ${market.symbol}, 'SELL', ${qty}, ${price}, 'FILLED')
+      (
+        ${user.id},
+        ${market.symbol},
+        'SELL',
+        ${qty},
+        ${price},
+        'FILLED'
+      )
   `;
 
   return {
@@ -741,7 +803,7 @@ async function sell(externalId, symbol, amount) {
 }
 
 /* =========================================================
-   HISTORY
+   TRADES
    ========================================================= */
 
 async function getTrades(externalId) {
@@ -787,9 +849,14 @@ async function getOrders(externalId) {
    ========================================================= */
 
 async function getAccount(externalId) {
-  const wallet = await getWallet(externalId);
-  const trades = await getTrades(externalId);
-  const orders = await getOrders(externalId);
+  const wallet =
+    await getWallet(externalId);
+
+  const trades =
+    await getTrades(externalId);
+
+  const orders =
+    await getOrders(externalId);
 
   return {
     success: true,
@@ -814,7 +881,7 @@ function getUserId(req) {
 }
 
 function getAction(req) {
-  return (
+  return String(
     req.query?.action ||
     req.body?.action ||
     ""
@@ -822,7 +889,7 @@ function getAction(req) {
 }
 
 function getSymbol(req) {
-  return (
+  return String(
     req.query?.symbol ||
     req.body?.symbol ||
     ""
@@ -838,15 +905,21 @@ function getAmount(req) {
 }
 
 /* =========================================================
-   MAIN API
+   MAIN
    ========================================================= */
 
 module.exports = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET,POST,OPTIONS"
   );
+
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type"
@@ -859,42 +932,61 @@ module.exports = async (req, res) => {
   }
 
   try {
+
     await setupDatabase();
 
     /*
-     * IMPORTANT:
-     * Never DELETE markets here.
-     * Existing database markets are preserved.
+     * Add missing markets.
+     * Existing market prices are NOT overwritten.
      */
     await ensureMarkets();
 
-    const action = getAction(req);
-    const path = req.url.split("?")[0];
+    const action =
+      getAction(req);
 
-    /* =========================
-       ROOT
-       ========================= */
+    const path =
+      req.url.split("?")[0];
 
-    if (path === "/api" && !action) {
+    /* ROOT */
+
+    if (
+      path === "/api" &&
+      !action
+    ) {
       return res.status(200).json({
         success: true,
-        message: "Digital Finance Backend is running!",
+        message:
+          "Digital Finance Backend is running!",
         service: "Digital Finance",
         currency: "USDT",
         gold: "24K",
-        markets: MARKETS.length
+        demo_starting_usdt:
+          DEMO_STARTING_USDT,
+        markets: 103,
+        endpoints: [
+          "/api/setup",
+          "/api/markets",
+          "/api/gold",
+          "/api/prices",
+          "/api/wallet",
+          "/api/portfolio",
+          "/api/assets",
+          "/api/trades",
+          "/api/orders",
+          "/api/buy",
+          "/api/sell"
+        ]
       });
     }
 
-    /* =========================
-       MARKETS
-       ========================= */
+    /* MARKETS */
 
     if (
       path === "/api/markets" ||
       action === "markets"
     ) {
-      const markets = await getMarkets();
+      const markets =
+        await getMarkets();
 
       return res.status(200).json({
         success: true,
@@ -903,9 +995,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    /* =========================
-       GOLD
-       ========================= */
+    /* GOLD */
 
     if (
       path === "/api/gold" ||
@@ -917,56 +1007,64 @@ module.exports = async (req, res) => {
       );
     }
 
-    /* =========================
-       WALLET
-       ========================= */
+    /* PRICES */
+
+    if (
+      path === "/api/prices" ||
+      action === "prices"
+    ) {
+      const markets =
+        await getMarkets();
+
+      const prices = {};
+
+      for (const market of markets) {
+        prices[market.symbol] =
+          Number(market.price);
+      }
+
+      return res.status(200).json({
+        success: true,
+        prices
+      });
+    }
+
+    /* WALLET */
 
     if (
       path === "/api/wallet" ||
       action === "wallet"
     ) {
       return res.status(200).json(
-        await getWallet(getUserId(req))
+        await getWallet(
+          getUserId(req)
+        )
       );
     }
 
-    /* =========================
-       PORTFOLIO
-       ========================= */
+    /* PORTFOLIO */
 
     if (
       path === "/api/portfolio" ||
       action === "portfolio"
     ) {
       return res.status(200).json(
-        await getWallet(getUserId(req))
+        await getWallet(
+          getUserId(req)
+        )
       );
     }
 
-    /* =========================
-       ACCOUNT
-       ========================= */
-
-    if (
-      path === "/api/account" ||
-      action === "account"
-    ) {
-      return res.status(200).json(
-        await getAccount(getUserId(req))
-      );
-    }
-
-    /* =========================
-       ASSETS
-       ========================= */
+    /* ASSETS */
 
     if (
       path === "/api/assets" ||
       action === "assets"
     ) {
-      const wallet = await getWallet(
-        getUserId(req)
-      );
+      const wallet =
+        await getWallet(
+          getUserId(req)
+        );
 
       return res.status(200).json({
         success: true,
@@ -974,9 +1072,20 @@ module.exports = async (req, res) => {
       });
     }
 
-    /* =========================
-       TRADES
-       ========================= */
+    /* ACCOUNT */
+
+    if (
+      path === "/api/account" ||
+      action === "account"
+    ) {
+      return res.status(200).json(
+        await getAccount(
+          getUserId(req)
+        )
+      );
+    }
+
+    /* TRADES */
 
     if (
       path === "/api/trades" ||
@@ -985,31 +1094,32 @@ module.exports = async (req, res) => {
       action === "history"
     ) {
       return res.status(200).json(
-        await getTrades(getUserId(req))
+        await getTrades(
+          getUserId(req)
+        )
       );
     }
 
-    /* =========================
-       ORDERS
-       ========================= */
+    /* ORDERS */
 
     if (
       path === "/api/orders" ||
       action === "orders"
     ) {
       return res.status(200).json(
-        await getOrders(getUserId(req))
+        await getOrders(
+          getUserId(req)
+        )
       );
     }
 
-    /* =========================
-       BUY
-       ========================= */
+    /* BUY */
 
     if (
       path === "/api/buy" ||
       action === "buy"
     ) {
+
       if (req.method !== "POST") {
         return res.status(405).json({
           success: false,
@@ -1017,23 +1127,25 @@ module.exports = async (req, res) => {
         });
       }
 
-      const result = await buy(
-        getUserId(req),
-        getSymbol(req),
-        getAmount(req)
-      );
+      const result =
+        await buy(
+          getUserId(req),
+          getSymbol(req),
+          getAmount(req)
+        );
 
-      return res.status(200).json(result);
+      return res.status(200).json(
+        result
+      );
     }
 
-    /* =========================
-       SELL
-       ========================= */
+    /* SELL */
 
     if (
       path === "/api/sell" ||
       action === "sell"
     ) {
+
       if (req.method !== "POST") {
         return res.status(405).json({
           success: false,
@@ -1041,34 +1153,35 @@ module.exports = async (req, res) => {
         });
       }
 
-      const result = await sell(
-        getUserId(req),
-        getSymbol(req),
-        getAmount(req)
-      );
+      const result =
+        await sell(
+          getUserId(req),
+          getSymbol(req),
+          getAmount(req)
+        );
 
-      return res.status(200).json(result);
+      return res.status(200).json(
+        result
+      );
     }
 
-    /* =========================
-       SETUP
-       ========================= */
+    /* SETUP */
 
     if (
       path === "/api/setup" ||
       action === "setup"
     ) {
+      const markets =
+        await getMarkets();
+
       return res.status(200).json({
         success: true,
-        message: "Digital Finance database is ready",
-        markets: (await getMarkets()).length,
+        message:
+          "Digital Finance database is ready",
+        markets: markets.length,
         gold: await getGold()
       });
     }
-
-    /* =========================
-       404
-       ========================= */
 
     return res.status(404).json({
       success: false,
@@ -1078,11 +1191,17 @@ module.exports = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("DIGITAL FINANCE API ERROR:", error);
+
+    console.error(
+      "DIGITAL FINANCE ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      error: error.message || "Server error"
+      error:
+        error.message ||
+        "Server error"
     });
   }
 };
