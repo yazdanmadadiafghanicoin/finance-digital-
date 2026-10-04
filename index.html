@@ -2,481 +2,191 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta name="theme-color" content="#0b0f14">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0b0e11">
 <title>Digital Finance</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
-  margin:0;
-  background:#070b10;
-  color:#fff;
+  margin:0;background:#0b0e11;color:#fff;
   font-family:Arial,Tahoma,sans-serif;
 }
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:1100px;margin:auto;min-height:100vh;padding-bottom:85px}
 
-button,input{
-  font:inherit;
+header{
+  position:sticky;top:0;z-index:20;
+  background:#0b0e11ee;
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid #252a30;
+  padding:14px 16px;
 }
-
-button{
-  cursor:pointer;
-}
-
-.app{
-  width:100%;
-  max-width:1100px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:90px;
-}
-
-/* HEADER */
-
-.header{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:rgba(7,11,16,.96);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid #202832;
-  padding:14px;
-}
-
-.header-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.logo{
-  font-size:21px;
-  font-weight:800;
-}
-
-.logo span{
-  color:#f0b90b;
-}
-
-.status{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  color:#9ba7b5;
-  font-size:12px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#f0b90b;
-}
-
-.dot.ok{
-  background:#20c997;
-}
-
-.dot.error{
-  background:#ef4444;
-}
-
-/* BALANCE */
+.header-row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:21px;font-weight:800}
+.logo span{color:#f0b90b}
+.status{font-size:12px;color:#929aa5;display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#f0b90b}
+.dot.ok{background:#16c784}
+.dot.error{background:#f6465d}
 
 .balance{
-  margin:14px;
-  padding:18px;
-  border:1px solid #252e38;
-  border-radius:18px;
-  background:linear-gradient(145deg,#111821,#0b1016);
+  margin:15px;padding:19px;border-radius:16px;
+  background:linear-gradient(145deg,#171b20,#0e1115);
+  border:1px solid #292e34;
 }
-
-.balance-title{
-  color:#8c98a7;
-  font-size:13px;
-}
-
-.balance-value{
-  margin-top:7px;
-  font-size:30px;
-  font-weight:800;
-}
-
-.balance-sub{
-  color:#8995a3;
-  font-size:12px;
-  margin-top:5px;
-}
-
-/* ACTIONS */
+.balance-label{color:#8b949e;font-size:13px}
+.balance-value{font-size:30px;font-weight:800;margin-top:7px;direction:ltr;text-align:right}
+.balance-sub{font-size:12px;color:#737d88;margin-top:6px}
 
 .actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin:14px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin:15px;
 }
-
 .action{
-  border:0;
-  border-radius:13px;
-  padding:14px;
-  font-weight:800;
+  border:0;border-radius:10px;padding:14px;font-weight:800;
 }
+.buy{background:#16c784;color:#06150f}
+.sell{background:#f6465d;color:white}
 
-.action.buy{
-  background:#20c997;
-  color:#04120d;
+.search{margin:15px}
+.search input{
+  width:100%;padding:13px 15px;
+  border-radius:10px;border:1px solid #2b3138;
+  background:#15191e;color:#fff;outline:none;
 }
-
-.action.sell{
-  background:#ef4444;
-  color:#fff;
-}
-
-/* SEARCH */
-
-.search-box{
-  margin:14px;
-  position:relative;
-}
-
-.search{
-  width:100%;
-  background:#10161e;
-  border:1px solid #27313c;
-  color:#fff;
-  border-radius:12px;
-  padding:13px 15px;
-  outline:none;
-}
-
-.search:focus{
-  border-color:#f0b90b;
-}
-
-/* FILTERS */
+.search input:focus{border-color:#f0b90b}
 
 .filters{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:0 14px 12px;
+  display:flex;gap:8px;overflow:auto;padding:0 15px 12px;
 }
-
 .filters button{
-  white-space:nowrap;
-  border:1px solid #29333e;
-  background:#10161e;
-  color:#aeb8c4;
-  border-radius:20px;
-  padding:8px 14px;
+  white-space:nowrap;padding:8px 14px;
+  border-radius:20px;border:1px solid #30363d;
+  background:#15191e;color:#aeb5bd;
 }
-
 .filters button.active{
-  background:#f0b90b;
-  border-color:#f0b90b;
-  color:#111;
-  font-weight:800;
+  background:#f0b90b;color:#111;border-color:#f0b90b;font-weight:bold;
 }
-
-/* MARKET */
 
 .market-card{
-  margin:14px;
-  border:1px solid #222b35;
-  border-radius:16px;
-  overflow:hidden;
-  background:#0c1218;
+  margin:15px;border:1px solid #272d33;
+  border-radius:15px;overflow:hidden;background:#101419;
 }
-
 .market-head{
-  padding:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #202832;
+  padding:14px;border-bottom:1px solid #272d33;
+  display:flex;justify-content:space-between;
 }
-
-.market-count{
-  font-size:13px;
-  color:#8e9aa8;
-}
-
-.market-list{
-  width:100%;
-}
+.market-count{font-size:12px;color:#7d8791}
 
 .market{
   display:grid;
-  grid-template-columns:1.7fr 1.2fr .8fr;
-  align-items:center;
-  gap:8px;
-  padding:14px;
-  border-bottom:1px solid #1b232c;
+  grid-template-columns:1.45fr 1fr .65fr;
+  align-items:center;gap:8px;
+  padding:14px;border-bottom:1px solid #20252b;
 }
+.market:last-child{border-bottom:0}
 
-.market:last-child{
-  border-bottom:0;
-}
-
-.coin-name{
-  min-width:0;
-}
-
-.symbol{
-  font-weight:800;
-  font-size:15px;
-}
-
+.symbol{font-size:15px;font-weight:800}
 .name{
-  color:#7f8b99;
-  font-size:11px;
-  margin-top:4px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  font-size:11px;color:#77818c;
+  margin-top:4px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.price{text-align:left;direction:ltr;font-weight:700}
+.change{text-align:left;direction:ltr;font-size:11px;color:#16c784}
+.gold{color:#f0b90b}
+
+.trade-small{
+  border:1px solid #353c44;
+  background:#181d23;color:#fff;
+  border-radius:7px;padding:7px 9px;font-size:11px;
+}
+.trade-small:hover{border-color:#f0b90b}
+
+.gold-row{
+  background:linear-gradient(90deg,#17150d,#111419);
+  border-right:3px solid #f0b90b;
 }
 
-.price{
-  text-align:left;
-  font-weight:700;
-  direction:ltr;
-}
-
-.change{
-  text-align:left;
-  font-size:12px;
-  direction:ltr;
-}
-
-.positive{
-  color:#20c997;
-}
-
-.negative{
-  color:#ef4444;
-}
-
-.trade-btn{
-  margin-top:6px;
-  border:1px solid #39434e;
-  background:#161e27;
-  color:#fff;
-  border-radius:8px;
-  padding:7px 10px;
-  font-size:11px;
-}
-
-.trade-btn:hover{
-  border-color:#f0b90b;
-}
-
-.gold{
-  color:#f0b90b;
-}
-
-/* LOADING */
-
-.loading{
-  padding:40px 20px;
-  text-align:center;
-  color:#9aa6b3;
-}
-
+.loading{text-align:center;padding:40px;color:#8a949f}
 .spinner{
-  width:28px;
-  height:28px;
-  border:3px solid #29333e;
-  border-top-color:#f0b90b;
-  border-radius:50%;
-  margin:0 auto 12px;
-  animation:spin .8s linear infinite;
+  width:28px;height:28px;margin:0 auto 12px;
+  border:3px solid #30363d;border-top-color:#f0b90b;
+  border-radius:50%;animation:spin .8s linear infinite;
 }
+@keyframes spin{to{transform:rotate(360deg)}}
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
+.error{
+  display:none;margin:15px;padding:15px;
+  background:#251317;border:1px solid #63252f;
+  border-radius:10px;color:#ff9aa8;
 }
-
-.error-box{
-  margin:14px;
-  padding:16px;
-  border-radius:12px;
-  background:#241217;
-  border:1px solid #6b2632;
-  color:#ff9aa8;
-  display:none;
-}
-
 .retry{
-  margin-top:10px;
-  border:0;
-  background:#f0b90b;
-  color:#111;
-  border-radius:8px;
-  padding:9px 15px;
-  font-weight:800;
+  margin-top:10px;border:0;border-radius:7px;
+  background:#f0b90b;color:#111;padding:9px 15px;font-weight:bold;
 }
-
-/* BOTTOM */
 
 .bottom{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:100;
-  max-width:1100px;
-  margin:auto;
-  background:#0c1117;
-  border-top:1px solid #252e38;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  max-width:1100px;margin:auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:#11151a;border-top:1px solid #292f35;
+  padding:7px 5px calc(7px + env(safe-area-inset-bottom));
 }
-
 .bottom button{
-  border:0;
-  background:none;
-  color:#7e8996;
-  padding:7px 2px;
-  font-size:11px;
+  border:0;background:none;color:#737d88;
+  font-size:11px;padding:5px;
 }
-
-.bottom button.active{
-  color:#f0b90b;
-}
-
-.bottom-icon{
-  display:block;
-  font-size:19px;
-  margin-bottom:3px;
-}
-
-/* MODAL */
+.bottom button.active{color:#f0b90b}
+.icon{display:block;font-size:19px;margin-bottom:3px}
 
 .modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:200;
-  background:rgba(0,0,0,.75);
-  align-items:flex-end;
-  justify-content:center;
+  display:none;position:fixed;inset:0;z-index:100;
+  background:#000b;align-items:flex-end;justify-content:center;
 }
-
-.modal.show{
-  display:flex;
-}
-
+.modal.show{display:flex}
 .modal-box{
-  width:100%;
-  max-width:600px;
-  background:#10161e;
-  border:1px solid #29333e;
-  border-radius:22px 22px 0 0;
-  padding:20px;
-  max-height:90vh;
-  overflow:auto;
+  width:100%;max-width:600px;
+  max-height:90vh;overflow:auto;
+  background:#15191e;border:1px solid #30363d;
+  border-radius:20px 20px 0 0;padding:20px;
 }
-
 .modal-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:19px;
-  font-weight:800;
+  display:flex;justify-content:space-between;
+  align-items:center;font-size:19px;font-weight:bold;
   margin-bottom:18px;
 }
-
 .close{
-  width:34px;
-  height:34px;
-  border:0;
-  border-radius:50%;
-  background:#202832;
-  color:#fff;
+  width:34px;height:34px;border:0;border-radius:50%;
+  background:#252b31;color:#fff;font-size:20px;
 }
-
-.form-label{
-  color:#8f9ba8;
-  font-size:12px;
-  margin:14px 0 6px;
+.label{font-size:12px;color:#89939e;margin:13px 0 6px}
+.input,.select{
+  width:100%;padding:13px;border-radius:9px;
+  background:#0d1014;color:#fff;
+  border:1px solid #30363d;outline:none;
 }
-
-.form-input{
-  width:100%;
-  border:1px solid #2b3540;
-  background:#080d12;
-  color:#fff;
-  border-radius:10px;
-  padding:13px;
-  outline:none;
-}
-
-.form-input:focus{
-  border-color:#f0b90b;
-}
-
-.modal-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:18px;
-}
-
-.modal-actions button{
-  border:0;
-  border-radius:10px;
-  padding:13px;
-  font-weight:800;
-}
-
-.modal-buy{
-  background:#20c997;
-}
-
-.modal-sell{
-  background:#ef4444;
-  color:#fff;
-}
-
 .info{
-  padding:12px;
-  border-radius:10px;
-  background:#0a1016;
-  border:1px solid #222b35;
-  margin-top:10px;
-  color:#aab4bf;
-  font-size:12px;
+  background:#0d1115;border:1px solid #282e34;
+  border-radius:9px;padding:12px;
+  margin-top:12px;color:#aab2ba;font-size:12px;
 }
-
-.empty{
-  text-align:center;
-  padding:35px 15px;
-  color:#7e8996;
+.modal-actions{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin-top:18px;
 }
-
-/* DESKTOP */
+.modal-actions button{
+  border:0;border-radius:9px;padding:13px;font-weight:bold;
+}
+.empty{text-align:center;padding:30px;color:#747e89}
+.positive{color:#16c784}
+.negative{color:#f6465d}
 
 @media(min-width:700px){
-  .modal{
-    align-items:center;
-  }
-
-  .modal-box{
-    border-radius:20px;
-  }
-
-  .bottom{
-    border:1px solid #252e38;
-    border-radius:18px 18px 0 0;
-  }
+  .modal{align-items:center}
+  .modal-box{border-radius:18px}
 }
 </style>
 </head>
@@ -485,256 +195,181 @@ button{
 
 <div class="app">
 
-  <header class="header">
-    <div class="header-row">
-      <div class="logo">
-        Digital <span>Finance</span>
-      </div>
-
-      <div class="status">
-        <span id="statusDot" class="dot"></span>
-        <span id="statusText">Connecting...</span>
-      </div>
+<header>
+  <div class="header-row">
+    <div class="logo">Digital <span>Finance</span></div>
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">Connecting...</span>
     </div>
-  </header>
+  </div>
+</header>
 
-  <section class="balance">
-    <div class="balance-title">Total Wallet Balance</div>
-    <div class="balance-value">
-      <span id="walletBalance">10,000.00</span> USDT
-    </div>
-    <div class="balance-sub">
-      Demo account • Starting balance
-    </div>
-  </section>
+<section class="balance">
+  <div class="balance-label">Total Wallet Balance</div>
+  <div class="balance-value">
+    <span id="walletBalance">10,000.00</span> USDT
+  </div>
+  <div class="balance-sub">Demo Trading Account</div>
+</section>
 
-  <div class="actions">
-    <button class="action buy" onclick="openTrade('buy')">
-      خرید
-    </button>
+<div class="actions">
+  <button class="action buy" onclick="openTrade('buy')">خرید</button>
+  <button class="action sell" onclick="openTrade('sell')">فروش</button>
+</div>
 
-    <button class="action sell" onclick="openTrade('sell')">
-      فروش
-    </button>
+<div class="search">
+  <input id="searchInput" type="search"
+    placeholder="جستجوی ارز، طلا یا نماد...">
+</div>
+
+<div class="filters">
+  <button class="active" data-filter="all">همه</button>
+  <button data-filter="crypto">Crypto</button>
+  <button data-filter="stable">Stablecoins</button>
+  <button data-filter="gold">Gold</button>
+</div>
+
+<div id="errorBox" class="error">
+  <div id="errorText"></div>
+  <button class="retry" onclick="loadMarkets()">تلاش دوباره</button>
+</div>
+
+<section class="market-card">
+
+  <div class="market-head">
+    <strong>Markets</strong>
+    <span id="marketCount" class="market-count">0 assets</span>
   </div>
 
-  <div class="search-box">
-    <input
-      id="searchInput"
-      class="search"
-      type="search"
-      placeholder="جستجوی ارز، طلا یا نماد..."
-      autocomplete="off">
-  </div>
-
-  <div class="filters">
-    <button class="active" data-filter="all">همه</button>
-    <button data-filter="crypto">Crypto</button>
-    <button data-filter="usdt">USDT</button>
-    <button data-filter="usdc">USDC</button>
-    <button data-filter="gold">Gold</button>
-  </div>
-
-  <div id="errorBox" class="error-box">
-    <div id="errorText">خطا در اتصال</div>
-    <button class="retry" onclick="loadMarkets()">تلاش دوباره</button>
-  </div>
-
-  <section class="market-card">
-
-    <div class="market-head">
-      <strong>Markets</strong>
-      <span id="marketCount" class="market-count">Loading...</span>
+  <div id="marketList">
+    <div class="loading">
+      <div class="spinner"></div>
+      در حال دریافت بازارها...
     </div>
+  </div>
 
-    <div id="marketList" class="market-list">
-
-      <div class="loading">
-        <div class="spinner"></div>
-        <div>در حال دریافت بازارها...</div>
-      </div>
-
-    </div>
-
-  </section>
+</section>
 
 </div>
 
 <nav class="bottom">
 
-  <button class="active" onclick="showHome(this)">
-    <span class="bottom-icon">🏠</span>
-    بازار
+  <button class="active" onclick="home(this)">
+    <span class="icon">🏠</span>
+    Markets
   </button>
 
   <button onclick="openWallet()">
-    <span class="bottom-icon">💰</span>
+    <span class="icon">💰</span>
     Wallet
   </button>
 
   <button onclick="openPortfolio()">
-    <span class="bottom-icon">📊</span>
+    <span class="icon">📊</span>
     Portfolio
   </button>
 
   <button onclick="openHistory()">
-    <span class="bottom-icon">🧾</span>
+    <span class="icon">🧾</span>
     History
   </button>
 
 </nav>
 
 
-<!-- TRADE MODAL -->
+<!-- TRADE -->
 
 <div id="tradeModal" class="modal">
+<div class="modal-box">
 
-  <div class="modal-box">
+  <div class="modal-title">
+    <span id="tradeTitle">Buy</span>
+    <button class="close" onclick="closeModal('tradeModal')">×</button>
+  </div>
 
-    <div class="modal-title">
+  <div class="label">Market</div>
 
-      <span id="tradeTitle">Buy</span>
+  <select id="tradeMarket" class="select"></select>
 
-      <button class="close" onclick="closeModal('tradeModal')">
-        ×
-      </button>
+  <div class="label">Amount USDT</div>
 
-    </div>
+  <input id="tradeAmount"
+    class="input"
+    type="number"
+    min="0"
+    step="0.01"
+    placeholder="100">
 
-    <div class="form-label">
-      Market
-    </div>
+  <div id="tradeInfo" class="info">
+    مقدار معامله را وارد کنید.
+  </div>
 
-    <select id="tradeMarket" class="form-input">
-    </select>
+  <div class="modal-actions">
+    <button id="buyBtn" class="buy"
+      onclick="executeTrade('buy')">خرید</button>
 
-    <div class="form-label">
-      مقدار USDT
-    </div>
-
-    <input
-      id="tradeAmount"
-      class="form-input"
-      type="number"
-      min="0"
-      step="0.01"
-      placeholder="مثلاً 100">
-
-    <div id="tradeInfo" class="info">
-      مقدار معامله را وارد کنید.
-    </div>
-
-    <div class="modal-actions">
-
-      <button
-        id="buyButton"
-        class="modal-buy"
-        onclick="executeTrade('buy')">
-        خرید
-      </button>
-
-      <button
-        id="sellButton"
-        class="modal-sell"
-        onclick="executeTrade('sell')">
-        فروش
-      </button>
-
-    </div>
-
+    <button id="sellBtn" class="sell"
+      onclick="executeTrade('sell')">فروش</button>
   </div>
 
 </div>
+</div>
 
 
-<!-- WALLET MODAL -->
+<!-- WALLET -->
 
 <div id="walletModal" class="modal">
+<div class="modal-box">
 
-  <div class="modal-box">
+  <div class="modal-title">
+    <span>Wallet</span>
+    <button class="close" onclick="closeModal('walletModal')">×</button>
+  </div>
 
-    <div class="modal-title">
-      <span>Wallet</span>
+  <div class="info">
+    USDT Balance
+    <br><br>
+    <strong id="walletModalBalance">10,000.00 USDT</strong>
+  </div>
 
-      <button class="close" onclick="closeModal('walletModal')">
-        ×
-      </button>
-    </div>
-
-    <div class="info">
-      موجودی USDT
-      <br>
-      <strong id="walletModalBalance">10,000.00 USDT</strong>
-    </div>
-
-    <div class="info">
-      حساب Demo برای آزمایش Digital Finance
-    </div>
-
-    <div class="modal-actions">
-
-      <button
-        class="modal-buy"
-        onclick="alert('Deposit در نسخه بعدی فعال می‌شود')">
-        Deposit
-      </button>
-
-      <button
-        class="modal-sell"
-        onclick="alert('Withdraw در نسخه بعدی فعال می‌شود')">
-        Withdraw
-      </button>
-
-    </div>
-
+  <div class="info">
+    حساب Demo با موجودی اولیه 10,000 USDT
   </div>
 
 </div>
+</div>
 
 
-<!-- PORTFOLIO MODAL -->
+<!-- PORTFOLIO -->
 
 <div id="portfolioModal" class="modal">
+<div class="modal-box">
 
-  <div class="modal-box">
-
-    <div class="modal-title">
-
-      <span>Portfolio</span>
-
-      <button class="close" onclick="closeModal('portfolioModal')">
-        ×
-      </button>
-
-    </div>
-
-    <div id="portfolioContent"></div>
-
+  <div class="modal-title">
+    <span>Portfolio</span>
+    <button class="close" onclick="closeModal('portfolioModal')">×</button>
   </div>
 
+  <div id="portfolioContent"></div>
+
+</div>
 </div>
 
 
-<!-- HISTORY MODAL -->
+<!-- HISTORY -->
 
 <div id="historyModal" class="modal">
+<div class="modal-box">
 
-  <div class="modal-box">
-
-    <div class="modal-title">
-
-      <span>History</span>
-
-      <button class="close" onclick="closeModal('historyModal')">
-        ×
-      </button>
-
-    </div>
-
-    <div id="historyContent"></div>
-
+  <div class="modal-title">
+    <span>History</span>
+    <button class="close" onclick="closeModal('historyModal')">×</button>
   </div>
 
+  <div id="historyContent"></div>
+
+</div>
 </div>
 
 
@@ -747,124 +382,79 @@ button{
 
 const API_BASE = window.location.origin;
 
-const STARTING_USDT = 10000;
+const GOLD_PRICE_USD = 4145;
+
+const GOLD_SYMBOL = "GOLD24";
+
+const STARTING_BALANCE = 10000;
 
 let markets = [];
 let filteredMarkets = [];
 
-let currentFilter = "all";
-let currentTradeSide = "buy";
-
-let walletBalance = STARTING_USDT;
+let walletBalance = STARTING_BALANCE;
 
 let portfolio = {};
-
 let history = [];
 
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function getStorageKey(){
-  try{
-    if(
-      window.Telegram &&
-      Telegram.WebApp &&
-      Telegram.WebApp.initDataUnsafe &&
-      Telegram.WebApp.initDataUnsafe.user
-    ){
-      return "df_wallet_" + Telegram.WebApp.initDataUnsafe.user.id;
-    }
-  }catch(e){}
-
-  return "df_wallet_demo";
-}
-
-
-function loadLocalData(){
-
-  try{
-
-    const key = getStorageKey();
-
-    const saved = localStorage.getItem(key);
-
-    if(saved){
-
-      const data = JSON.parse(saved);
-
-      if(typeof data.walletBalance === "number"){
-        walletBalance = data.walletBalance;
-      }
-
-      if(data.portfolio && typeof data.portfolio === "object"){
-        portfolio = data.portfolio;
-      }
-
-      if(Array.isArray(data.history)){
-        history = data.history;
-      }
-
-    }
-
-  }catch(error){
-
-    console.warn("Storage error:",error);
-
-  }
-
-  updateWalletUI();
-}
-
-
-function saveLocalData(){
-
-  try{
-
-    const key = getStorageKey();
-
-    localStorage.setItem(
-      key,
-      JSON.stringify({
-        walletBalance,
-        portfolio,
-        history
-      })
-    );
-
-  }catch(error){
-
-    console.warn("Save error:",error);
-
-  }
-
-}
+let filter = "all";
 
 
 /* =========================================================
-   TELEGRAM
+   GOLD
 ========================================================= */
 
-function initTelegram(){
+function createGoldMarket(){
 
-  try{
+  return {
+    id:"gold24",
+    symbol:"GOLD24",
+    name:"Gold 24K — 1 Troy Ounce",
+    price:GOLD_PRICE_USD,
+    active:true,
+    isGold:true
+  };
 
-    if(
-      window.Telegram &&
-      Telegram.WebApp
-    ){
+}
 
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
 
-    }
+/*
+  طلا همیشه وجود دارد.
+  اگر Backend طلا نداشت، خودکار اضافه می‌شود.
+  اگر Backend طلا داشت، قیمت صفحه روی 4145 تنظیم می‌شود.
+*/
 
-  }catch(error){
+function addOrFixGold(){
 
-    console.log("Telegram unavailable");
+  const existing = markets.find(m =>
+    m.symbol === "GOLD24" ||
+    m.symbol === "XAU"
+  );
+
+  if(existing){
+
+    existing.symbol = "GOLD24";
+    existing.name = "Gold 24K — 1 Troy Ounce";
+    existing.price = GOLD_PRICE_USD;
+    existing.isGold = true;
+
+  }else{
+
+    markets.unshift(createGoldMarket());
 
   }
+
+  /* همیشه طلا اول باشد */
+
+  const gold = markets.find(
+    m => m.symbol === "GOLD24"
+  );
+
+  markets = [
+    gold,
+    ...markets.filter(
+      m => m !== gold
+    )
+  ];
 
 }
 
@@ -873,25 +463,23 @@ function initTelegram(){
    STATUS
 ========================================================= */
 
-function setStatus(type,text){
+function status(type,text){
 
-  const dot = document.getElementById("statusDot");
-  const label = document.getElementById("statusText");
+  const dot =
+    document.getElementById("statusDot");
 
-  if(!dot || !label) return;
+  const label =
+    document.getElementById("statusText");
 
   dot.className = "dot";
 
-  if(type === "ok"){
+  if(type === "ok")
     dot.classList.add("ok");
-  }
 
-  if(type === "error"){
+  if(type === "error")
     dot.classList.add("error");
-  }
 
   label.textContent = text;
-
 }
 
 
@@ -901,43 +489,42 @@ function setStatus(type,text){
 
 async function loadMarkets(){
 
-  setStatus("","Connecting...");
+  status("","Connecting...");
 
   hideError();
 
-  const list = document.getElementById("marketList");
-
-  if(list){
-
-    list.innerHTML = `
-      <div class="loading">
-        <div class="spinner"></div>
-        <div>در حال دریافت بازارها...</div>
-      </div>
-    `;
-
-  }
+  document.getElementById("marketList").innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      در حال دریافت بازارها...
+    </div>
+  `;
 
   try{
 
-    const controller = new AbortController();
+    const controller =
+      new AbortController();
 
-    const timeout = setTimeout(
-      () => controller.abort(),
-      12000
-    );
+    const timeout =
+      setTimeout(
+        ()=>controller.abort(),
+        12000
+      );
 
-    const response = await fetch(
-      API_BASE + "/api/markets?time=" + Date.now(),
-      {
-        method:"GET",
-        headers:{
-          "Accept":"application/json"
-        },
-        cache:"no-store",
-        signal:controller.signal
-      }
-    );
+    const response =
+      await fetch(
+        API_BASE +
+        "/api/markets?_" +
+        Date.now(),
+        {
+          method:"GET",
+          headers:{
+            "Accept":"application/json"
+          },
+          cache:"no-store",
+          signal:controller.signal
+        }
+      );
 
     clearTimeout(timeout);
 
@@ -949,18 +536,14 @@ async function loadMarkets(){
 
     }
 
-    const data = await response.json();
-
-    if(!data){
-
-      throw new Error("پاسخ خالی از سرور");
-
-    }
+    const data =
+      await response.json();
 
     if(data.success !== true){
 
       throw new Error(
-        data.error || "سرور خطا داد"
+        data.error ||
+        "Backend error"
       );
 
     }
@@ -968,97 +551,67 @@ async function loadMarkets(){
     if(!Array.isArray(data.markets)){
 
       throw new Error(
-        "لیست markets در پاسخ وجود ندارد"
+        "markets در پاسخ سرور وجود ندارد"
       );
 
     }
 
-    markets = data.markets.map((item,index)=>{
+    markets =
+      data.markets.map(
+        (item,index)=>({
 
-      let price = Number(item.price);
+          id:item.id ?? index + 1,
 
-      if(!Number.isFinite(price)){
-        price = 0;
-      }
+          symbol:String(
+            item.symbol || ""
+          ).toUpperCase(),
 
-      /*
-        اگر GOLD24 باشد و قیمت معتبر نبود،
-        قیمت مورد نظر 6850 قرار می‌گیرد.
-      */
+          name:String(
+            item.name ||
+            item.symbol ||
+            "Unknown"
+          ),
 
-      if(
-        String(item.symbol || "").toUpperCase() === "GOLD24" &&
-        (!price || price <= 0)
-      ){
-        price = 6850;
-      }
+          price:Number(item.price) || 0,
 
-      return {
+          active:item.active !== false
 
-        id:item.id ?? index + 1,
-
-        symbol:String(
-          item.symbol || ""
-        ).toUpperCase(),
-
-        name:String(
-          item.name || item.symbol || "Unknown"
-        ),
-
-        price:price,
-
-        active:item.active !== false
-
-      };
-
-    });
-
-    if(markets.length === 0){
-
-      throw new Error(
-        "هیچ بازاری پیدا نشد"
+        })
       );
 
-    }
+    /*
+      GOLD24 = $4,145
+    */
 
-    setStatus(
-      "ok",
-      "Connected"
-    );
+    addOrFixGold();
+
+    status("ok","Connected");
 
     renderMarkets();
 
-    populateTradeMarkets();
+    fillTradeMarkets();
 
   }catch(error){
 
-    console.error(
-      "Markets error:",
-      error
-    );
+    console.error(error);
 
-    setStatus(
-      "error",
-      "Connection Error"
-    );
+    status("error","Connection Error");
 
     showError(
       error.name === "AbortError"
-        ? "اتصال به سرور بیشتر از ۱۲ ثانیه طول کشید."
-        : error.message
+      ? "اتصال به سرور بیشتر از ۱۲ ثانیه طول کشید."
+      : error.message
     );
 
-    if(list){
-
-      list.innerHTML = `
-        <div class="empty">
-          بازارها بارگذاری نشدند.
-          <br><br>
-          دکمه «تلاش دوباره» را بزنید.
-        </div>
-      `;
-
-    }
+    document.getElementById(
+      "marketList"
+    ).innerHTML = `
+      <div class="empty">
+        بازارها دریافت نشدند.
+        <br><br>
+        تلاش دوباره را بزنید.
+      </div>
+    `;
 
   }
 
@@ -1066,188 +619,127 @@ async function loadMarkets(){
 
 
 /* =========================================================
-   ERROR
-========================================================= */
-
-function showError(message){
-
-  const box = document.getElementById("errorBox");
-  const text = document.getElementById("errorText");
-
-  if(box){
-    box.style.display = "block";
-  }
-
-  if(text){
-    text.textContent =
-      "خطا: " + message;
-  }
-
-}
-
-
-function hideError(){
-
-  const box = document.getElementById("errorBox");
-
-  if(box){
-    box.style.display = "none";
-  }
-
-}
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-function marketMatchesFilter(market){
-
-  const symbol =
-    market.symbol.toUpperCase();
-
-  if(currentFilter === "all"){
-    return true;
-  }
-
-  if(currentFilter === "gold"){
-    return (
-      symbol.includes("GOLD") ||
-      symbol === "XAU" ||
-      market.name.toLowerCase().includes("gold")
-    );
-  }
-
-  if(currentFilter === "usdt"){
-    return symbol.includes("USDT");
-  }
-
-  if(currentFilter === "usdc"){
-    return symbol.includes("USDC");
-  }
-
-  if(currentFilter === "crypto"){
-
-    return !(
-      symbol.includes("GOLD") ||
-      symbol === "XAU"
-    );
-
-  }
-
-  return true;
-
-}
-
-
-/* =========================================================
-   RENDER MARKETS
+   RENDER
 ========================================================= */
 
 function renderMarkets(){
 
-  const search =
-    (
-      document.getElementById("searchInput")?.value || ""
-    ).trim().toLowerCase();
+  const query =
+    document.getElementById(
+      "searchInput"
+    ).value.trim().toLowerCase();
 
   filteredMarkets =
-    markets.filter(market=>{
+    markets.filter(m=>{
 
-      const searchMatch =
-        !search ||
-        market.symbol.toLowerCase().includes(search) ||
-        market.name.toLowerCase().includes(search);
+      const searchOK =
+        !query ||
+        m.symbol.toLowerCase().includes(query) ||
+        m.name.toLowerCase().includes(query);
 
-      return (
-        searchMatch &&
-        marketMatchesFilter(market)
-      );
+      let filterOK = true;
+
+      if(filter === "gold"){
+
+        filterOK =
+          m.symbol === "GOLD24" ||
+          m.isGold;
+
+      }
+
+      if(filter === "stable"){
+
+        filterOK =
+          m.symbol.includes("USDT") ||
+          m.symbol.includes("USDC");
+
+      }
+
+      if(filter === "crypto"){
+
+        filterOK =
+          !m.symbol.includes("USDT") &&
+          !m.symbol.includes("USDC") &&
+          !m.isGold;
+
+      }
+
+      return searchOK && filterOK;
 
     });
 
-  const count =
-    document.getElementById("marketCount");
+  document.getElementById(
+    "marketCount"
+  ).textContent =
+    filteredMarkets.length +
+    " / " +
+    markets.length +
+    " assets";
 
-  if(count){
+  if(!filteredMarkets.length){
 
-    count.textContent =
-      filteredMarkets.length +
-      " / " +
-      markets.length +
-      " assets";
-
-  }
-
-  const list =
-    document.getElementById("marketList");
-
-  if(!list) return;
-
-  if(filteredMarkets.length === 0){
-
-    list.innerHTML = `
-      <div class="empty">
-        نتیجه‌ای پیدا نشد.
-      </div>
-    `;
+    document.getElementById(
+      "marketList"
+    ).innerHTML =
+      `<div class="empty">نتیجه‌ای پیدا نشد.</div>`;
 
     return;
-
   }
 
-  list.innerHTML =
-    filteredMarkets.map(market=>{
-
-      const symbol =
-        market.symbol;
+  document.getElementById(
+    "marketList"
+  ).innerHTML =
+    filteredMarkets.map(m=>{
 
       const isGold =
-        symbol === "GOLD24" ||
-        symbol.includes("GOLD");
-
-      const price =
-        formatPrice(market.price);
+        m.symbol === "GOLD24" ||
+        m.isGold;
 
       return `
 
-        <div class="market">
+      <div class="market ${isGold ? "gold-row" : ""}">
 
-          <div class="coin-name">
+        <div>
 
-            <div class="symbol ${isGold ? "gold" : ""}">
-              ${escapeHtml(symbol)}
-            </div>
-
-            <div class="name">
-              ${escapeHtml(market.name)}
-            </div>
-
+          <div class="symbol ${isGold ? "gold" : ""}">
+            ${escapeHTML(m.symbol)}
           </div>
 
-          <div>
-
-            <div class="price">
-              ${price}
-            </div>
-
-            <div class="change positive">
-              +0.00%
-            </div>
-
-          </div>
-
-          <div style="text-align:left">
-
-            <button
-              class="trade-btn"
-              onclick="openTradeForMarket(${Number(market.id)})">
-              Trade
-            </button>
-
+          <div class="name">
+            ${escapeHTML(m.name)}
           </div>
 
         </div>
+
+        <div>
+
+          <div class="price">
+
+            ${
+              isGold
+              ? "$" + formatPrice(m.price)
+              : formatPrice(m.price)
+            }
+
+          </div>
+
+          <div class="change">
+            +0.00%
+          </div>
+
+        </div>
+
+        <div style="text-align:left">
+
+          <button
+            class="trade-small"
+            onclick="openTradeFor('${String(m.id)}')">
+            Trade
+          </button>
+
+        </div>
+
+      </div>
 
       `;
 
@@ -1257,47 +749,23 @@ function renderMarkets(){
 
 
 /* =========================================================
-   PRICE FORMAT
+   PRICE
 ========================================================= */
 
-function formatPrice(value){
+function formatPrice(n){
 
-  const number =
-    Number(value);
+  n = Number(n);
 
-  if(!Number.isFinite(number)){
+  if(!Number.isFinite(n))
     return "0.00";
-  }
 
-  if(number >= 1000){
-
-    return number.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    );
-
-  }
-
-  if(number >= 1){
-
-    return number.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:6
-      }
-    );
-
-  }
-
-  return number.toLocaleString(
+  return n.toLocaleString(
     "en-US",
     {
-      minimumFractionDigits:2,
-      maximumFractionDigits:10
+      minimumFractionDigits:
+        n >= 1 ? 2 : 4,
+      maximumFractionDigits:
+        n >= 1 ? 2 : 10
     }
   );
 
@@ -1305,39 +773,28 @@ function formatPrice(value){
 
 
 /* =========================================================
-   ESCAPE
+   TRADE
 ========================================================= */
 
-function escapeHtml(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-/* =========================================================
-   TRADE MARKETS
-========================================================= */
-
-function populateTradeMarkets(){
+function fillTradeMarkets(){
 
   const select =
-    document.getElementById("tradeMarket");
-
-  if(!select) return;
+    document.getElementById(
+      "tradeMarket"
+    );
 
   select.innerHTML =
-    markets.map(market=>{
+    markets.map(m=>{
 
       return `
-        <option value="${Number(market.id)}">
-          ${escapeHtml(market.symbol)}
-          — ${formatPrice(market.price)}
+        <option value="${escapeHTML(String(m.id))}">
+          ${escapeHTML(m.symbol)}
+          —
+          ${
+            m.symbol === "GOLD24"
+            ? "$" + formatPrice(m.price)
+            : formatPrice(m.price)
+          }
         </option>
       `;
 
@@ -1346,62 +803,43 @@ function populateTradeMarkets(){
 }
 
 
-function openTrade(side="buy"){
+function openTrade(side){
 
-  currentTradeSide = side;
+  document.getElementById(
+    "tradeTitle"
+  ).textContent =
+    side === "buy"
+    ? "Buy"
+    : "Sell";
 
-  const modal =
-    document.getElementById("tradeModal");
+  document.getElementById(
+    "buyBtn"
+  ).style.display =
+    side === "buy"
+    ? "block"
+    : "none";
 
-  const title =
-    document.getElementById("tradeTitle");
+  document.getElementById(
+    "sellBtn"
+  ).style.display =
+    side === "sell"
+    ? "block"
+    : "none";
 
-  const buyButton =
-    document.getElementById("buyButton");
-
-  const sellButton =
-    document.getElementById("sellButton");
-
-  if(title){
-
-    title.textContent =
-      side === "buy"
-        ? "Buy"
-        : "Sell";
-
-  }
-
-  if(buyButton){
-    buyButton.style.display =
-      side === "buy"
-        ? "block"
-        : "none";
-  }
-
-  if(sellButton){
-    sellButton.style.display =
-      side === "sell"
-        ? "block"
-        : "none";
-  }
-
-  if(modal){
-    modal.classList.add("show");
-  }
+  document.getElementById(
+    "tradeModal"
+  ).classList.add("show");
 
   updateTradeInfo();
 
 }
 
 
-function openTradeForMarket(id){
+function openTradeFor(id){
 
-  const select =
-    document.getElementById("tradeMarket");
-
-  if(select){
-    select.value = String(id);
-  }
+  document.getElementById(
+    "tradeMarket"
+  ).value = String(id);
 
   openTrade("buy");
 
@@ -1410,136 +848,120 @@ function openTradeForMarket(id){
 
 function updateTradeInfo(){
 
-  const select =
-    document.getElementById("tradeMarket");
+  const id =
+    document.getElementById(
+      "tradeMarket"
+    ).value;
 
-  const amountInput =
-    document.getElementById("tradeAmount");
-
-  const info =
-    document.getElementById("tradeInfo");
-
-  if(!select || !info) return;
+  const amount =
+    Number(
+      document.getElementById(
+        "tradeAmount"
+      ).value
+    ) || 0;
 
   const market =
     markets.find(
-      m => String(m.id) === String(select.value)
+      m => String(m.id) === String(id)
     );
 
-  if(!market){
-
-    info.textContent =
-      "بازار انتخاب نشده است.";
-
-    return;
-
-  }
-
-  const amount =
-    Number(amountInput?.value || 0);
+  if(!market) return;
 
   const quantity =
-    market.price > 0
-      ? amount / market.price
-      : 0;
+    amount / market.price;
 
-  info.innerHTML =
-    `
-      ${escapeHtml(market.symbol)}
-      قیمت:
-      <strong>${formatPrice(market.price)}</strong>
-      <br>
-      مقدار دریافتی:
-      <strong>${quantity.toFixed(8)}</strong>
-    `;
+  document.getElementById(
+    "tradeInfo"
+  ).innerHTML = `
+
+    ${escapeHTML(market.symbol)}
+
+    <br>
+
+    قیمت:
+    <strong>
+      ${
+        market.symbol === "GOLD24"
+        ? "$" + formatPrice(market.price)
+        : formatPrice(market.price)
+      }
+    </strong>
+
+    <br>
+
+    مقدار:
+    <strong>
+      ${quantity.toFixed(8)}
+    </strong>
+
+  `;
 
 }
 
 
-/* =========================================================
-   EXECUTE TRADE
-========================================================= */
-
 function executeTrade(side){
 
-  const select =
-    document.getElementById("tradeMarket");
+  const id =
+    document.getElementById(
+      "tradeMarket"
+    ).value;
 
-  const amountInput =
-    document.getElementById("tradeAmount");
-
-  if(!select || !amountInput) return;
+  const amount =
+    Number(
+      document.getElementById(
+        "tradeAmount"
+      ).value
+    );
 
   const market =
     markets.find(
-      m => String(m.id) === String(select.value)
+      m => String(m.id) === String(id)
     );
 
   if(!market){
 
     alert("بازار انتخاب نشده است.");
-
     return;
 
   }
 
-  const amount =
-    Number(amountInput.value);
-
-  if(!Number.isFinite(amount) || amount <= 0){
+  if(!amount || amount <= 0){
 
     alert("مقدار معتبر وارد کنید.");
-
     return;
 
   }
+
+  const quantity =
+    amount / market.price;
+
+  const symbol =
+    market.symbol;
 
   if(side === "buy"){
 
     if(amount > walletBalance){
 
       alert(
-        "موجودی کافی نیست.\nموجودی شما: " +
-        formatPrice(walletBalance) +
-        " USDT"
+        "موجودی کافی نیست."
       );
 
       return;
 
     }
 
-  }
-
-  const quantity =
-    market.price > 0
-      ? amount / market.price
-      : 0;
-
-  if(quantity <= 0){
-
-    alert("قیمت این بازار معتبر نیست.");
-
-    return;
-
-  }
-
-  const symbol =
-    market.symbol;
-
-  if(!portfolio[symbol]){
-
-    portfolio[symbol] = {
-      symbol:symbol,
-      name:market.name,
-      quantity:0,
-      invested:0
-    };
-
-  }
-
-  if(side === "buy"){
-
     walletBalance -= amount;
+
+    if(!portfolio[symbol]){
+
+      portfolio[symbol] = {
+        symbol,
+        name:market.name,
+        quantity:0,
+        invested:0
+      };
+
+    }
 
     portfolio[symbol].quantity += quantity;
 
@@ -1548,14 +970,12 @@ function executeTrade(side){
   }else{
 
     if(
-      portfolio[symbol].quantity <
-      quantity
+      !portfolio[symbol] ||
+      portfolio[symbol].quantity < quantity
     ){
 
       alert(
-        "مقدار " +
-        symbol +
-        " برای فروش کافی نیست."
+        "مقدار این ارز برای فروش کافی نیست."
       );
 
       return;
@@ -1580,35 +1000,29 @@ function executeTrade(side){
 
   history.unshift({
 
-    side:side,
-
-    symbol:symbol,
-
-    quantity:quantity,
-
-    amount:amount,
-
+    side,
+    symbol,
+    quantity,
+    amount,
     price:market.price,
-
-    time:new Date().toISOString()
+    time:new Date().toLocaleString()
 
   });
 
-  history =
-    history.slice(0,100);
+  save();
 
-  saveLocalData();
-
-  updateWalletUI();
+  updateBalance();
 
   closeModal("tradeModal");
 
-  amountInput.value = "";
+  document.getElementById(
+    "tradeAmount"
+  ).value = "";
 
   alert(
     side === "buy"
-      ? "خرید با موفقیت ثبت شد."
-      : "فروش با موفقیت ثبت شد."
+    ? "خرید با موفقیت ثبت شد."
+    : "فروش با موفقیت ثبت شد."
   );
 
 }
@@ -1618,36 +1032,29 @@ function executeTrade(side){
    WALLET
 ========================================================= */
 
-function updateWalletUI(){
+function updateBalance(){
 
-  const value =
+  document.getElementById(
+    "walletBalance"
+  ).textContent =
     formatPrice(walletBalance);
 
-  const balance =
-    document.getElementById("walletBalance");
-
-  const modalBalance =
-    document.getElementById("walletModalBalance");
-
-  if(balance){
-    balance.textContent = value;
-  }
-
-  if(modalBalance){
-    modalBalance.textContent =
-      value + " USDT";
-  }
+  document.getElementById(
+    "walletModalBalance"
+  ).textContent =
+    formatPrice(walletBalance) +
+    " USDT";
 
 }
 
 
 function openWallet(){
 
-  updateWalletUI();
+  updateBalance();
 
-  document
-    .getElementById("walletModal")
-    ?.classList.add("show");
+  document.getElementById(
+    "walletModal"
+  ).classList.add("show");
 
 }
 
@@ -1658,56 +1065,53 @@ function openWallet(){
 
 function openPortfolio(){
 
-  const content =
-    document.getElementById("portfolioContent");
-
-  if(!content) return;
-
   const items =
     Object.values(portfolio)
-      .filter(item=>item.quantity > 0);
+      .filter(x=>x.quantity > 0);
 
-  if(items.length === 0){
+  const box =
+    document.getElementById(
+      "portfolioContent"
+    );
 
-    content.innerHTML = `
-      <div class="empty">
-        هنوز هیچ ارزی در Portfolio ندارید.
-      </div>
-    `;
+  if(!items.length){
+
+    box.innerHTML =
+      `<div class="empty">
+        Portfolio خالی است.
+      </div>`;
 
   }else{
 
-    content.innerHTML =
-      items.map(item=>{
+    box.innerHTML =
+      items.map(x=>`
 
-        return `
-          <div class="info">
+        <div class="info">
 
-            <strong>
-              ${escapeHtml(item.symbol)}
-            </strong>
+          <strong>
+            ${escapeHTML(x.symbol)}
+          </strong>
 
-            <br><br>
+          <br><br>
 
-            مقدار:
-            ${item.quantity.toFixed(8)}
+          Quantity:
+          ${x.quantity.toFixed(8)}
 
-            <br>
+          <br>
 
-            سرمایه:
-            ${formatPrice(item.invested)}
-            USDT
+          Invested:
+          ${formatPrice(x.invested)}
+          USDT
 
-          </div>
-        `;
+        </div>
 
-      }).join("");
+      `).join("");
 
   }
 
-  document
-    .getElementById("portfolioModal")
-    ?.classList.add("show");
+  document.getElementById(
+    "portfolioModal"
+  ).classList.add("show");
 
 }
 
@@ -1718,262 +1122,290 @@ function openPortfolio(){
 
 function openHistory(){
 
-  const content =
-    document.getElementById("historyContent");
+  const box =
+    document.getElementById(
+      "historyContent"
+    );
 
-  if(!content) return;
+  if(!history.length){
 
-  if(history.length === 0){
-
-    content.innerHTML = `
-      <div class="empty">
-        هنوز معامله‌ای ثبت نشده است.
-      </div>
-    `;
+    box.innerHTML =
+      `<div class="empty">
+        هنوز معامله‌ای انجام نشده است.
+      </div>`;
 
   }else{
 
-    content.innerHTML =
-      history.map(item=>{
+    box.innerHTML =
+      history.map(x=>`
 
-        const date =
-          new Date(item.time)
-            .toLocaleString();
+        <div class="info">
 
-        return `
+          <strong class="${
+            x.side === "buy"
+            ? "positive"
+            : "negative"
+          }">
 
-          <div class="info">
+            ${x.side.toUpperCase()}
+            ${escapeHTML(x.symbol)}
 
-            <strong class="${
-              item.side === "buy"
-                ? "positive"
-                : "negative"
-            }">
+          </strong>
 
-              ${
-                item.side === "buy"
-                  ? "BUY"
-                  : "SELL"
-              }
+          <br><br>
 
-              ${escapeHtml(item.symbol)}
+          Quantity:
+          ${x.quantity.toFixed(8)}
 
-            </strong>
+          <br>
 
-            <br><br>
+          Amount:
+          ${formatPrice(x.amount)}
+          USDT
 
-            مقدار:
-            ${item.quantity.toFixed(8)}
+          <br>
 
-            <br>
+          Price:
+          ${formatPrice(x.price)}
 
-            مبلغ:
-            ${formatPrice(item.amount)}
-            USDT
+          <br><br>
 
-            <br>
+          <small>
+            ${escapeHTML(x.time)}
+          </small>
 
-            قیمت:
-            ${formatPrice(item.price)}
+        </div>
 
-            <br>
-
-            <small>
-              ${escapeHtml(date)}
-            </small>
-
-          </div>
-
-        `;
-
-      }).join("");
+      `).join("");
 
   }
 
-  document
-    .getElementById("historyModal")
-    ?.classList.add("show");
+  document.getElementById(
+    "historyModal"
+  ).classList.add("show");
 
 }
 
 
 /* =========================================================
-   MODAL
+   STORAGE
 ========================================================= */
 
-function closeModal(id){
+function save(){
 
-  document
-    .getElementById(id)
-    ?.classList.remove("show");
+  localStorage.setItem(
+    "digital_finance_data",
+    JSON.stringify({
+      walletBalance,
+      portfolio,
+      history
+    })
+  );
 
 }
 
 
-document
-  .querySelectorAll(".modal")
-  .forEach(modal=>{
+function load(){
 
-    modal.addEventListener(
-      "click",
-      function(event){
+  try{
 
-        if(event.target === modal){
-
-          modal.classList.remove("show");
-
-        }
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   HOME
-========================================================= */
-
-function showHome(button){
-
-  document
-    .querySelectorAll(".bottom button")
-    .forEach(btn=>{
-      btn.classList.remove("active");
-    });
-
-  if(button){
-    button.classList.add("active");
-  }
-
-}
-
-
-/* =========================================================
-   FILTER EVENTS
-========================================================= */
-
-document
-  .querySelectorAll(".filters button")
-  .forEach(button=>{
-
-    button.addEventListener(
-      "click",
-      function(){
-
-        document
-          .querySelectorAll(".filters button")
-          .forEach(btn=>{
-            btn.classList.remove("active");
-          });
-
-        this.classList.add("active");
-
-        currentFilter =
-          this.dataset.filter || "all";
-
-        renderMarkets();
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-document
-  .getElementById("searchInput")
-  ?.addEventListener(
-    "input",
-    renderMarkets
-  );
-
-
-/* =========================================================
-   TRADE INPUT
-========================================================= */
-
-document
-  .getElementById("tradeMarket")
-  ?.addEventListener(
-    "change",
-    updateTradeInfo
-  );
-
-
-document
-  .getElementById("tradeAmount")
-  ?.addEventListener(
-    "input",
-    updateTradeInfo
-  );
-
-
-/* =========================================================
-   GLOBAL JS ERROR
-========================================================= */
-
-window.addEventListener(
-  "error",
-  function(event){
-
-    console.error(
-      "JavaScript error:",
-      event.error || event.message
-    );
-
-    /*
-      اگر یک خطای JS اتفاق افتاد،
-      صفحه برای همیشه Connecting نمی‌ماند.
-    */
-
-    if(markets.length === 0){
-
-      setStatus(
-        "error",
-        "Page Error"
+    const raw =
+      localStorage.getItem(
+        "digital_finance_data"
       );
+
+    if(!raw) return;
+
+    const data =
+      JSON.parse(raw);
+
+    if(
+      typeof data.walletBalance ===
+      "number"
+    ){
+
+      walletBalance =
+        data.walletBalance;
 
     }
 
+    if(data.portfolio)
+      portfolio = data.portfolio;
+
+    if(Array.isArray(data.history))
+      history = data.history;
+
+  }catch(e){
+
+    console.log(e);
+
   }
+
+  updateBalance();
+
+}
+
+
+/* =========================================================
+   FILTER / SEARCH
+========================================================= */
+
+document.querySelectorAll(
+  ".filters button"
+).forEach(btn=>{
+
+  btn.addEventListener(
+    "click",
+    ()=>{
+
+      document.querySelectorAll(
+        ".filters button"
+      ).forEach(x=>
+        x.classList.remove("active")
+      );
+
+      btn.classList.add("active");
+
+      filter =
+        btn.dataset.filter;
+
+      renderMarkets();
+
+    }
+  );
+
+});
+
+
+document.getElementById(
+  "searchInput"
+).addEventListener(
+  "input",
+  renderMarkets
+);
+
+
+document.getElementById(
+  "tradeMarket"
+).addEventListener(
+  "change",
+  updateTradeInfo
+);
+
+
+document.getElementById(
+  "tradeAmount"
+).addEventListener(
+  "input",
+  updateTradeInfo
 );
 
 
 /* =========================================================
-   INITIALIZE
+   MODALS
 ========================================================= */
 
-async function initialize(){
+function closeModal(id){
+
+  document.getElementById(
+    id
+  ).classList.remove("show");
+
+}
+
+
+document.querySelectorAll(
+  ".modal"
+).forEach(modal=>{
+
+  modal.addEventListener(
+    "click",
+    e=>{
+
+      if(e.target === modal)
+        modal.classList.remove("show");
+
+    }
+  );
+
+});
+
+
+function home(button){
+
+  document.querySelectorAll(
+    ".bottom button"
+  ).forEach(x=>
+    x.classList.remove("active")
+  );
+
+  button.classList.add("active");
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function showError(message){
+
+  document.getElementById(
+    "errorBox"
+  ).style.display = "block";
+
+  document.getElementById(
+    "errorText"
+  ).textContent =
+    "خطا: " + message;
+
+}
+
+
+function hideError(){
+
+  document.getElementById(
+    "errorBox"
+  ).style.display = "none";
+
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   TELEGRAM
+========================================================= */
+
+function initTelegram(){
 
   try{
 
-    initTelegram();
+    if(
+      window.Telegram &&
+      Telegram.WebApp
+    ){
 
-    loadLocalData();
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
 
-    await loadMarkets();
+    }
 
-  }catch(error){
-
-    console.error(
-      "Initialization error:",
-      error
-    );
-
-    setStatus(
-      "error",
-      "Error"
-    );
-
-    showError(
-      error.message || "خطای ناشناخته"
-    );
-
-  }
+  }catch(e){}
 
 }
 
@@ -1982,18 +1414,13 @@ async function initialize(){
    START
 ========================================================= */
 
-if(
-  document.readyState === "loading"
-){
+async function start(){
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initialize
-  );
+  initTelegram();
 
-}else{
+  load();
 
-  initialize();
+  await loadMarkets();
 
 }
 
@@ -2003,17 +1430,33 @@ if(
 ========================================================= */
 
 setInterval(
-  function(){
-
-    if(document.visibilityState === "visible"){
-
+  ()=>{
+    if(
+      document.visibilityState ===
+      "visible"
+    ){
       loadMarkets();
-
     }
-
   },
   30000
 );
+
+
+if(
+  document.readyState ===
+  "loading"
+){
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    start
+  );
+
+}else{
+
+  start();
+
+}
 
 </script>
 
