@@ -5,7 +5,7 @@ const sql = neon(process.env.DF_DATABASE_URL);
 const DEMO_STARTING_USDT = 10000;
 
 /* =========================================================
-   COINGECKO IDs
+   COINGECKO COINS
    ========================================================= */
 
 const COINS = {
@@ -118,6 +118,120 @@ const COINS = {
 
 
 /* =========================================================
+   ASSET NAMES
+   ========================================================= */
+
+const NAMES = {
+  BTC: "Bitcoin",
+  ETH: "Ethereum",
+  BNB: "BNB",
+  SOL: "Solana",
+  XRP: "XRP",
+  DOGE: "Dogecoin",
+  ADA: "Cardano",
+  AVAX: "Avalanche",
+  TRX: "TRON",
+  LINK: "Chainlink",
+  DOT: "Polkadot",
+  MATIC: "Polygon",
+  SHIB: "Shiba Inu",
+  LTC: "Litecoin",
+  BCH: "Bitcoin Cash",
+  UNI: "Uniswap",
+  ATOM: "Cosmos",
+  ETC: "Ethereum Classic",
+  XLM: "Stellar",
+  FIL: "Filecoin",
+  APT: "Aptos",
+  ARB: "Arbitrum",
+  OP: "Optimism",
+  NEAR: "NEAR Protocol",
+  ALGO: "Algorand",
+  VET: "VeChain",
+  ICP: "Internet Computer",
+  HBAR: "Hedera",
+  SAND: "The Sandbox",
+  MANA: "Decentraland",
+  AAVE: "Aave",
+  MKR: "Maker",
+  GRT: "The Graph",
+  THETA: "Theta Network",
+  EOS: "EOS",
+  XTZ: "Tezos",
+  FLOW: "Flow",
+  EGLD: "MultiversX",
+  AXS: "Axie Infinity",
+  SNX: "Synthetix",
+  CRV: "Curve",
+  LDO: "Lido DAO",
+  RUNE: "THORChain",
+  INJ: "Injective",
+  SUI: "Sui",
+  SEI: "Sei",
+  TIA: "Celestia",
+  KAS: "Kaspa",
+  PEPE: "Pepe",
+  FLOKI: "Floki",
+  BONK: "Bonk",
+  WIF: "dogwifhat",
+  JASMY: "JasmyCoin",
+  IOTA: "IOTA",
+  NEO: "NEO",
+  QTUM: "Qtum",
+  DASH: "Dash",
+  ZEC: "Zcash",
+  XMR: "Monero",
+  KAVA: "Kava",
+  ONE: "Harmony",
+  BAT: "Basic Attention Token",
+  ENJ: "Enjin Coin",
+  CHZ: "Chiliz",
+  HOT: "Holo",
+  ZIL: "Zilliqa",
+  CELO: "Celo",
+  MINA: "Mina",
+  ROSE: "Oasis Network",
+  KSM: "Kusama",
+  COMP: "Compound",
+  YFI: "yearn.finance",
+  SUSHI: "SushiSwap",
+  "1INCH": "1inch",
+  ENS: "Ethereum Name Service",
+  IMX: "Immutable",
+  GALA: "Gala",
+  APE: "ApeCoin",
+  GMT: "STEPN",
+  LUNC: "Terra Luna Classic",
+  USTC: "TerraClassicUSD",
+  FTM: "Fantom",
+  SFP: "SafePal",
+  CAKE: "PancakeSwap",
+  TWT: "Trust Wallet Token",
+  MASK: "Mask Network",
+  WOO: "WOO Network",
+  ANKR: "Ankr",
+  SKL: "SKALE",
+  LPT: "Livepeer",
+  AR: "Arweave",
+  STX: "Stacks",
+  RPL: "Rocket Pool",
+  BLUR: "Blur",
+  CYBER: "CyberConnect",
+  JUP: "Jupiter",
+  WLD: "Worldcoin",
+  ONDO: "Ondo",
+  PYTH: "Pyth Network",
+  ENA: "Ethena",
+  TAO: "Bittensor",
+  AFC: "Afghani Coin",
+  QNT: "Quant",
+  MANTA: "Manta Network",
+  FET: "Fetch.ai",
+  RNDR: "Render"
+};
+
+
+/* =========================================================
    DATABASE SETUP
    ========================================================= */
 
@@ -179,120 +293,9 @@ async function setupDatabase() {
     )
   `;
 
-  const names = {
-    BTC: "Bitcoin",
-    ETH: "Ethereum",
-    BNB: "BNB",
-    SOL: "Solana",
-    XRP: "XRP",
-    DOGE: "Dogecoin",
-    ADA: "Cardano",
-    AVAX: "Avalanche",
-    TRX: "TRON",
-    LINK: "Chainlink",
-    DOT: "Polkadot",
-    MATIC: "Polygon",
-    SHIB: "Shiba Inu",
-    LTC: "Litecoin",
-    BCH: "Bitcoin Cash",
-    UNI: "Uniswap",
-    ATOM: "Cosmos",
-    ETC: "Ethereum Classic",
-    XLM: "Stellar",
-    FIL: "Filecoin",
-    APT: "Aptos",
-    ARB: "Arbitrum",
-    OP: "Optimism",
-    NEAR: "NEAR Protocol",
-    ALGO: "Algorand",
-    VET: "VeChain",
-    ICP: "Internet Computer",
-    HBAR: "Hedera",
-    SAND: "The Sandbox",
-    MANA: "Decentraland",
-    AAVE: "Aave",
-    MKR: "Maker",
-    GRT: "The Graph",
-    THETA: "Theta Network",
-    EOS: "EOS",
-    XTZ: "Tezos",
-    FLOW: "Flow",
-    EGLD: "MultiversX",
-    AXS: "Axie Infinity",
-    SNX: "Synthetix",
-    CRV: "Curve",
-    LDO: "Lido DAO",
-    RUNE: "THORChain",
-    INJ: "Injective",
-    SUI: "Sui",
-    SEI: "Sei",
-    TIA: "Celestia",
-    KAS: "Kaspa",
-    PEPE: "Pepe",
-    FLOKI: "Floki",
-    BONK: "Bonk",
-    WIF: "dogwifhat",
-    JASMY: "JasmyCoin",
-    IOTA: "IOTA",
-    NEO: "NEO",
-    QTUM: "Qtum",
-    DASH: "Dash",
-    ZEC: "Zcash",
-    XMR: "Monero",
-    KAVA: "Kava",
-    ONE: "Harmony",
-    BAT: "Basic Attention Token",
-    ENJ: "Enjin Coin",
-    CHZ: "Chiliz",
-    HOT: "Holo",
-    ZIL: "Zilliqa",
-    CELO: "Celo",
-    MINA: "Mina",
-    ROSE: "Oasis Network",
-    KSM: "Kusama",
-    COMP: "Compound",
-    YFI: "yearn.finance",
-    SUSHI: "SushiSwap",
-    "1INCH": "1inch",
-    ENS: "Ethereum Name Service",
-    IMX: "Immutable",
-    GALA: "Gala",
-    APE: "ApeCoin",
-    GMT: "STEPN",
-    LUNC: "Terra Luna Classic",
-    USTC: "TerraClassicUSD",
-    FTM: "Fantom",
-    SFP: "SafePal",
-    CAKE: "PancakeSwap",
-    TWT: "Trust Wallet Token",
-    MASK: "Mask Network",
-    WOO: "WOO Network",
-    ANKR: "Ankr",
-    SKL: "SKALE",
-    LPT: "Livepeer",
-    AR: "Arweave",
-    STX: "Stacks",
-    RPL: "Rocket Pool",
-    BLUR: "Blur",
-    CYBER: "CyberConnect",
-    JUP: "Jupiter",
-    WLD: "Worldcoin",
-    ONDO: "Ondo",
-    PYTH: "Pyth Network",
-    ENA: "Ethena",
-    TAO: "Bittensor",
-    AFC: "Afghani Coin",
-    QNT: "Quant",
-    MANTA: "Manta Network",
-    FET: "Fetch.ai",
-    RNDR: "Render"
-  };
+  const symbols = Object.keys(NAMES);
 
-  const fallbackPrices = {
-    AFC: 1
-  };
-
-  for (const symbol of Object.keys(names)) {
+  for (const symbol of symbols) {
 
     const exists = await sql`
       SELECT id
@@ -308,8 +311,8 @@ async function setupDatabase() {
         (symbol, name, price, active)
         VALUES (
           ${symbol},
-          ${names[symbol]},
-          ${fallbackPrices[symbol] || 0},
+          ${NAMES[symbol]},
+          ${symbol === "AFC" ? 1 : 0},
           TRUE
         )
       `;
@@ -319,17 +322,34 @@ async function setupDatabase() {
       await sql`
         UPDATE assets
         SET
-          name = ${names[symbol]},
+          name = ${NAMES[symbol]},
           active = TRUE
         WHERE symbol = ${symbol}
       `;
     }
   }
+
+  const usdt = await sql`
+    SELECT id
+    FROM assets
+    WHERE symbol = 'USDT'
+    LIMIT 1
+  `;
+
+  if (!usdt.length) {
+
+    await sql`
+      INSERT INTO assets
+      (symbol, name, price, active)
+      VALUES
+      ('USDT', 'Tether', 1, TRUE)
+    `;
+  }
 }
 
 
 /* =========================================================
-   GLOBAL CRYPTO PRICES
+   COINGECKO MARKET DATA
    ========================================================= */
 
 async function updateGlobalPrices() {
@@ -345,15 +365,20 @@ async function updateGlobalPrices() {
   }
 
   const url =
-    "https://api.coingecko.com/api/v3/simple/price" +
-    "?ids=" +
+    "https://api.coingecko.com/api/v3/coins/markets" +
+    "?vs_currency=usd" +
+    "&ids=" +
     encodeURIComponent(ids.join(",")) +
-    "&vs_currencies=usd" +
-    "&include_24hr_change=true";
+    "&order=market_cap_desc" +
+    "&per_page=250" +
+    "&page=1" +
+    "&sparkline=false" +
+    "&price_change_percentage=24h";
 
   const response = await fetch(url);
 
   if (!response.ok) {
+
     throw new Error(
       "CoinGecko HTTP " + response.status
     );
@@ -363,29 +388,66 @@ async function updateGlobalPrices() {
 
   const result = {};
 
-  for (const symbol of symbols) {
+  for (const coin of data) {
 
-    const coinId = COINS[symbol];
+    const symbol =
+      symbols.find(
+        s => COINS[s] === coin.id
+      );
 
-    const coin = data[coinId];
-
-    if (!coin) continue;
+    if (!symbol) continue;
 
     const price =
-      typeof coin.usd === "number"
-        ? coin.usd
-        : null;
+      Number(coin.current_price || 0);
 
-    const change =
-      typeof coin.usd_24h_change === "number"
-        ? coin.usd_24h_change
-        : 0;
-
-    if (price === null) continue;
+    if (!price) continue;
 
     result[symbol] = {
+
       price,
-      change_24h: change
+
+      change_24h:
+        Number(
+          coin.price_change_percentage_24h || 0
+        ),
+
+      market_cap:
+        coin.market_cap == null
+          ? null
+          : Number(coin.market_cap),
+
+      total_volume:
+        coin.total_volume == null
+          ? null
+          : Number(coin.total_volume),
+
+      circulating_supply:
+        coin.circulating_supply == null
+          ? null
+          : Number(coin.circulating_supply),
+
+      total_supply:
+        coin.total_supply == null
+          ? null
+          : Number(coin.total_supply),
+
+      max_supply:
+        coin.max_supply == null
+          ? null
+          : Number(coin.max_supply),
+
+      high_24h:
+        coin.high_24h == null
+          ? null
+          : Number(coin.high_24h),
+
+      low_24h:
+        coin.low_24h == null
+          ? null
+          : Number(coin.low_24h),
+
+      last_updated:
+        coin.last_updated || null
     };
 
     await sql`
@@ -400,7 +462,7 @@ async function updateGlobalPrices() {
 
 
 /* =========================================================
-   LIVE GOLD
+   GOLD
    ========================================================= */
 
 async function getLiveGold() {
@@ -423,33 +485,58 @@ async function getLiveGold() {
       !data.xau ||
       typeof data.xau.price !== "number"
     ) {
-      throw new Error("Invalid gold response");
+      throw new Error(
+        "Invalid gold response"
+      );
     }
 
     return {
+
       success: true,
+
       metal: "Gold",
+
       purity: "24K",
+
       currency: "AFN",
+
       unit: "gram",
+
       price: data.xau.price,
-      usd_per_gram: data.per_gram_usd || null,
-      spot_usd_oz: data.spot_usd_oz || null,
-      updated_at: data.updated_at || null,
-      data_state: data.data_state || null,
+
+      usd_per_gram:
+        data.per_gram_usd || null,
+
+      spot_usd_oz:
+        data.spot_usd_oz || null,
+
+      updated_at:
+        data.updated_at || null,
+
+      data_state:
+        data.data_state || null,
+
       source: "XAUS"
     };
 
   } catch (error) {
 
     return {
+
       success: false,
+
       metal: "Gold",
+
       purity: "24K",
+
       currency: "AFN",
+
       unit: "gram",
+
       price: 0,
+
       source: "unavailable",
+
       error: error.message
     };
   }
@@ -460,7 +547,10 @@ async function getLiveGold() {
    USER
    ========================================================= */
 
-async function getOrCreateUser(telegramId, username = null) {
+async function getOrCreateUser(
+  telegramId,
+  username = null
+) {
 
   if (!telegramId) {
     telegramId = "123456789";
@@ -486,14 +576,14 @@ async function getOrCreateUser(telegramId, username = null) {
 
   const user = rows[0];
 
-  const usdt = await sql`
+  const usdtAsset = await sql`
     SELECT id
     FROM assets
     WHERE symbol = 'USDT'
     LIMIT 1
   `;
 
-  if (!usdt.length) {
+  if (!usdtAsset.length) {
 
     await sql`
       INSERT INTO assets
@@ -503,7 +593,7 @@ async function getOrCreateUser(telegramId, username = null) {
     `;
   }
 
-  const usdtAsset = await sql`
+  const usdt = await sql`
     SELECT id
     FROM assets
     WHERE symbol = 'USDT'
@@ -514,7 +604,7 @@ async function getOrCreateUser(telegramId, username = null) {
     SELECT id
     FROM balances
     WHERE user_id = ${user.id}
-      AND asset_id = ${usdtAsset[0].id}
+      AND asset_id = ${usdt[0].id}
     LIMIT 1
   `;
 
@@ -524,7 +614,7 @@ async function getOrCreateUser(telegramId, username = null) {
       INSERT INTO balances
       (user_id, asset_id, amount)
       VALUES
-      (${user.id}, ${usdtAsset[0].id}, ${DEMO_STARTING_USDT})
+      (${user.id}, ${usdt[0].id}, ${DEMO_STARTING_USDT})
     `;
   }
 
@@ -538,14 +628,12 @@ async function getOrCreateUser(telegramId, username = null) {
 
 async function getMarkets() {
 
-  const markets = await sql`
+  return await sql`
     SELECT *
     FROM assets
     WHERE active = TRUE
     ORDER BY id ASC
   `;
-
-  return markets;
 }
 
 
@@ -555,9 +643,12 @@ async function getMarkets() {
 
 async function getBalances(telegramId) {
 
-  const user = await getOrCreateUser(telegramId);
+  const user =
+    await getOrCreateUser(
+      telegramId
+    );
 
-  const rows = await sql`
+  return await sql`
     SELECT
       b.id,
       b.amount,
@@ -570,8 +661,6 @@ async function getBalances(telegramId) {
     WHERE b.user_id = ${user.id}
     ORDER BY b.amount DESC
   `;
-
-  return rows;
 }
 
 
@@ -581,7 +670,10 @@ async function getBalances(telegramId) {
 
 async function getTrades(telegramId) {
 
-  const user = await getOrCreateUser(telegramId);
+  const user =
+    await getOrCreateUser(
+      telegramId
+    );
 
   return await sql`
     SELECT
@@ -604,7 +696,10 @@ async function getTrades(telegramId) {
 
 async function getOrders(telegramId) {
 
-  const user = await getOrCreateUser(telegramId);
+  const user =
+    await getOrCreateUser(
+      telegramId
+    );
 
   return await sql`
     SELECT
@@ -622,17 +717,174 @@ async function getOrders(telegramId) {
 
 
 /* =========================================================
+   MARKET TRADE STATISTICS
+   ========================================================= */
+
+async function getMarketTradeStats() {
+
+  try {
+
+    const rows = await sql`
+
+      SELECT
+
+        a.symbol,
+
+        COUNT(t.id)::INTEGER
+          AS trade_count,
+
+        COALESCE(
+          SUM(
+            CASE
+              WHEN LOWER(t.side) = 'buy'
+              THEN t.amount
+              ELSE 0
+            END
+          ),
+          0
+        ) AS buy_volume,
+
+        COALESCE(
+          SUM(
+            CASE
+              WHEN LOWER(t.side) = 'sell'
+              THEN t.amount
+              ELSE 0
+            END
+          ),
+          0
+        ) AS sell_volume,
+
+        COALESCE(
+          SUM(
+            CASE
+              WHEN LOWER(t.side) = 'buy'
+              THEN t.total
+              ELSE 0
+            END
+          ),
+          0
+        ) AS buy_total,
+
+        COALESCE(
+          SUM(
+            CASE
+              WHEN LOWER(t.side) = 'sell'
+              THEN t.total
+              ELSE 0
+            END
+          ),
+          0
+        ) AS sell_total
+
+      FROM trades t
+
+      JOIN assets a
+        ON a.id = t.asset_id
+
+      WHERE
+        t.created_at >= NOW() - INTERVAL '24 hours'
+
+      GROUP BY
+        a.symbol
+    `;
+
+    const map = {};
+
+    for (const row of rows) {
+
+      const buyVolume =
+        Number(row.buy_volume || 0);
+
+      const sellVolume =
+        Number(row.sell_volume || 0);
+
+      const total =
+        buyVolume + sellVolume;
+
+      map[
+        String(row.symbol).toUpperCase()
+      ] = {
+
+        trade_count:
+          Number(row.trade_count || 0),
+
+        buy_volume:
+          buyVolume,
+
+        sell_volume:
+          sellVolume,
+
+        buy_total:
+          Number(row.buy_total || 0),
+
+        sell_total:
+          Number(row.sell_total || 0),
+
+        buy_percent:
+          total > 0
+            ? Number(
+                (
+                  buyVolume /
+                  total *
+                  100
+                ).toFixed(2)
+              )
+            : 0,
+
+        sell_percent:
+          total > 0
+            ? Number(
+                (
+                  sellVolume /
+                  total *
+                  100
+                ).toFixed(2)
+              )
+            : 0
+      };
+    }
+
+    return map;
+
+  } catch (error) {
+
+    console.log(
+      "Trade statistics error:",
+      error.message
+    );
+
+    return {};
+  }
+}
+
+
+/* =========================================================
    BUY
    ========================================================= */
 
-async function buyAsset(telegramId, symbol, amount) {
+async function buyAsset(
+  telegramId,
+  symbol,
+  amount
+) {
 
-  const user = await getOrCreateUser(telegramId);
+  const user =
+    await getOrCreateUser(
+      telegramId
+    );
 
   amount = Number(amount);
 
-  if (!symbol || !Number.isFinite(amount) || amount <= 0) {
-    throw new Error("Invalid buy request");
+  if (
+    !symbol ||
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+
+    throw new Error(
+      "Invalid buy request"
+    );
   }
 
   const assetRows = await sql`
@@ -644,7 +896,9 @@ async function buyAsset(telegramId, symbol, amount) {
   `;
 
   if (!assetRows.length) {
-    throw new Error("Asset not found");
+    throw new Error(
+      "Asset not found"
+    );
   }
 
   const asset = assetRows[0];
@@ -671,9 +925,17 @@ async function buyAsset(telegramId, symbol, amount) {
       ? Number(balanceRows[0].amount)
       : 0;
 
-  const price = Number(asset.price);
+  const price =
+    Number(asset.price);
 
-  const total = amount * price;
+  if (!price || price <= 0) {
+    throw new Error(
+      "Asset price unavailable"
+    );
+  }
+
+  const total =
+    amount * price;
 
   if (usdtBalance < total) {
     throw new Error(
@@ -717,24 +979,58 @@ async function buyAsset(telegramId, symbol, amount) {
 
   await sql`
     INSERT INTO orders
-    (user_id, asset_id, side, amount, price, status)
+    (
+      user_id,
+      asset_id,
+      side,
+      amount,
+      price,
+      status
+    )
     VALUES
-    (${user.id}, ${asset.id}, 'buy', ${amount}, ${price}, 'filled')
+    (
+      ${user.id},
+      ${asset.id},
+      'buy',
+      ${amount},
+      ${price},
+      'filled'
+    )
   `;
 
   await sql`
     INSERT INTO trades
-    (user_id, asset_id, side, amount, price, total)
+    (
+      user_id,
+      asset_id,
+      side,
+      amount,
+      price,
+      total
+    )
     VALUES
-    (${user.id}, ${asset.id}, 'buy', ${amount}, ${price}, ${total})
+    (
+      ${user.id},
+      ${asset.id},
+      'buy',
+      ${amount},
+      ${price},
+      ${total}
+    )
   `;
 
   return {
+
     success: true,
+
     side: "buy",
+
     symbol,
+
     amount,
+
     price,
+
     total
   };
 }
@@ -744,14 +1040,28 @@ async function buyAsset(telegramId, symbol, amount) {
    SELL
    ========================================================= */
 
-async function sellAsset(telegramId, symbol, amount) {
+async function sellAsset(
+  telegramId,
+  symbol,
+  amount
+) {
 
-  const user = await getOrCreateUser(telegramId);
+  const user =
+    await getOrCreateUser(
+      telegramId
+    );
 
   amount = Number(amount);
 
-  if (!symbol || !Number.isFinite(amount) || amount <= 0) {
-    throw new Error("Invalid sell request");
+  if (
+    !symbol ||
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+
+    throw new Error(
+      "Invalid sell request"
+    );
   }
 
   const assetRows = await sql`
@@ -763,7 +1073,9 @@ async function sellAsset(telegramId, symbol, amount) {
   `;
 
   if (!assetRows.length) {
-    throw new Error("Asset not found");
+    throw new Error(
+      "Asset not found"
+    );
   }
 
   const asset = assetRows[0];
@@ -782,14 +1094,24 @@ async function sellAsset(telegramId, symbol, amount) {
       : 0;
 
   if (current < amount) {
+
     throw new Error(
       "Insufficient asset balance"
     );
   }
 
-  const price = Number(asset.price);
+  const price =
+    Number(asset.price);
 
-  const total = amount * price;
+  if (!price || price <= 0) {
+
+    throw new Error(
+      "Asset price unavailable"
+    );
+  }
+
+  const total =
+    amount * price;
 
   const usdtRows = await sql`
     SELECT *
@@ -836,24 +1158,58 @@ async function sellAsset(telegramId, symbol, amount) {
 
   await sql`
     INSERT INTO orders
-    (user_id, asset_id, side, amount, price, status)
+    (
+      user_id,
+      asset_id,
+      side,
+      amount,
+      price,
+      status
+    )
     VALUES
-    (${user.id}, ${asset.id}, 'sell', ${amount}, ${price}, 'filled')
+    (
+      ${user.id},
+      ${asset.id},
+      'sell',
+      ${amount},
+      ${price},
+      'filled'
+    )
   `;
 
   await sql`
     INSERT INTO trades
-    (user_id, asset_id, side, amount, price, total)
+    (
+      user_id,
+      asset_id,
+      side,
+      amount,
+      price,
+      total
+    )
     VALUES
-    (${user.id}, ${asset.id}, 'sell', ${amount}, ${price}, ${total})
+    (
+      ${user.id},
+      ${asset.id},
+      'sell',
+      ${amount},
+      ${price},
+      ${total}
+    )
   `;
 
   return {
+
     success: true,
+
     side: "sell",
+
     symbol,
+
     amount,
+
     price,
+
     total
   };
 }
@@ -863,7 +1219,10 @@ async function sellAsset(telegramId, symbol, amount) {
    MAIN API
    ========================================================= */
 
-module.exports = async function handler(req, res) {
+module.exports = async function handler(
+  req,
+  res
+) {
 
   res.setHeader(
     "Access-Control-Allow-Origin",
@@ -881,7 +1240,10 @@ module.exports = async function handler(req, res) {
   );
 
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+
+    return res
+      .status(200)
+      .end();
   }
 
   try {
@@ -893,32 +1255,53 @@ module.exports = async function handler(req, res) {
       req.body?.action ||
       "";
 
-    /* ROOT */
+
+    /* =====================================================
+       ROOT
+       ===================================================== */
 
     if (!action) {
 
       return res.status(200).json({
+
         success: true,
-        message: "Digital Finance Backend is running!",
-        service: "Digital Finance",
-        currency: "AFN",
-        gold: "24K",
-        markets: "/api?action=markets",
-        gold_api: "/api?action=gold"
+
+        message:
+          "Digital Finance Backend is running!",
+
+        service:
+          "Digital Finance",
+
+        currency:
+          "AFN",
+
+        gold:
+          "24K",
+
+        markets:
+          "/api?action=markets",
+
+        gold_api:
+          "/api?action=gold"
       });
     }
 
 
-    /* MARKETS */
+    /* =====================================================
+       MARKETS
+       ===================================================== */
 
     if (action === "markets") {
 
       let livePrices = {};
 
       try {
+
         livePrices =
           await updateGlobalPrices();
+
       } catch (error) {
+
         console.log(
           "CoinGecko update failed:",
           error.message
@@ -928,48 +1311,170 @@ module.exports = async function handler(req, res) {
       const markets =
         await getMarkets();
 
+      const tradeStats =
+        await getMarketTradeStats();
+
+
       const result =
         markets.map(asset => {
 
+          const symbol =
+            String(
+              asset.symbol
+            ).toUpperCase();
+
           const live =
-            livePrices[asset.symbol];
+            livePrices[symbol];
+
+          const stats =
+            tradeStats[symbol] || {
+
+              trade_count: 0,
+
+              buy_volume: 0,
+
+              sell_volume: 0,
+
+              buy_total: 0,
+
+              sell_total: 0,
+
+              buy_percent: 0,
+
+              sell_percent: 0
+            };
+
 
           return {
-            ...asset,
+
+            id:
+              asset.id,
+
+            symbol,
+
+            name:
+              asset.name,
+
+            active:
+              asset.active,
 
             price:
               live
                 ? live.price
-                : Number(asset.price),
+                : Number(asset.price || 0),
 
             change_24h:
               live
                 ? live.change_24h
-                : 0
+                : 0,
+
+
+            /* MARKET DATA */
+
+            market_cap:
+              live
+                ? live.market_cap
+                : null,
+
+            total_volume:
+              live
+                ? live.total_volume
+                : null,
+
+            circulating_supply:
+              live
+                ? live.circulating_supply
+                : null,
+
+            total_supply:
+              live
+                ? live.total_supply
+                : null,
+
+            max_supply:
+              live
+                ? live.max_supply
+                : null,
+
+            high_24h:
+              live
+                ? live.high_24h
+                : null,
+
+            low_24h:
+              live
+                ? live.low_24h
+                : null,
+
+
+            /* DIGITAL FINANCE TRADING DATA */
+
+            trade_count:
+              stats.trade_count,
+
+            buy_volume:
+              stats.buy_volume,
+
+            sell_volume:
+              stats.sell_volume,
+
+            buy_total:
+              stats.buy_total,
+
+            sell_total:
+              stats.sell_total,
+
+            buy_percent:
+              stats.buy_percent,
+
+            sell_percent:
+              stats.sell_percent,
+
+            updated_at:
+              live
+                ? live.last_updated
+                : null
           };
         });
 
+
       return res.status(200).json({
+
         success: true,
-        count: result.length,
-        markets: result,
-        source: "CoinGecko"
+
+        count:
+          result.length,
+
+        markets:
+          result,
+
+        source:
+          "CoinGecko + Digital Finance",
+
+        updated_at:
+          new Date().toISOString()
       });
     }
 
 
-    /* GOLD */
+    /* =====================================================
+       GOLD
+       ===================================================== */
 
     if (action === "gold") {
 
       const gold =
         await getLiveGold();
 
-      return res.status(200).json(gold);
+      return res.status(200).json(
+        gold
+      );
     }
 
 
-    /* USER */
+    /* =====================================================
+       USER
+       ===================================================== */
 
     if (action === "user") {
 
@@ -990,13 +1495,17 @@ module.exports = async function handler(req, res) {
         );
 
       return res.status(200).json({
+
         success: true,
+
         user
       });
     }
 
 
-    /* BALANCES */
+    /* =====================================================
+       BALANCES
+       ===================================================== */
 
     if (action === "balances") {
 
@@ -1011,13 +1520,17 @@ module.exports = async function handler(req, res) {
         );
 
       return res.status(200).json({
+
         success: true,
+
         balances
       });
     }
 
 
-    /* TRADES */
+    /* =====================================================
+       TRADES
+       ===================================================== */
 
     if (action === "trades") {
 
@@ -1032,13 +1545,17 @@ module.exports = async function handler(req, res) {
         );
 
       return res.status(200).json({
+
         success: true,
+
         trades
       });
     }
 
 
-    /* ORDERS */
+    /* =====================================================
+       ORDERS
+       ===================================================== */
 
     if (action === "orders") {
 
@@ -1053,13 +1570,17 @@ module.exports = async function handler(req, res) {
         );
 
       return res.status(200).json({
+
         success: true,
+
         orders
       });
     }
 
 
-    /* BUY */
+    /* =====================================================
+       BUY
+       ===================================================== */
 
     if (
       action === "buy" &&
@@ -1092,11 +1613,15 @@ module.exports = async function handler(req, res) {
           amount
         );
 
-      return res.status(200).json(result);
+      return res.status(200).json(
+        result
+      );
     }
 
 
-    /* SELL */
+    /* =====================================================
+       SELL
+       ===================================================== */
 
     if (
       action === "sell" &&
@@ -1129,22 +1654,38 @@ module.exports = async function handler(req, res) {
           amount
         );
 
-      return res.status(200).json(result);
+      return res.status(200).json(
+        result
+      );
     }
 
 
+    /* =====================================================
+       UNKNOWN ACTION
+       ===================================================== */
+
     return res.status(404).json({
+
       success: false,
-      error: "Unknown action"
+
+      error:
+        "Unknown action"
     });
+
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "API ERROR:",
+      error
+    );
 
     return res.status(500).json({
+
       success: false,
-      error: error.message
+
+      error:
+        error.message
     });
   }
 };
