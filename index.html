@@ -1,833 +1,1188 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
-
-<meta name="theme-color" content="#07111f">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
 <title>Digital Finance</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta name="theme-color" content="#07111f">
 
 <script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
-
 *{
   box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:#050b14;
+  color:#fff;
+  font-family:Arial,Tahoma,sans-serif;
 }
 
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:
-    radial-gradient(circle at top,#132b46,#07111f 55%);
-  color:#fff;
+  min-height:100vh;
 }
 
-button{
+button,input{
   font-family:inherit;
 }
 
+button{
+  cursor:pointer;
+}
+
+.app{
+  width:100%;
+  max-width:700px;
+  margin:auto;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top,#10253c 0,#07111f 35%,#050b14 75%);
+  padding-bottom:80px;
+}
+
+/* HEADER */
+
 .header{
-  padding:18px 16px 10px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  height:64px;
   display:flex;
   align-items:center;
   justify-content:space-between;
+  padding:0 16px;
+  background:rgba(5,11,20,.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid #172536;
 }
 
 .logo{
-  font-size:21px;
-  font-weight:bold;
-}
-
-.refresh{
-  border:0;
-  background:#162b42;
-  color:#fff;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  font-size:20px;
-}
-
-.container{
-  padding:10px 14px 90px;
-}
-
-.gold-card{
-  background:
-    linear-gradient(135deg,#5c4100,#c99a25,#705000);
-  border-radius:20px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 12px 35px #0006;
-}
-
-.gold-title{
-  font-size:13px;
-  opacity:.8;
-}
-
-.gold-price{
-  font-size:28px;
-  font-weight:bold;
-  margin-top:7px;
-}
-
-.gold-meta{
-  font-size:12px;
-  margin-top:5px;
-  opacity:.8;
-}
-
-.search{
-  width:100%;
-  border:1px solid #243d57;
-  background:#0c1c2d;
-  color:#fff;
-  padding:14px;
-  border-radius:14px;
-  outline:none;
-  margin-bottom:14px;
-  font-size:15px;
-}
-
-.market{
-  background:#0c1b2b;
-  border:1px solid #19334d;
-  border-radius:17px;
-  padding:14px;
-  margin-bottom:9px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  gap:9px;
+  font-weight:800;
+  font-size:18px;
 }
 
-.market-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.coin-icon{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#172e46;
+.logoIcon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:bold;
+  background:linear-gradient(135deg,#20d997,#1187ff);
+  box-shadow:0 5px 20px rgba(32,217,151,.2);
 }
 
-.symbol{
-  font-weight:bold;
-}
-
-.name{
-  color:#8498ac;
-  font-size:11px;
-  margin-top:3px;
-}
-
-.price{
-  text-align:left;
-  font-weight:bold;
-}
-
-.change{
-  font-size:11px;
-  margin-top:4px;
-}
-
-.green{
-  color:#32d583;
-}
-
-.red{
-  color:#ff657a;
-}
-
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
-
-.back{
-  border:0;
-  background:#14283e;
-  color:#fff;
-  padding:10px 15px;
-  border-radius:12px;
-  margin-bottom:12px;
-}
-
-.detail-card{
-  background:#0c1b2b;
-  border:1px solid #19334d;
-  border-radius:20px;
-  padding:15px;
-}
-
-.detail-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.detail-symbol{
-  font-size:24px;
-  font-weight:bold;
-}
-
-.detail-name{
-  color:#8195a9;
-  margin-top:5px;
-}
-
-.live-box{
-  text-align:left;
-}
-
-.live-label{
-  color:#6f8498;
-  font-size:11px;
-}
-
-.live-price{
-  font-size:22px;
-  font-weight:bold;
-  margin-top:3px;
-}
-
-.live-status{
+.headerRight{
   display:flex;
   align-items:center;
-  justify-content:flex-end;
-  gap:5px;
-  font-size:10px;
-  margin-top:4px;
+  gap:8px;
 }
 
-.live-dot{
+.status{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#8fa4b9;
+  font-size:11px;
+}
+
+.dot{
   width:7px;
   height:7px;
   border-radius:50%;
-  background:#36dc91;
-  box-shadow:0 0 10px #36dc91;
+  background:#20d997;
+  box-shadow:0 0 10px #20d997;
 }
 
-.chart-toolbar{
-  display:flex;
-  gap:6px;
-  overflow:auto;
-  margin:15px 0 8px;
-}
-
-.period{
-  flex:0 0 auto;
-  border:1px solid #28445f;
-  background:#102238;
-  color:#aebed0;
-  padding:9px 12px;
-  border-radius:10px;
-  font-size:12px;
-}
-
-.period.active{
-  background:#246bdb;
+.iconBtn{
+  width:38px;
+  height:38px;
+  border:1px solid #203044;
+  background:#0b1625;
   color:#fff;
-  border-color:#246bdb;
+  border-radius:11px;
 }
 
-.chart-info{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#081725;
-  border-radius:12px;
-  padding:10px 12px;
+/* HOME */
+
+.page{
+  padding:16px;
+}
+
+.hero{
+  margin-top:8px;
+  padding:18px;
+  border:1px solid #17283b;
+  border-radius:20px;
+  background:linear-gradient(145deg,rgba(15,35,55,.95),rgba(6,15,27,.95));
+  box-shadow:0 15px 40px rgba(0,0,0,.18);
+}
+
+.heroTitle{
+  font-size:13px;
+  color:#91a5b8;
   margin-bottom:8px;
 }
 
-.timer-label{
-  color:#71869a;
-  font-size:11px;
+.goldPrice{
+  font-size:30px;
+  font-weight:800;
 }
 
-.timer{
-  font-family:monospace;
+.goldSub{
+  margin-top:7px;
+  color:#7f95aa;
+  font-size:12px;
+}
+
+.searchBox{
+  margin:18px 0 12px;
+  position:relative;
+}
+
+.searchBox input{
+  width:100%;
+  height:48px;
+  padding:0 45px 0 15px;
+  border-radius:14px;
+  border:1px solid #1b2d41;
+  outline:none;
+  background:#091321;
+  color:#fff;
   font-size:14px;
-  font-weight:bold;
 }
 
-.source{
-  color:#71869a;
+.searchIcon{
+  position:absolute;
+  right:15px;
+  top:15px;
+  color:#7f94aa;
+}
+
+/* TABS */
+
+.marketTabs{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  scrollbar-width:none;
+  margin-bottom:12px;
+}
+
+.marketTabs::-webkit-scrollbar{
+  display:none;
+}
+
+.tab{
+  white-space:nowrap;
+  border:1px solid #1c2d41;
+  background:#0a1523;
+  color:#8196aa;
+  padding:9px 15px;
+  border-radius:11px;
+  font-size:12px;
+}
+
+.tab.active{
+  color:#fff;
+  background:#143047;
+  border-color:#23506d;
+}
+
+/* MARKET */
+
+.marketCard{
+  border:1px solid #17283a;
+  background:#091321;
+  border-radius:17px;
+  overflow:hidden;
+}
+
+.marketHeader{
+  display:grid;
+  grid-template-columns:1.7fr 1fr 1fr;
+  padding:12px 14px;
+  color:#657c91;
+  font-size:11px;
+  border-bottom:1px solid #142435;
+}
+
+.marketRow{
+  display:grid;
+  grid-template-columns:1.7fr 1fr 1fr;
+  align-items:center;
+  min-height:68px;
+  padding:9px 14px;
+  border-bottom:1px solid #111f2e;
+  transition:.15s;
+}
+
+.marketRow:last-child{
+  border-bottom:0;
+}
+
+.marketRow:active{
+  background:#0e1d2d;
+}
+
+.coinName{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.coinIcon{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#122338;
+  border:1px solid #243a51;
+  font-size:11px;
+  font-weight:800;
+  overflow:hidden;
+}
+
+.coinText{
+  min-width:0;
+}
+
+.coinSymbol{
+  font-weight:800;
+  font-size:13px;
+}
+
+.coinFull{
+  margin-top:3px;
+  color:#667e94;
   font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:130px;
+}
+
+.price{
+  font-size:12px;
+  font-weight:700;
+  direction:ltr;
+  text-align:right;
+}
+
+.change{
+  font-size:12px;
+  font-weight:700;
+  direction:ltr;
+  text-align:left;
+}
+
+.green{
+  color:#20d997;
+}
+
+.red{
+  color:#ef5b70;
+}
+
+.gray{
+  color:#7f95aa;
+}
+
+/* DETAIL */
+
+.detailPage{
+  display:none;
+}
+
+.detailTop{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.backBtn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid #203246;
+  background:#0b1726;
+  color:#fff;
+  font-size:20px;
+}
+
+.assetTitle{
+  flex:1;
+}
+
+.assetName{
+  font-size:18px;
+  font-weight:800;
+}
+
+.assetSymbol{
+  color:#70869b;
+  font-size:11px;
+  margin-top:4px;
+}
+
+.liveBadge{
+  font-size:10px;
+  color:#20d997;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+/* PRICE */
+
+.detailPriceCard{
+  padding:17px;
+  border:1px solid #192c40;
+  border-radius:18px;
+  background:linear-gradient(145deg,#0c1a2a,#07111d);
+  margin-bottom:12px;
+}
+
+.detailPrice{
+  font-size:30px;
+  font-weight:900;
+  direction:ltr;
+  text-align:left;
+}
+
+.priceChange{
+  display:inline-flex;
+  margin-top:8px;
+  padding:6px 9px;
+  border-radius:8px;
+  font-size:12px;
+  direction:ltr;
+}
+
+.priceMeta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:17px;
+}
+
+.metaBox{
+  background:#08121f;
+  border:1px solid #142638;
+  border-radius:12px;
+  padding:11px;
+}
+
+.metaLabel{
+  color:#667e93;
+  font-size:10px;
+  margin-bottom:6px;
+}
+
+.metaValue{
+  font-size:12px;
+  font-weight:700;
+  direction:ltr;
+  text-align:left;
+}
+
+/* INFO */
+
+.infoTitle{
+  font-size:15px;
+  font-weight:800;
+  margin:20px 0 10px;
+}
+
+.infoGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.infoCard{
+  padding:13px;
+  border:1px solid #17293b;
+  background:#091522;
+  border-radius:14px;
+}
+
+.infoLabel{
+  color:#6c8297;
+  font-size:10px;
+  margin-bottom:8px;
+}
+
+.infoValue{
+  font-size:13px;
+  font-weight:800;
+  direction:ltr;
+  text-align:left;
+  word-break:break-word;
+}
+
+/* BUY SELL */
+
+.tradeStats{
+  margin-top:10px;
+  padding:15px;
+  border:1px solid #17293b;
+  background:#091522;
+  border-radius:15px;
+}
+
+.tradeLine{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+  font-size:12px;
+}
+
+.tradeLine:last-child{
+  margin-bottom:0;
+}
+
+.tradeLabel{
+  color:#8195a8;
+}
+
+.tradeValue{
+  direction:ltr;
+  font-weight:800;
+}
+
+.buyBar{
+  height:8px;
+  border-radius:10px;
+  overflow:hidden;
+  background:#ef5b70;
+  margin:10px 0;
+  direction:ltr;
+}
+
+.buyBarInner{
+  height:100%;
+  background:#20d997;
+  width:50%;
+}
+
+/* CHART */
+
+.chartCard{
+  margin-top:18px;
+  border:1px solid #17293b;
+  border-radius:17px;
+  overflow:hidden;
+  background:#07111d;
+}
+
+.chartHead{
+  padding:13px 14px 8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.chartTitle{
+  font-size:13px;
+  font-weight:800;
+}
+
+.chartSource{
+  font-size:9px;
+  color:#60768a;
+}
+
+.timeframes{
+  display:flex;
+  gap:6px;
+  padding:5px 10px 10px;
+  overflow:auto;
+  scrollbar-width:none;
+}
+
+.timeframes::-webkit-scrollbar{
+  display:none;
+}
+
+.tf{
+  min-width:43px;
+  height:30px;
+  padding:0 9px;
+  border:1px solid #1b2d40;
+  border-radius:8px;
+  background:#0a1522;
+  color:#70869b;
+  font-size:10px;
+}
+
+.tf.active{
+  color:#fff;
+  background:#14334a;
+  border-color:#22546f;
+}
+
+.chartTimer{
+  text-align:left;
+  padding:0 13px 8px;
+  color:#8298ab;
+  font-size:10px;
+  direction:ltr;
+}
+
+.chartWrap{
+  width:100%;
+  height:390px;
+  position:relative;
 }
 
 #chart{
   width:100%;
-  height:390px;
-  border-radius:15px;
-  overflow:hidden;
-  background:#07111c;
+  height:100%;
 }
 
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:12px;
+.loadingChart{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#70869a;
+  font-size:12px;
+  pointer-events:none;
 }
 
-.stat{
-  background:#0a1928;
-  border-radius:12px;
-  padding:12px;
-}
+/* ACTIONS */
 
-.stat-label{
-  color:#71869a;
-  font-size:10px;
-}
-
-.stat-value{
-  margin-top:5px;
-  font-weight:bold;
-}
-
-.trade-buttons{
+.actions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
   margin-top:15px;
 }
 
-.trade{
+.actionBtn{
+  height:48px;
   border:0;
-  padding:14px;
   border-radius:13px;
-  font-weight:bold;
   color:#fff;
+  font-weight:800;
+  font-size:13px;
 }
 
-.buy{
-  background:#159b69;
+.buyBtn{
+  background:#159b70;
 }
 
-.sell{
-  background:#d64d61;
+.sellBtn{
+  background:#b94356;
+}
+
+/* BOTTOM */
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:700px;
+  height:67px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  background:rgba(5,11,20,.96);
+  backdrop-filter:blur(15px);
+  border-top:1px solid #18283a;
+  z-index:30;
+}
+
+.navItem{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:#60778d;
+  font-size:10px;
+  background:none;
+  border:0;
+}
+
+.navItem.active{
+  color:#20d997;
+}
+
+.navIcon{
+  font-size:19px;
+}
+
+/* LOADING */
+
+.loading{
+  text-align:center;
+  color:#71879b;
+  padding:35px 10px;
+  font-size:12px;
 }
 
 .empty{
   text-align:center;
-  color:#778b9e;
-  padding:30px;
+  padding:40px 15px;
+  color:#71879b;
+  font-size:12px;
 }
 
-.bottom{
+/* TOAST */
+
+.toast{
   position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:67px;
-  background:#091827f2;
-  border-top:1px solid #1b334a;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  backdrop-filter:blur(15px);
-}
-
-.nav{
-  color:#71869a;
-  font-size:11px;
+  left:50%;
+  bottom:85px;
+  transform:translateX(-50%) translateY(20px);
+  background:#152436;
+  border:1px solid #274059;
+  color:#fff;
+  padding:11px 17px;
+  border-radius:12px;
+  font-size:12px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:100;
+  max-width:90%;
   text-align:center;
 }
 
-.nav.active{
-  color:#fff;
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
 
-.nav-icon{
-  font-size:20px;
-  margin-bottom:3px;
-}
+/* RESPONSIVE */
 
+@media(max-width:420px){
+
+  .marketHeader,
+  .marketRow{
+    grid-template-columns:1.55fr 1fr .8fr;
+  }
+
+  .detailPrice{
+    font-size:26px;
+  }
+
+  .chartWrap{
+    height:360px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <div class="logo">💹 Digital Finance</div>
-  <button class="refresh" onclick="refreshAll()">↻</button>
-</div>
+<div class="app">
 
-<div class="container">
-
-  <div id="homePage" class="page active">
-
-    <div class="gold-card">
-      <div class="gold-title">
-        🥇 طلای ۲۴ عیار
-      </div>
-
-      <div class="gold-price" id="goldPrice">
-        در حال دریافت...
-      </div>
-
-      <div class="gold-meta" id="goldMeta">
-        AFN / گرم
-      </div>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <div class="logoIcon">DF</div>
+      <span>Digital Finance</span>
     </div>
 
-    <input
-      id="search"
-      class="search"
-      placeholder="🔎 جستجوی ارز..."
-      oninput="filterMarkets()"
-    >
-
-    <div id="markets">
-      <div class="empty">
-        در حال دریافت بازار...
+    <div class="headerRight">
+      <div class="status">
+        <span class="dot"></span>
+        Live
       </div>
+
+      <button class="iconBtn" onclick="refreshAll()">↻</button>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <main id="homePage" class="page">
+
+    <section class="hero">
+      <div class="heroTitle">طلای ۲۴ عیار / AFN</div>
+      <div id="goldPrice" class="goldPrice">در حال دریافت...</div>
+      <div class="goldSub">
+        قیمت لحظه‌ای طلا
+        <span id="goldTime"></span>
+      </div>
+    </section>
+
+    <div class="searchBox">
+      <span class="searchIcon">⌕</span>
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="جستجوی ارز..."
+        oninput="filterMarkets()"
+      >
     </div>
 
-  </div>
+    <div class="marketTabs">
+      <button class="tab active" onclick="setMarketTab('all',this)">همه</button>
+      <button class="tab" onclick="setMarketTab('top',this)">برترها</button>
+      <button class="tab" onclick="setMarketTab('gainers',this)">بیشترین رشد</button>
+      <button class="tab" onclick="setMarketTab('losers',this)">بیشترین افت</button>
+    </div>
 
+    <section class="marketCard">
 
-  <div id="detailPage" class="page">
+      <div class="marketHeader">
+        <div>ارز</div>
+        <div>قیمت</div>
+        <div>۲۴ ساعت</div>
+      </div>
 
-    <button class="back" onclick="showHome()">
-      ← بازگشت
-    </button>
+      <div id="marketList">
+        <div class="loading">در حال دریافت بازار...</div>
+      </div>
 
-    <div class="detail-card">
+    </section>
 
-      <div class="detail-head">
+  </main>
 
-        <div>
-          <div class="detail-symbol" id="detailSymbol">
-            BTC
-          </div>
+  <!-- DETAIL -->
+  <main id="detailPage" class="page detailPage">
 
-          <div class="detail-name" id="detailName">
-            Bitcoin
-          </div>
+    <div class="detailTop">
+
+      <button class="backBtn" onclick="showHome()">‹</button>
+
+      <div class="assetTitle">
+        <div id="detailName" class="assetName">Bitcoin</div>
+        <div id="detailSymbol" class="assetSymbol">BTC</div>
+      </div>
+
+      <div class="liveBadge">
+        <span class="dot"></span>
+        LIVE
+      </div>
+
+    </div>
+
+    <!-- PRICE -->
+    <section class="detailPriceCard">
+
+      <div id="detailPrice" class="detailPrice">—</div>
+
+      <div id="detailChange" class="priceChange gray">
+        — 
+      </div>
+
+      <div class="priceMeta">
+
+        <div class="metaBox">
+          <div class="metaLabel">24h High</div>
+          <div id="detailHigh" class="metaValue">—</div>
         </div>
 
-        <div class="live-box">
-
-          <div class="live-label">
-            قیمت لحظه‌ای
-          </div>
-
-          <div class="live-price"
-               id="livePrice">
-            --
-          </div>
-
-          <div class="live-status">
-
-            <span class="live-dot"
-                  id="liveDot"></span>
-
-            <span id="liveStatus">
-              Live
-            </span>
-
-          </div>
-
+        <div class="metaBox">
+          <div class="metaLabel">24h Low</div>
+          <div id="detailLow" class="metaValue">—</div>
         </div>
 
       </div>
 
+    </section>
 
-      <div class="chart-toolbar">
+    <!-- MARKET INFORMATION -->
+    <div class="infoTitle">اطلاعات بازار</div>
 
-        <button class="period"
-                data-period="5m"
-                onclick="changePeriod('5m')">
+    <section class="infoGrid">
+
+      <div class="infoCard">
+        <div class="infoLabel">Market Cap</div>
+        <div id="marketCap" class="infoValue">—</div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoLabel">24h Volume</div>
+        <div id="volume24" class="infoValue">—</div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoLabel">Circulating Supply</div>
+        <div id="circulatingSupply" class="infoValue">—</div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoLabel">Total Supply</div>
+        <div id="totalSupply" class="infoValue">—</div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoLabel">Max Supply</div>
+        <div id="maxSupply" class="infoValue">—</div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoLabel">تعداد معاملات</div>
+        <div id="tradeCount" class="infoValue">—</div>
+      </div>
+
+    </section>
+
+    <!-- BUY SELL -->
+    <div class="infoTitle">خرید و فروش</div>
+
+    <section class="tradeStats">
+
+      <div class="tradeLine">
+        <span class="tradeLabel">حجم خرید</span>
+        <span id="buyVolume" class="tradeValue green">—</span>
+      </div>
+
+      <div class="tradeLine">
+        <span class="tradeLabel">حجم فروش</span>
+        <span id="sellVolume" class="tradeValue red">—</span>
+      </div>
+
+      <div class="tradeLine">
+        <span class="tradeLabel">نسبت خرید</span>
+        <span id="buyPercent" class="tradeValue green">—</span>
+      </div>
+
+      <div class="buyBar">
+        <div id="buyBarInner" class="buyBarInner"></div>
+      </div>
+
+      <div class="tradeLine">
+        <span class="tradeLabel">نسبت فروش</span>
+        <span id="sellPercent" class="tradeValue red">—</span>
+      </div>
+
+    </section>
+
+    <!-- CHART -->
+    <section class="chartCard">
+
+      <div class="chartHead">
+
+        <div class="chartTitle">
+          نمودار قیمت
+        </div>
+
+        <div id="chartSource" class="chartSource">
+          Live Market
+        </div>
+
+      </div>
+
+      <div class="timeframes">
+
+        <button class="tf active" data-tf="5m" onclick="changeTimeframe('5m',this)">
           5m
         </button>
 
-        <button class="period"
-                data-period="1h"
-                onclick="changePeriod('1h')">
+        <button class="tf" data-tf="1h" onclick="changeTimeframe('1h',this)">
           1H
         </button>
 
-        <button class="period"
-                data-period="4h"
-                onclick="changePeriod('4h')">
+        <button class="tf" data-tf="4h" onclick="changeTimeframe('4h',this)">
           4H
         </button>
 
-        <button class="period"
-                data-period="24h"
-                onclick="changePeriod('24h')">
+        <button class="tf" data-tf="24h" onclick="changeTimeframe('24h',this)">
           24H
         </button>
 
-        <button class="period"
-                data-period="7d"
-                onclick="changePeriod('7d')">
+        <button class="tf" data-tf="7d" onclick="changeTimeframe('7d',this)">
           7D
         </button>
 
-        <button class="period"
-                data-period="30d"
-                onclick="changePeriod('30d')">
+        <button class="tf" data-tf="30d" onclick="changeTimeframe('30d',this)">
           30D
         </button>
 
       </div>
 
+      <div id="chartTimer" class="chartTimer">
+        Candle: —
+      </div>
 
-      <div class="chart-info">
+      <div class="chartWrap">
 
-        <div>
-          <div class="timer-label">
-            کندل فعلی
-          </div>
+        <div id="chart"></div>
 
-          <div class="timer"
-               id="candleTimer">
-            --:--:--
-          </div>
-        </div>
-
-        <div class="source"
-             id="chartSource">
-          --
+        <div id="loadingChart" class="loadingChart">
+          در حال دریافت کندل‌ها...
         </div>
 
       </div>
 
+    </section>
 
-      <div id="chart"></div>
+    <!-- BUY SELL BUTTONS -->
+    <div class="actions">
 
+      <button class="actionBtn buyBtn" onclick="openBuy()">
+        خرید
+      </button>
 
-      <div class="stats">
-
-        <div class="stat">
-          <div class="stat-label">
-            قیمت فعلی
-          </div>
-
-          <div class="stat-value"
-               id="statPrice">
-            --
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">
-            تغییر ۲۴ ساعت
-          </div>
-
-          <div class="stat-value"
-               id="statChange">
-            --
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">
-            بالاترین ۲۴ ساعت
-          </div>
-
-          <div class="stat-value"
-               id="statHigh">
-            --
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">
-            پایین‌ترین ۲۴ ساعت
-          </div>
-
-          <div class="stat-value"
-               id="statLow">
-            --
-          </div>
-        </div>
-
-      </div>
-
-
-      <div class="trade-buttons">
-
-        <button class="trade buy"
-                onclick="buyAsset()">
-          خرید
-        </button>
-
-        <button class="trade sell"
-                onclick="sellAsset()">
-          فروش
-        </button>
-
-      </div>
+      <button class="actionBtn sellBtn" onclick="openSell()">
+        فروش
+      </button>
 
     </div>
 
-  </div>
+  </main>
 
 </div>
 
+<!-- BOTTOM NAV -->
+<nav class="bottomNav">
 
-<div class="bottom">
-
-  <div class="nav active"
-       onclick="showHome()">
-
-    <div class="nav-icon">
-      🏠
-    </div>
-
+  <button class="navItem active" onclick="showHome()">
+    <span class="navIcon">⌂</span>
     بازار
-  </div>
+  </button>
 
-  <div class="nav">
+  <button class="navItem" onclick="showHome();document.getElementById('searchInput').focus()">
+    <span class="navIcon">⌕</span>
+    جستجو
+  </button>
 
-    <div class="nav-icon">
-      💼
-    </div>
-
-    دارایی‌ها
-  </div>
-
-  <div class="nav">
-
-    <div class="nav-icon">
-      📋
-    </div>
-
-    سفارش‌ها
-  </div>
-
-  <div class="nav">
-
-    <div class="nav-icon">
-      👤
-    </div>
-
+  <button class="navItem" onclick="showToast('حساب کاربری به‌زودی فعال می‌شود')">
+    <span class="navIcon">◉</span>
     حساب
-  </div>
+  </button>
 
-</div>
+</nav>
 
+<div id="toast" class="toast"></div>
 
 <script>
 
-const tg =
-  window.Telegram &&
-  window.Telegram.WebApp
-    ? window.Telegram.WebApp
-    : null;
-
-if(tg){
-  tg.ready();
-  tg.expand();
-}
+/* =========================================================
+   DIGITAL FINANCE
+   ========================================================= */
 
 const API_BASE = "";
 
 let markets = [];
-
-let selectedAsset = null;
-
-let currentPeriod = "24h";
+let currentMarketTab = "all";
+let currentAsset = null;
+let currentTimeframe = "5m";
 
 let chart = null;
 let candleSeries = null;
 let volumeSeries = null;
 
-let liveTimer = null;
-
 let tickerTimer = null;
+let candleTimer = null;
+let resizeObserver = null;
 
-const PERIOD_SECONDS = {
-  "5m": 300,
-  "1h": 3600,
-  "4h": 14400,
-  "24h": 86400,
-  "7d": 604800,
-  "30d": 86400
-};
+let lastCandles = [];
 
 
-function formatPrice(value){
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function $(id){
+  return document.getElementById(id);
+}
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function number(value, decimals=2){
 
   const n = Number(value);
 
-  if(!Number.isFinite(n)){
-    return "--";
+  if(!Number.isFinite(n)) return "—";
+
+  return n.toLocaleString("en-US",{
+    minimumFractionDigits:decimals,
+    maximumFractionDigits:decimals
+  });
+}
+
+function compact(value){
+
+  const n = Number(value);
+
+  if(!Number.isFinite(n)) return "—";
+
+  const abs = Math.abs(n);
+
+  if(abs >= 1e12) return (n/1e12).toFixed(2)+"T";
+  if(abs >= 1e9) return (n/1e9).toFixed(2)+"B";
+  if(abs >= 1e6) return (n/1e6).toFixed(2)+"M";
+  if(abs >= 1e3) return (n/1e3).toFixed(2)+"K";
+
+  return number(n,2);
+}
+
+function priceFormat(value){
+
+  const n = Number(value);
+
+  if(!Number.isFinite(n)) return "—";
+
+  if(n >= 1000) return number(n,2);
+  if(n >= 1) return number(n,4);
+  if(n >= .01) return number(n,6);
+
+  return n.toLocaleString("en-US",{
+    minimumFractionDigits:8,
+    maximumFractionDigits:10
+  });
+}
+
+function supplyFormat(value){
+
+  if(value === null || value === undefined || value === ""){
+    return "—";
   }
 
-  if(n >= 1000){
-    return n.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    );
-  }
+  return compact(value);
+}
 
-  if(n >= 1){
-    return n.toLocaleString(
-      "en-US",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:6
-      }
-    );
-  }
+function showToast(message){
 
-  return n.toLocaleString(
-    "en-US",
-    {
-      minimumFractionDigits:2,
-      maximumFractionDigits:10
+  const el = $("toast");
+
+  el.textContent = message;
+  el.classList.add("show");
+
+  setTimeout(()=>{
+    el.classList.remove("show");
+  },2500);
+}
+
+
+/* =========================================================
+   API
+   ========================================================= */
+
+async function api(url,options={}){
+
+  const response = await fetch(API_BASE + url,{
+    ...options,
+    headers:{
+      "Content-Type":"application/json",
+      ...(options.headers || {})
     }
-  );
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try{
+    data = JSON.parse(text);
+  }catch{
+    throw new Error("Invalid API response");
+  }
+
+  if(!response.ok){
+    throw new Error(data.message || "API error");
+  }
+
+  return data;
 }
 
 
-function formatVolume(value){
-
-  const n = Number(value);
-
-  if(!Number.isFinite(n)){
-    return "--";
-  }
-
-  if(n >= 1000000000){
-    return (n / 1000000000).toFixed(2) + "B";
-  }
-
-  if(n >= 1000000){
-    return (n / 1000000).toFixed(2) + "M";
-  }
-
-  if(n >= 1000){
-    return (n / 1000).toFixed(2) + "K";
-  }
-
-  return n.toFixed(2);
-}
-
+/* =========================================================
+   GOLD
+   ========================================================= */
 
 async function loadGold(){
 
   try{
 
-    const response =
-      await fetch(
-        API_BASE +
-        "/api?action=gold"
-      );
+    const data = await api("/api?action=gold");
 
-    const data =
-      await response.json();
+    const price =
+      data.price ??
+      data.gold?.price ??
+      data.data?.price;
 
-    if(
-      data &&
-      data.success
-    ){
+    $("goldPrice").textContent =
+      price !== undefined
+      ? number(price,2) + " AFN / g"
+      : "—";
 
-      const price =
-        Number(
-          data.price ??
-          data.price_afn ??
-          data.afn_per_gram ??
-          data.metal_24k_afn_per_gram
-        );
-
-      if(Number.isFinite(price)){
-
-        document.getElementById(
-          "goldPrice"
-        ).textContent =
-          formatPrice(price) + " AFN";
-
-      }
-
-      document.getElementById(
-        "goldMeta"
-      ).textContent =
-        "طلای ۲۴ عیار / گرم";
-
-    }
+    $("goldTime").textContent =
+      " • " + new Date().toLocaleTimeString("fa-AF",{
+        hour:"2-digit",
+        minute:"2-digit"
+      });
 
   }catch(error){
 
-    document.getElementById(
-      "goldPrice"
-    ).textContent =
-      "خطا";
+    $("goldPrice").textContent = "—";
 
   }
 
 }
 
 
+/* =========================================================
+   MARKETS
+   ========================================================= */
+
 async function loadMarkets(){
+
+  const list = $("marketList");
 
   try{
 
-    const response =
-      await fetch(
-        API_BASE +
-        "/api?action=markets"
-      );
+    list.innerHTML =
+      `<div class="loading">در حال دریافت بازار...</div>`;
 
-    const data =
-      await response.json();
+    const data = await api("/api?action=markets");
 
-    if(
-      data &&
-      data.success &&
-      Array.isArray(data.markets)
-    ){
+    markets =
+      Array.isArray(data)
+      ? data
+      : (
+          data.markets ||
+          data.data ||
+          []
+        );
 
-      markets =
-        data.markets;
-
-      renderMarkets(
-        markets
-      );
-
-    }else{
-
-      throw new Error(
-        "Invalid markets response"
-      );
-
+    if(!Array.isArray(markets)){
+      markets = [];
     }
+
+    renderMarkets();
 
   }catch(error){
 
     console.error(error);
 
-    document.getElementById(
-      "markets"
-    ).innerHTML = `
+    list.innerHTML = `
       <div class="empty">
         دریافت بازار ناموفق بود
+        <br><br>
+        <button class="tab" onclick="loadMarkets()">
+          تلاش دوباره
+        </button>
       </div>
     `;
 
@@ -836,126 +1191,143 @@ async function loadMarkets(){
 }
 
 
-function renderMarkets(list){
+/* =========================================================
+   MARKET NORMALIZATION
+   ========================================================= */
 
-  const box =
-    document.getElementById(
-      "markets"
-    );
+function getSymbol(asset){
 
-  if(!list.length){
-
-    box.innerHTML = `
-      <div class="empty">
-        ارزی پیدا نشد
-      </div>
-    `;
-
-    return;
-  }
-
-  box.innerHTML =
-    list.map(asset => {
-
-      const symbol =
-        String(
-          asset.symbol || ""
-        ).toUpperCase();
-
-      const name =
-        asset.name ||
-        symbol;
-
-      const price =
-        Number(
-          asset.price
-        );
-
-      const change =
-        Number(
-          asset.change24h ??
-          asset.change_24h ??
-          asset.price_change_percentage_24h ??
-          0
-        );
-
-      const changeClass =
-        change >= 0
-          ? "green"
-          : "red";
-
-      const sign =
-        change >= 0
-          ? "+"
-          : "";
-
-      return `
-        <div
-          class="market"
-          onclick="openAsset('${symbol}')"
-        >
-
-          <div class="market-left">
-
-            <div class="coin-icon">
-              ${symbol.slice(0,4)}
-            </div>
-
-            <div>
-
-              <div class="symbol">
-                ${symbol}
-              </div>
-
-              <div class="name">
-                ${name}
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="price">
-
-            <div>
-              ${formatPrice(price)}
-            </div>
-
-            <div class="change ${changeClass}">
-              ${sign}${change.toFixed(2)}%
-            </div>
-
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
-
+  return String(
+    asset.symbol ||
+    asset.code ||
+    asset.ticker ||
+    ""
+  ).toUpperCase();
 }
 
+function getName(asset){
+
+  return (
+    asset.name ||
+    asset.full_name ||
+    asset.title ||
+    getSymbol(asset)
+  );
+}
+
+function getPrice(asset){
+
+  return Number(
+    asset.price ??
+    asset.current_price ??
+    asset.last_price ??
+    0
+  );
+}
+
+function getChange(asset){
+
+  return Number(
+    asset.change_24h ??
+    asset.price_change_percentage_24h ??
+    asset.change ??
+    asset.percent_change_24h ??
+    0
+  );
+}
+
+function getMarketCap(asset){
+
+  return (
+    asset.market_cap ??
+    asset.marketCap ??
+    asset.market_cap_usd ??
+    null
+  );
+}
+
+function getVolume(asset){
+
+  return (
+    asset.total_volume ??
+    asset.volume_24h ??
+    asset.volume24h ??
+    asset.volume ??
+    null
+  );
+}
+
+function getCirculating(asset){
+
+  return (
+    asset.circulating_supply ??
+    asset.circulatingSupply ??
+    null
+  );
+}
+
+function getTotalSupply(asset){
+
+  return (
+    asset.total_supply ??
+    asset.totalSupply ??
+    null
+  );
+}
+
+function getMaxSupply(asset){
+
+  return (
+    asset.max_supply ??
+    asset.maxSupply ??
+    null
+  );
+}
+
+
+/* =========================================================
+   MARKET FILTER
+   ========================================================= */
 
 function filterMarkets(){
 
+  renderMarkets();
+
+}
+
+function setMarketTab(tab,button){
+
+  currentMarketTab = tab;
+
+  document.querySelectorAll(".tab").forEach(el=>{
+    el.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  renderMarkets();
+}
+
+
+/* =========================================================
+   MARKET RENDER
+   ========================================================= */
+
+function renderMarkets(){
+
+  const list = $("marketList");
+
   const query =
-    document.getElementById(
-      "search"
-    ).value
-    .trim()
-    .toLowerCase();
+    $("searchInput").value.trim().toLowerCase();
 
-  const filtered =
-    markets.filter(asset => {
+  let result = [...markets];
 
-      const symbol =
-        String(
-          asset.symbol || ""
-        ).toLowerCase();
+  if(query){
 
-      const name =
-        String(
-          asset.name || ""
-        ).toLowerCase();
+    result = result.filter(asset=>{
+
+      const symbol = getSymbol(asset).toLowerCase();
+      const name = getName(asset).toLowerCase();
 
       return (
         symbol.includes(query) ||
@@ -964,724 +1336,1018 @@ function filterMarkets(){
 
     });
 
-  renderMarkets(filtered);
+  }
 
-}
+  if(currentMarketTab === "gainers"){
 
+    result.sort((a,b)=>getChange(b)-getChange(a));
 
-function openAsset(symbol){
+  }else if(currentMarketTab === "losers"){
 
-  const asset =
-    markets.find(
-      item =>
-        String(
-          item.symbol
-        ).toUpperCase() === symbol
-    );
+    result.sort((a,b)=>getChange(a)-getChange(b));
 
-  if(!asset){
+  }else if(currentMarketTab === "top"){
+
+    result.sort((a,b)=>{
+
+      const av = Number(getVolume(a) || 0);
+      const bv = Number(getVolume(b) || 0);
+
+      return bv-av;
+
+    });
+
+  }
+
+  if(!result.length){
+
+    list.innerHTML =
+      `<div class="empty">ارزی پیدا نشد</div>`;
+
     return;
   }
 
-  selectedAsset =
-    asset;
+  list.innerHTML = result.map(asset=>{
 
-  document.getElementById(
-    "detailSymbol"
-  ).textContent =
-    symbol;
+    const symbol = getSymbol(asset);
+    const name = getName(asset);
+    const price = getPrice(asset);
+    const change = getChange(asset);
 
-  document.getElementById(
-    "detailName"
-  ).textContent =
-    asset.name || symbol;
+    const changeClass =
+      change > 0
+      ? "green"
+      : change < 0
+        ? "red"
+        : "gray";
 
-  document.getElementById(
-    "homePage"
-  ).classList.remove("active");
+    const changeText =
+      change > 0 ? "+" + number(change,2)
+      : number(change,2);
 
-  document.getElementById(
-    "detailPage"
-  ).classList.add("active");
+    return `
 
-  currentPeriod =
-    "24h";
+      <div
+        class="marketRow"
+        onclick="openAsset('${escapeHtml(symbol)}')"
+      >
 
-  setActivePeriod();
+        <div class="coinName">
 
-  loadChart(
-    symbol,
-    currentPeriod
-  );
+          <div class="coinIcon">
+            ${escapeHtml(symbol.substring(0,4))}
+          </div>
 
-  startLiveTicker(
-    symbol
-  );
+          <div class="coinText">
 
-  updateCandleTimer();
+            <div class="coinSymbol">
+              ${escapeHtml(symbol)}
+            </div>
+
+            <div class="coinFull">
+              ${escapeHtml(name)}
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="price">
+          ${priceFormat(price)}
+        </div>
+
+        <div class="change ${changeClass}">
+          ${changeText}%
+        </div>
+
+      </div>
+
+    `;
+
+  }).join("");
 
 }
 
 
-function showHome(){
+/* =========================================================
+   OPEN ASSET
+   ========================================================= */
 
-  document.getElementById(
-    "detailPage"
-  ).classList.remove("active");
+function findAsset(symbol){
 
-  document.getElementById(
-    "homePage"
-  ).classList.add("active");
+  return markets.find(
+    asset=>getSymbol(asset) === symbol.toUpperCase()
+  );
+
+}
+
+async function openAsset(symbol){
+
+  const asset = findAsset(symbol);
+
+  if(!asset){
+
+    showToast("اطلاعات ارز پیدا نشد");
+    return;
+
+  }
+
+  currentAsset = asset;
+
+  $("homePage").style.display = "none";
+  $("detailPage").style.display = "block";
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  renderAssetInfo(asset);
 
   stopLiveTicker();
 
-}
+  currentTimeframe = "5m";
 
+  document.querySelectorAll(".tf").forEach(btn=>{
+    btn.classList.toggle(
+      "active",
+      btn.dataset.tf === "5m"
+    );
+  });
 
-function setActivePeriod(){
+  await loadChart();
 
-  document
-    .querySelectorAll(".period")
-    .forEach(button => {
+  startLiveTicker();
 
-      button.classList.toggle(
-        "active",
-        button.dataset.period ===
-        currentPeriod
-      );
-
-    });
+  loadTradeStatistics();
 
 }
 
 
-function changePeriod(period){
+/* =========================================================
+   DETAIL INFORMATION
+   ========================================================= */
 
-  if(!selectedAsset){
-    return;
-  }
+function renderAssetInfo(asset){
 
-  currentPeriod =
-    period;
+  const symbol = getSymbol(asset);
+  const name = getName(asset);
+  const price = getPrice(asset);
+  const change = getChange(asset);
 
-  setActivePeriod();
+  $("detailName").textContent = name;
+  $("detailSymbol").textContent = symbol;
 
-  loadChart(
-    selectedAsset.symbol,
-    currentPeriod
-  );
+  $("detailPrice").textContent =
+    priceFormat(price);
 
-  updateCandleTimer();
+  const changeEl = $("detailChange");
+
+  changeEl.textContent =
+    (change > 0 ? "+" : "") +
+    number(change,2) +
+    "%";
+
+  changeEl.className =
+    "priceChange " +
+    (
+      change > 0
+      ? "green"
+      : change < 0
+        ? "red"
+        : "gray"
+    );
+
+  $("marketCap").textContent =
+    getMarketCap(asset) !== null
+    ? compact(getMarketCap(asset))
+    : "—";
+
+  $("volume24").textContent =
+    getVolume(asset) !== null
+    ? compact(getVolume(asset))
+    : "—";
+
+  $("circulatingSupply").textContent =
+    supplyFormat(getCirculating(asset));
+
+  $("totalSupply").textContent =
+    supplyFormat(getTotalSupply(asset));
+
+  $("maxSupply").textContent =
+    supplyFormat(getMaxSupply(asset));
+
+  $("detailHigh").textContent =
+    asset.high_24h !== undefined
+    ? priceFormat(asset.high_24h)
+    : "—";
+
+  $("detailLow").textContent =
+    asset.low_24h !== undefined
+    ? priceFormat(asset.low_24h)
+    : "—";
 
 }
 
+
+/* =========================================================
+   CHART
+   ========================================================= */
 
 function createChart(){
 
-  const container =
-    document.getElementById(
-      "chart"
-    );
+  if(chart){
 
-  container.innerHTML = "";
+    try{
+      chart.remove();
+    }catch{}
 
-  chart =
-    LightweightCharts.createChart(
-      container,
-      {
-        width:
-          container.clientWidth,
-
-        height:390,
-
-        layout:{
-          background:{
-            color:"#07111c"
-          },
-
-          textColor:"#8195a8"
-        },
-
-        grid:{
-          vertLines:{
-            color:"#122335"
-          },
-
-          horzLines:{
-            color:"#122335"
-          }
-        },
-
-        rightPriceScale:{
-          borderColor:"#20374c"
-        },
-
-        timeScale:{
-          borderColor:"#20374c",
-
-          timeVisible:true,
-
-          secondsVisible:false
-        },
-
-        crosshair:{
-          mode:
-            LightweightCharts.CrosshairMode.Normal
-        }
-      }
-    );
-
-  candleSeries =
-    chart.addCandlestickSeries({
-
-      upColor:"#19c987",
-
-      downColor:"#ef5b70",
-
-      borderUpColor:"#19c987",
-
-      borderDownColor:"#ef5b70",
-
-      wickUpColor:"#19c987",
-
-      wickDownColor:"#ef5b70",
-
-      priceScaleId:"right"
-
-    });
-
-  volumeSeries =
-    chart.addHistogramSeries({
-
-      priceFormat:{
-        type:"volume"
-      },
-
-      priceScaleId:"volume",
-
-      scaleMargins:{
-        top:0.80,
-        bottom:0
-      },
-
-      lastValueVisible:false,
-
-      priceLineVisible:false
-
-    });
-
-  chart
-    .priceScale("volume")
-    .applyOptions({
-      scaleMargins:{
-        top:0.80,
-        bottom:0
-      }
-    });
-
-  window.addEventListener(
-    "resize",
-    resizeChart
-  );
-
-}
-
-
-function resizeChart(){
-
-  if(!chart){
-    return;
   }
 
-  const container =
-    document.getElementById(
-      "chart"
-    );
+  const container = $("chart");
 
-  chart.resize(
-    container.clientWidth,
-    390
+  chart = LightweightCharts.createChart(
+    container,
+    {
+      width:container.clientWidth,
+      height:container.clientHeight,
+
+      layout:{
+        background:{
+          color:"#07111d"
+        },
+        textColor:"#7890a5"
+      },
+
+      grid:{
+        vertLines:{
+          color:"#102030"
+        },
+        horzLines:{
+          color:"#102030"
+        }
+      },
+
+      crosshair:{
+        mode:LightweightCharts.CrosshairMode.Normal
+      },
+
+      rightPriceScale:{
+        borderColor:"#1b2b3d"
+      },
+
+      timeScale:{
+        borderColor:"#1b2b3d",
+        timeVisible:true,
+        secondsVisible:false
+      },
+
+      localization:{
+        locale:"en-US"
+      }
+    }
   );
+
+  candleSeries = chart.addCandlestickSeries({
+
+    upColor:"#19c987",
+    downColor:"#ef5b70",
+
+    borderUpColor:"#19c987",
+    borderDownColor:"#ef5b70",
+
+    wickUpColor:"#19c987",
+    wickDownColor:"#ef5b70",
+
+    priceScaleId:"right"
+
+  });
+
+  volumeSeries = chart.addHistogramSeries({
+
+    priceFormat:{
+      type:"volume"
+    },
+
+    priceScaleId:"volume",
+
+    scaleMargins:{
+      top:.80,
+      bottom:0
+    },
+
+    lastValueVisible:false,
+    priceLineVisible:false
+
+  });
+
+  chart.priceScale("volume").applyOptions({
+
+    scaleMargins:{
+      top:.80,
+      bottom:0
+    }
+
+  });
+
+  if(resizeObserver){
+    try{
+      resizeObserver.disconnect();
+    }catch{}
+  }
+
+  resizeObserver =
+    new ResizeObserver(()=>{
+
+      if(!chart) return;
+
+      chart.applyOptions({
+        width:container.clientWidth,
+        height:container.clientHeight
+      });
+
+    });
+
+  resizeObserver.observe(container);
 
 }
 
 
-async function loadChart(
-  symbol,
-  interval
-){
+/* =========================================================
+   LOAD CANDLES
+   ========================================================= */
 
-  if(
-    String(symbol)
-      .toUpperCase() ===
-    "AFC"
-  ){
+async function loadChart(){
 
-    if(chart){
-      chart.remove();
-      chart = null;
-    }
+  $("loadingChart").style.display = "flex";
 
-    document.getElementById(
-      "chart"
-    ).innerHTML = `
-      <div class="empty">
-        📊 نمودار AFC فعلاً موجود نیست<br>
-        <small>
-          پس از ایجاد بازار واقعی AFC،
-          نمودار زنده فعال می‌شود.
-        </small>
-      </div>
-    `;
+  const symbol = getSymbol(currentAsset);
 
-    document.getElementById(
-      "chartSource"
-    ).textContent =
-      "AFC";
+  if(symbol === "AFC"){
+
+    createChart();
+
+    candleSeries.setData([]);
+    volumeSeries.setData([]);
+
+    $("loadingChart").textContent =
+      "برای AFC هنوز نمودار واقعی بازار وجود ندارد";
+
+    $("chartSource").textContent =
+      "No real market data";
+
+    $("chartTimer").textContent =
+      "Candle: —";
 
     return;
+
   }
 
   try{
 
-    if(chart){
-      chart.remove();
-      chart = null;
-    }
-
     createChart();
 
-    document.getElementById(
-      "chartSource"
-    ).textContent =
-      "در حال دریافت...";
+    const url =
+      `/api/candles?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(currentTimeframe)}`;
 
-    const response =
-      await fetch(
-        API_BASE +
-        "/api/candles?symbol=" +
-        encodeURIComponent(symbol) +
-        "&interval=" +
-        encodeURIComponent(interval)
-      );
+    const data = await api(url);
 
-    const data =
-      await response.json();
+    let candles =
+      Array.isArray(data)
+      ? data
+      : (
+          data.candles ||
+          data.data ||
+          []
+        );
 
-    if(
-      !data.success ||
-      !Array.isArray(data.candles) ||
-      !data.candles.length
-    ){
+    if(!Array.isArray(candles)){
+      candles = [];
+    }
 
-      throw new Error(
-        data.message ||
-        "No candles"
-      );
+    candles = candles
+      .map(normalizeCandle)
+      .filter(Boolean)
+      .sort((a,b)=>a.time-b.time);
+
+    lastCandles = candles;
+
+    if(!candles.length){
+
+      candleSeries.setData([]);
+      volumeSeries.setData([]);
+
+      $("loadingChart").textContent =
+        "برای این ارز کندل موجود نیست";
+
+      $("chartSource").textContent =
+        "No candle data";
+
+      return;
 
     }
 
-    const candles =
-      data.candles
-        .filter(c =>
-          Number.isFinite(
-            Number(c.time)
-          )
-        )
-        .map(c => ({
-          time:Number(c.time),
-          open:Number(c.open),
-          high:Number(c.high),
-          low:Number(c.low),
-          close:Number(c.close)
-        }));
-
-
-    const volumes =
-      data.candles
-        .filter(c =>
-          Number.isFinite(
-            Number(c.time)
-          )
-        )
-        .map(c => {
-
-          const close =
-            Number(c.close);
-
-          const open =
-            Number(c.open);
-
-          return {
-            time:Number(c.time),
-
-            value:
-              Number(c.volume || 0),
-
-            color:
-              close >= open
-                ? "#19c98799"
-                : "#ef5b7099"
-          };
-
-        });
-
-
     candleSeries.setData(
-      candles
+      candles.map(c=>({
+        time:c.time,
+        open:c.open,
+        high:c.high,
+        low:c.low,
+        close:c.close
+      }))
     );
 
     volumeSeries.setData(
-      volumes
+      candles.map(c=>({
+        time:c.time,
+        value:c.volume || 0,
+        color:
+          c.close >= c.open
+          ? "rgba(25,201,135,.45)"
+          : "rgba(239,91,112,.45)"
+      }))
     );
 
     chart.timeScale().fitContent();
 
-    document.getElementById(
-      "chartSource"
-    ).textContent =
-      data.source || "Market";
+    $("loadingChart").style.display = "none";
+
+    $("chartSource").textContent =
+      data.source
+      ? String(data.source)
+      : "Live Market";
+
+    updateCandleTimer();
 
   }catch(error){
 
-    console.error(
-      "Chart error:",
-      error
-    );
+    console.error(error);
 
-    if(chart){
-      chart.remove();
-      chart = null;
-    }
+    $("loadingChart").textContent =
+      "خطا در دریافت کندل";
 
-    document.getElementById(
-      "chart"
-    ).innerHTML = `
-      <div class="empty">
-        ❌ نمودار دریافت نشد<br>
-        <small>
-          دوباره تلاش کنید
-        </small>
-      </div>
-    `;
-
-    document.getElementById(
-      "chartSource"
-    ).textContent =
-      "Unavailable";
+    $("chartSource").textContent =
+      "Chart unavailable";
 
   }
 
 }
 
 
-async function updateLivePrice(
-  symbol
-){
+/* =========================================================
+   NORMALIZE CANDLE
+   ========================================================= */
 
-  try{
+function normalizeCandle(c){
 
-    const response =
-      await fetch(
-        API_BASE +
-        "/api/candles?action=ticker&symbol=" +
-        encodeURIComponent(symbol)
-      );
+  if(!c) return null;
 
-    const data =
-      await response.json();
+  let time =
+    c.time ??
+    c.timestamp ??
+    c.openTime;
 
-    if(
-      !data.success
-    ){
-      throw new Error(
-        data.message ||
-        "Ticker unavailable"
-      );
-    }
+  let open =
+    c.open ??
+    c.o;
 
-    const price =
-      Number(data.price);
+  let high =
+    c.high ??
+    c.h;
 
-    const change =
-      Number(
-        data.change24h || 0
-      );
+  let low =
+    c.low ??
+    c.l;
 
-    document.getElementById(
-      "livePrice"
-    ).textContent =
-      formatPrice(price);
+  let close =
+    c.close ??
+    c.c;
 
-    document.getElementById(
-      "statPrice"
-    ).textContent =
-      formatPrice(price);
+  let volume =
+    c.volume ??
+    c.v ??
+    0;
 
-    const changeElement =
-      document.getElementById(
-        "statChange"
-      );
+  if(Array.isArray(c)){
 
-    changeElement.textContent =
-      (change >= 0 ? "+" : "") +
-      change.toFixed(2) +
-      "%";
-
-    changeElement.className =
-      "stat-value " +
-      (change >= 0
-        ? "green"
-        : "red");
-
-    document.getElementById(
-      "statHigh"
-    ).textContent =
-      formatPrice(
-        data.high24h
-      );
-
-    document.getElementById(
-      "statLow"
-    ).textContent =
-      formatPrice(
-        data.low24h
-      );
-
-    document.getElementById(
-      "liveStatus"
-    ).textContent =
-      "Live • " +
-      (data.source || "Market");
-
-    document.getElementById(
-      "liveDot"
-    ).style.background =
-      "#36dc91";
-
-  }catch(error){
-
-    document.getElementById(
-      "liveStatus"
-    ).textContent =
-      "اتصال مجدد...";
-
-    document.getElementById(
-      "liveDot"
-    ).style.background =
-      "#f0a400";
+    time = c[0];
+    open = c[1];
+    high = c[2];
+    low = c[3];
+    close = c[4];
+    volume = c[5];
 
   }
+
+  time = Number(time);
+
+  if(time > 100000000000){
+    time = Math.floor(time/1000);
+  }
+
+  open = Number(open);
+  high = Number(high);
+  low = Number(low);
+  close = Number(close);
+  volume = Number(volume || 0);
+
+  if(
+    !Number.isFinite(time) ||
+    !Number.isFinite(open) ||
+    !Number.isFinite(high) ||
+    !Number.isFinite(low) ||
+    !Number.isFinite(close)
+  ){
+    return null;
+  }
+
+  return {
+    time:Math.floor(time),
+    open,
+    high,
+    low,
+    close,
+    volume
+  };
 
 }
 
 
-function startLiveTicker(
-  symbol
-){
+/* =========================================================
+   TIMEFRAME
+   ========================================================= */
+
+async function changeTimeframe(tf,button){
+
+  currentTimeframe = tf;
+
+  document.querySelectorAll(".tf").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  await loadChart();
+
+}
+
+
+/* =========================================================
+   LIVE TICKER
+   ========================================================= */
+
+function startLiveTicker(){
 
   stopLiveTicker();
 
-  updateLivePrice(
-    symbol
+  updateLiveTicker();
+
+  tickerTimer = setInterval(
+    updateLiveTicker,
+    3000
   );
 
-  tickerTimer =
-    setInterval(
-      () => {
-
-        updateLivePrice(
-          symbol
-        );
-
-      },
-      3000
-    );
-
 }
-
 
 function stopLiveTicker(){
 
   if(tickerTimer){
 
-    clearInterval(
-      tickerTimer
-    );
-
+    clearInterval(tickerTimer);
     tickerTimer = null;
 
   }
 
 }
 
+async function updateLiveTicker(){
 
-function formatTimer(seconds){
+  if(!currentAsset) return;
 
-  seconds =
-    Math.max(
-      0,
-      Math.floor(seconds)
+  const symbol = getSymbol(currentAsset);
+
+  if(!symbol || symbol === "AFC") return;
+
+  try{
+
+    const data = await api(
+      `/api/candles?action=ticker&symbol=${encodeURIComponent(symbol)}`
     );
 
-  const days =
-    Math.floor(
-      seconds / 86400
-    );
+    const ticker =
+      data.ticker ||
+      data.data ||
+      data;
 
-  seconds %= 86400;
+    const price =
+      Number(
+        ticker.price ??
+        ticker.last ??
+        ticker.lastPrice ??
+        ticker.close
+      );
 
-  const hours =
-    Math.floor(
-      seconds / 3600
-    );
+    const change =
+      Number(
+        ticker.change24h ??
+        ticker.priceChangePercent ??
+        ticker.change ??
+        getChange(currentAsset)
+      );
 
-  seconds %= 3600;
+    if(Number.isFinite(price)){
 
-  const minutes =
-    Math.floor(
-      seconds / 60
-    );
+      $("detailPrice").textContent =
+        priceFormat(price);
 
-  const secs =
-    seconds % 60;
+      currentAsset.price = price;
 
+    }
 
-  const hh =
-    String(hours)
-      .padStart(2,"0");
+    if(Number.isFinite(change)){
 
-  const mm =
-    String(minutes)
-      .padStart(2,"0");
+      const el = $("detailChange");
 
-  const ss =
-    String(secs)
-      .padStart(2,"0");
+      el.textContent =
+        (change > 0 ? "+" : "") +
+        number(change,2) +
+        "%";
 
+      el.className =
+        "priceChange " +
+        (
+          change > 0
+          ? "green"
+          : change < 0
+            ? "red"
+            : "gray"
+        );
 
-  if(days > 0){
+      currentAsset.change_24h = change;
 
-    return (
-      days +
-      "d " +
-      hh +
-      ":" +
-      mm +
-      ":" +
-      ss
-    );
+    }
+
+  }catch(error){
+
+    console.log("Ticker:",error.message);
 
   }
 
-  return (
-    hh +
-    ":" +
-    mm +
-    ":" +
-    ss
-  );
-
 }
 
+
+/* =========================================================
+   CANDLE TIMER
+   ========================================================= */
+
+function timeframeSeconds(){
+
+  switch(currentTimeframe){
+
+    case "5m":
+      return 300;
+
+    case "1h":
+      return 3600;
+
+    case "4h":
+      return 14400;
+
+    case "24h":
+      return 86400;
+
+    case "7d":
+      return 86400;
+
+    case "30d":
+      return 86400;
+
+    default:
+      return 300;
+
+  }
+
+}
 
 function updateCandleTimer(){
 
+  if(candleTimer){
+    clearInterval(candleTimer);
+  }
+
   const seconds =
-    PERIOD_SECONDS[
-      currentPeriod
-    ] || 3600;
+    timeframeSeconds();
 
-  const now =
-    Math.floor(
-      Date.now() / 1000
-    );
+  function tick(){
 
-  let remaining =
-    seconds -
-    (now % seconds);
+    const now =
+      Math.floor(Date.now()/1000);
 
-  if(
-    remaining === seconds
-  ){
-    remaining = 0;
+    const remaining =
+      seconds - (now % seconds);
+
+    const h =
+      Math.floor(remaining/3600);
+
+    const m =
+      Math.floor((remaining%3600)/60);
+
+    const s =
+      remaining%60;
+
+    $("chartTimer").textContent =
+      `Candle closes in ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+
   }
 
-  document.getElementById(
-    "candleTimer"
-  ).textContent =
-    formatTimer(
-      remaining
-    );
+  tick();
+
+  candleTimer =
+    setInterval(tick,1000);
 
 }
 
 
-function buyAsset(){
+/* =========================================================
+   TRADE STATISTICS
+   ========================================================= */
 
-  if(!selectedAsset){
-    return;
+async function loadTradeStatistics(){
+
+  if(!currentAsset) return;
+
+  const symbol = getSymbol(currentAsset);
+
+  $("buyVolume").textContent = "—";
+  $("sellVolume").textContent = "—";
+  $("buyPercent").textContent = "—";
+  $("sellPercent").textContent = "—";
+  $("tradeCount").textContent = "—";
+  $("buyBarInner").style.width = "50%";
+
+  try{
+
+    const data = await api(
+      `/api?action=trades&telegram_id=123456789`
+    );
+
+    let trades =
+      Array.isArray(data)
+      ? data
+      : (
+          data.trades ||
+          data.data ||
+          []
+        );
+
+    if(!Array.isArray(trades)){
+      trades = [];
+    }
+
+    /*
+      فقط معاملات همین ارز
+    */
+
+    trades = trades.filter(trade=>{
+
+      const s = String(
+        trade.symbol ||
+        trade.asset_symbol ||
+        trade.market ||
+        ""
+      ).toUpperCase();
+
+      return s === symbol;
+
+    });
+
+    /*
+      اگر API معاملات مربوط به همین ارز را بدون symbol برگرداند،
+      فقط در صورتی استفاده نمی‌کنیم که symbol مشخص باشد.
+    */
+
+    let buy = 0;
+    let sell = 0;
+    let count = 0;
+
+    trades.forEach(trade=>{
+
+      const side =
+        String(
+          trade.side ||
+          trade.type ||
+          trade.action ||
+          ""
+        ).toLowerCase();
+
+      const qty = Number(
+        trade.quantity ??
+        trade.amount ??
+        trade.qty ??
+        0
+      );
+
+      const price = Number(
+        trade.price ??
+        0
+      );
+
+      const value =
+        Number.isFinite(Number(trade.total))
+        ? Number(trade.total)
+        : qty * price;
+
+      if(!Number.isFinite(value)) return;
+
+      count++;
+
+      if(
+        side === "buy" ||
+        side === " خرید" ||
+        side === "purchase"
+      ){
+        buy += value;
+      }
+
+      if(
+        side === "sell" ||
+        side === " فروش"
+      ){
+        sell += value;
+      }
+
+    });
+
+    const total = buy + sell;
+
+    const buyPct =
+      total > 0
+      ? buy / total * 100
+      : 50;
+
+    const sellPct =
+      total > 0
+      ? sell / total * 100
+      : 50;
+
+    $("buyVolume").textContent =
+      compact(buy);
+
+    $("sellVolume").textContent =
+      compact(sell);
+
+    $("buyPercent").textContent =
+      number(buyPct,1) + "%";
+
+    $("sellPercent").textContent =
+      number(sellPct,1) + "%";
+
+    $("tradeCount").textContent =
+      number(count,0);
+
+    $("buyBarInner").style.width =
+      Math.max(0,Math.min(100,buyPct)) + "%";
+
+  }catch(error){
+
+    console.log("Trade statistics:",error.message);
+
   }
 
-  alert(
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+function showHome(){
+
+  stopLiveTicker();
+
+  $("detailPage").style.display = "none";
+  $("homePage").style.display = "block";
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================================================
+   BUY / SELL
+   ========================================================= */
+
+function openBuy(){
+
+  if(!currentAsset) return;
+
+  showToast(
     "خرید " +
-    selectedAsset.symbol +
-    " در مرحله بعد فعال می‌شود."
+    getSymbol(currentAsset) +
+    " — بخش سفارش آماده اتصال است"
   );
 
 }
 
+function openSell(){
 
-function sellAsset(){
+  if(!currentAsset) return;
 
-  if(!selectedAsset){
-    return;
-  }
-
-  alert(
+  showToast(
     "فروش " +
-    selectedAsset.symbol +
-    " در مرحله بعد فعال می‌شود."
+    getSymbol(currentAsset) +
+    " — بخش سفارش آماده اتصال است"
   );
 
 }
 
+
+/* =========================================================
+   REFRESH
+   ========================================================= */
 
 async function refreshAll(){
+
+  showToast("در حال به‌روزرسانی...");
 
   await Promise.all([
     loadGold(),
     loadMarkets()
   ]);
 
-  if(selectedAsset){
+  if(currentAsset){
 
-    const symbol =
-      selectedAsset.symbol;
+    const updated =
+      findAsset(getSymbol(currentAsset));
 
-    await loadChart(
-      symbol,
-      currentPeriod
-    );
+    if(updated){
 
-    await updateLivePrice(
-      symbol
-    );
+      currentAsset = updated;
+      renderAssetInfo(updated);
+
+    }
+
+    await loadChart();
+    await loadTradeStatistics();
 
   }
 
 }
 
 
+/* =========================================================
+   START
+   ========================================================= */
+
+async function init(){
+
+  await Promise.all([
+    loadGold(),
+    loadMarkets()
+  ]);
+
+}
+
+init();
+
+
+/* =========================================================
+   AUTO GOLD REFRESH
+   ========================================================= */
+
 setInterval(
-  updateCandleTimer,
-  1000
+  loadGold,
+  30000
 );
 
 
-loadGold();
-loadMarkets();
-updateCandleTimer();
+/* =========================================================
+   AUTO MARKET REFRESH
+   ========================================================= */
+
+setInterval(
+  async ()=>{
+    await loadMarkets();
+
+    if(currentAsset){
+
+      const updated =
+        findAsset(getSymbol(currentAsset));
+
+      if(updated){
+
+        currentAsset = updated;
+        renderAssetInfo(updated);
+
+      }
+
+    }
+  },
+  15000
+);
 
 </script>
 
