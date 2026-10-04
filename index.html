@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
 <title>Digital Finance</title>
 
@@ -10,537 +10,484 @@
 
 <style>
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+ box-sizing:border-box;
+ margin:0;
+ padding:0
 }
 
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#07111f;
-    color:#fff;
-    min-height:100vh;
-    padding-bottom:90px;
+ font-family:Arial,sans-serif;
+ background:#07111f;
+ color:#fff;
+ min-height:100vh;
+ padding-bottom:85px
 }
 
 button,input{
-    font-family:inherit;
+ font-family:inherit
 }
 
 button{
-    cursor:pointer;
+ cursor:pointer
 }
 
 .header{
-    position:sticky;
-    top:0;
-    z-index:100;
-    background:#081525;
-    border-bottom:1px solid #1b3048;
-    padding:16px;
+ position:sticky;
+ top:0;
+ z-index:100;
+ padding:15px;
+ background:#081522;
+ border-bottom:1px solid #1c3045
 }
 
-.header-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+.header-row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between
 }
 
 .logo{
-    font-size:22px;
-    font-weight:800;
+ font-size:22px;
+ font-weight:800
 }
 
 .logo span{
-    color:#00d4ff;
+ color:#00d4ff
 }
 
 .status{
-    font-size:11px;
-    background:#10283d;
-    color:#59e6ff;
-    padding:6px 9px;
-    border-radius:20px;
+ font-size:11px;
+ padding:6px 10px;
+ border-radius:20px;
+ background:#10273b;
+ color:#61e5ff
 }
 
 .container{
-    width:100%;
-    max-width:900px;
-    margin:auto;
-    padding:14px;
+ width:100%;
+ max-width:900px;
+ margin:auto;
+ padding:14px
 }
 
-.balance-card{
-    background:linear-gradient(135deg,#10263d,#0b1829);
-    border:1px solid #1c405d;
-    border-radius:20px;
-    padding:20px;
-    margin-bottom:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
+.wallet-card{
+ background:linear-gradient(135deg,#102940,#091827);
+ border:1px solid #1e405a;
+ border-radius:20px;
+ padding:20px;
+ margin-bottom:15px
 }
 
-.balance-title{
-    color:#91a8bc;
-    font-size:13px;
-    margin-bottom:8px;
+.small-label{
+ color:#8198aa;
+ font-size:12px
 }
 
-.balance{
-    font-size:34px;
-    font-weight:800;
-    margin-bottom:6px;
+.big-balance{
+ font-size:32px;
+ font-weight:800;
+ margin:8px 0
 }
 
-.balance small{
-    font-size:16px;
-    color:#53dcff;
+.big-balance span{
+ color:#59dcff
 }
 
-.sub-balance{
-    color:#7890a5;
-    font-size:12px;
+.wallet-buttons{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+ margin-top:18px
 }
 
-.quick-actions{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:9px;
-    margin-top:18px;
-}
-
-.quick-btn{
-    border:0;
-    border-radius:12px;
-    padding:12px 5px;
-    background:#132a40;
-    color:#fff;
-    font-weight:700;
-    font-size:12px;
-}
-
-.quick-btn:hover{
-    background:#193a56;
+.wallet-buttons button{
+ border:0;
+ border-radius:11px;
+ padding:11px 5px;
+ color:white;
+ background:#132d44;
+ font-size:12px;
+ font-weight:700
 }
 
 .section{
-    margin-top:18px;
+ margin-top:18px
 }
 
-.section-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
+.section-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:10px
 }
 
-.section-title h2{
-    font-size:17px;
+.section-head h2{
+ font-size:17px
 }
 
-.section-title span{
-    color:#6f8aa0;
-    font-size:12px;
+.section-head span{
+ color:#70899d;
+ font-size:11px
 }
 
 .search{
-    width:100%;
-    background:#0c1b2c;
-    border:1px solid #20374d;
-    color:#fff;
-    border-radius:13px;
-    padding:13px;
-    outline:none;
-    margin-bottom:10px;
-}
-
-.search:focus{
-    border-color:#00bfe8;
+ width:100%;
+ padding:13px;
+ border-radius:12px;
+ border:1px solid #213b52;
+ background:#0c1c2c;
+ color:white;
+ outline:none;
+ margin-bottom:10px
 }
 
 .market-list{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
+ display:flex;
+ flex-direction:column;
+ gap:7px
 }
 
 .market{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:#0c1b2c;
-    border:1px solid #172d42;
-    border-radius:14px;
-    padding:12px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:#0c1b2b;
+ border:1px solid #182e43;
+ border-radius:14px;
+ padding:11px
+}
+
+.market.gold{
+ border-color:#806b28;
+ background:#17180f
 }
 
 .market-left{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-width:0;
+ display:flex;
+ align-items:center;
+ gap:10px;
+ min-width:0
 }
 
-.coin-icon{
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:#152c43;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:800;
-    color:#6ee9ff;
-    font-size:12px;
-    flex-shrink:0;
+.icon{
+ width:40px;
+ height:40px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:#142d43;
+ color:#6be7ff;
+ font-weight:800;
+ font-size:11px;
+ flex-shrink:0
 }
 
-.market-name{
-    min-width:0;
+.gold .icon{
+ background:#806b28;
+ color:#ffe98b
 }
 
-.market-symbol{
-    font-weight:800;
-    font-size:14px;
+.symbol{
+ font-weight:800;
+ font-size:14px
 }
 
-.market-full{
-    color:#71889c;
-    font-size:11px;
-    margin-top:3px;
-    max-width:150px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
+.name{
+ color:#71889b;
+ font-size:10px;
+ margin-top:3px;
+ max-width:150px;
+ overflow:hidden;
+ white-space:nowrap;
+ text-overflow:ellipsis
 }
 
 .market-right{
-    text-align:right;
+ text-align:right
 }
 
 .price{
-    font-size:14px;
-    font-weight:800;
+ font-weight:800;
+ font-size:14px
 }
 
-.market-buttons{
-    display:flex;
-    gap:5px;
-    margin-top:5px;
+.gold-price{
+ color:#f3d45d
 }
 
-.mini-buy,
-.mini-sell{
-    border:0;
-    padding:5px 9px;
-    border-radius:7px;
-    color:white;
-    font-size:10px;
-    font-weight:800;
+.actions{
+ display:flex;
+ gap:5px;
+ margin-top:5px
 }
 
-.mini-buy{
-    background:#087f5b;
+.buy,.sell{
+ border:0;
+ color:white;
+ border-radius:7px;
+ padding:5px 9px;
+ font-size:10px;
+ font-weight:800
 }
 
-.mini-sell{
-    background:#a82d43;
+.buy{
+ background:#087e5a
 }
 
-.gold{
-    border-color:#806b28;
-    background:linear-gradient(135deg,#17170e,#171b20);
-}
-
-.gold .coin-icon{
-    background:#806b28;
-    color:#ffe889;
+.sell{
+ background:#a52c42
 }
 
 .tabs{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:6px;
-    margin-top:20px;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:6px;
+ margin-top:18px
 }
 
 .tab{
-    border:0;
-    padding:11px 4px;
-    background:#0d1c2d;
-    color:#7e96aa;
-    border-radius:10px;
-    font-size:11px;
-    font-weight:700;
+ border:0;
+ padding:11px 3px;
+ border-radius:10px;
+ background:#0d1d2e;
+ color:#7891a5;
+ font-size:11px;
+ font-weight:700
 }
 
 .tab.active{
-    background:#123852;
-    color:#5de3ff;
+ background:#123c56;
+ color:#55defd
 }
 
 .panel{
-    display:none;
+ display:none;
+ margin-top:15px
 }
 
 .panel.active{
-    display:block;
+ display:block
 }
 
-.empty{
-    text-align:center;
-    padding:30px 15px;
-    color:#71899d;
-    background:#0c1b2c;
-    border-radius:14px;
-}
-
-.asset-card,
-.order-card,
-.history-card{
-    background:#0c1b2c;
-    border:1px solid #172d42;
-    border-radius:14px;
-    padding:14px;
-    margin-bottom:8px;
+.card{
+ background:#0c1b2b;
+ border:1px solid #182e43;
+ border-radius:14px;
+ padding:14px;
+ margin-bottom:8px
 }
 
 .row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-}
-
-.label{
-    color:#71899d;
-    font-size:11px;
+ display:flex;
+ justify-content:space-between;
+ gap:10px
 }
 
 .value{
-    font-weight:800;
-    margin-top:3px;
+ font-weight:800
+ margin-top:3px
+}
+
+.empty{
+ padding:30px 15px;
+ background:#0c1b2b;
+ border-radius:14px;
+ color:#71899d;
+ text-align:center
 }
 
 .green{
-    color:#31d39b;
+ color:#30d49a
 }
 
 .red{
-    color:#ff667d;
+ color:#ff647b
 }
 
-.gold-text{
-    color:#f4d35e;
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ height:70px;
+ background:#081522;
+ border-top:1px solid #1c3045;
+ z-index:200;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ max-width:900px;
+ margin:auto
+}
+
+.nav{
+ border:0;
+ background:none;
+ color:#70879b;
+ font-size:10px;
+ font-weight:700
+}
+
+.nav span{
+ display:block;
+ font-size:20px;
+ margin-bottom:4px
+}
+
+.nav.active{
+ color:#53dfff
 }
 
 .modal{
-    position:fixed;
-    inset:0;
-    z-index:500;
-    background:rgba(0,0,0,.72);
-    display:none;
-    align-items:flex-end;
-    justify-content:center;
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.75);
+ z-index:500;
+ display:none;
+ align-items:flex-end;
+ justify-content:center
 }
 
 .modal.show{
-    display:flex;
+ display:flex
 }
 
 .modal-box{
-    width:100%;
-    max-width:600px;
-    background:#0b1929;
-    border:1px solid #203a52;
-    border-radius:22px 22px 0 0;
-    padding:20px;
-    max-height:90vh;
-    overflow:auto;
+ width:100%;
+ max-width:600px;
+ background:#0b1929;
+ border-radius:22px 22px 0 0;
+ padding:20px;
+ border:1px solid #203b52
 }
 
 .modal-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:18px;
-}
-
-.modal-head h3{
-    font-size:20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:18px
 }
 
 .close{
-    width:35px;
-    height:35px;
-    border:0;
-    border-radius:50%;
-    background:#162a3d;
-    color:#fff;
-    font-size:18px;
+ width:35px;
+ height:35px;
+ border:0;
+ border-radius:50%;
+ background:#162a3d;
+ color:white;
+ font-size:20px
 }
 
-.trade-info{
-    background:#0e2437;
-    border-radius:14px;
-    padding:13px;
-    margin-bottom:15px;
+.trade-types{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-bottom:12px
 }
 
-.trade-info .row{
-    margin-bottom:8px;
+.trade-types button{
+ border:0;
+ padding:12px;
+ border-radius:10px;
+ background:#14283b;
+ color:#94a8b8;
+ font-weight:800
 }
 
-.trade-info .row:last-child{
-    margin-bottom:0;
+.trade-types .buy-active{
+ background:#087e5a;
+ color:white
 }
 
-.trade-type{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-bottom:12px;
-}
-
-.trade-type button{
-    border:0;
-    padding:12px;
-    border-radius:10px;
-    background:#14283b;
-    color:#91a6b8;
-    font-weight:800;
-}
-
-.trade-type button.active-buy{
-    background:#087f5b;
-    color:#fff;
-}
-
-.trade-type button.active-sell{
-    background:#a82d43;
-    color:#fff;
+.trade-types .sell-active{
+ background:#a52c42;
+ color:white
 }
 
 .input-group{
-    margin-bottom:13px;
+ margin-bottom:13px
 }
 
 .input-group label{
-    display:block;
-    color:#7c94a8;
-    font-size:12px;
-    margin-bottom:6px;
+ display:block;
+ color:#7890a4;
+ font-size:12px;
+ margin-bottom:6px
 }
 
 .input{
-    width:100%;
-    border:1px solid #244158;
-    background:#081522;
-    color:#fff;
-    border-radius:11px;
-    padding:13px;
-    outline:none;
-    font-size:15px;
+ width:100%;
+ padding:13px;
+ background:#081522;
+ border:1px solid #244159;
+ border-radius:11px;
+ color:white;
+ outline:none
 }
 
-.input:focus{
-    border-color:#00c9ef;
+.trade-submit{
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:12px;
+ background:#087e5a;
+ color:white;
+ font-weight:800
 }
 
-.trade-button{
-    width:100%;
-    border:0;
-    border-radius:12px;
-    padding:14px;
-    color:#fff;
-    font-size:15px;
-    font-weight:800;
-    background:#087f5b;
+.trade-submit.sell-button{
+ background:#a52c42
 }
 
-.trade-button.sell{
-    background:#a82d43;
-}
-
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    z-index:200;
-    height:70px;
-    background:#081522;
-    border-top:1px solid #1b3044;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    max-width:900px;
-    margin:auto;
-}
-
-.nav-btn{
-    border:0;
-    background:none;
-    color:#70879b;
-    font-size:10px;
-    font-weight:700;
-}
-
-.nav-btn span{
-    display:block;
-    font-size:21px;
-    margin-bottom:4px;
-}
-
-.nav-btn.active{
-    color:#4edfff;
+.info{
+ background:#0e2437;
+ border-radius:12px;
+ padding:12px;
+ margin-bottom:12px
 }
 
 .loading{
-    text-align:center;
-    padding:30px;
-    color:#6d879d;
+ padding:30px;
+ text-align:center;
+ color:#71899d
 }
 
 .error{
-    background:#351721;
-    color:#ff8295;
-    border:1px solid #713040;
-    padding:12px;
-    border-radius:12px;
-    font-size:12px;
-    margin-bottom:10px;
+ padding:15px;
+ background:#351720;
+ border:1px solid #743044;
+ color:#ff8295;
+ border-radius:12px;
+ font-size:12px;
+ line-height:1.6
 }
 
 .toast{
-    position:fixed;
-    left:50%;
-    bottom:85px;
-    transform:translateX(-50%) translateY(20px);
-    background:#14283b;
-    border:1px solid #294761;
-    padding:12px 18px;
-    border-radius:12px;
-    z-index:1000;
-    opacity:0;
-    pointer-events:none;
-    transition:.25s;
-    font-size:13px;
-    max-width:90%;
-    text-align:center;
+ position:fixed;
+ left:50%;
+ bottom:85px;
+ transform:translateX(-50%);
+ background:#142b40;
+ border:1px solid #2b4962;
+ padding:12px 17px;
+ border-radius:12px;
+ z-index:1000;
+ display:none;
+ font-size:12px
 }
 
 .toast.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
+ display:block
 }
 
 @media(min-width:700px){
-    .modal{
-        align-items:center;
-    }
+ .modal{
+  align-items:center
+ }
 
-    .modal-box{
-        border-radius:20px;
-    }
+ .modal-box{
+  border-radius:20px
+ }
 }
 </style>
 </head>
@@ -548,482 +495,521 @@ button{
 <body>
 
 <header class="header">
-    <div class="header-top">
-        <div class="logo">
-            Digital <span>Finance</span>
-        </div>
 
-        <div class="status" id="connectionStatus">
-            Connecting...
-        </div>
-    </div>
+ <div class="header-row">
+
+  <div class="logo">
+   Digital <span>Finance</span>
+  </div>
+
+  <div class="status" id="status">
+   Connecting...
+  </div>
+
+ </div>
+
 </header>
 
 <main class="container">
 
-    <!-- WALLET -->
-    <section class="balance-card">
-        <div class="balance-title">Total Wallet Balance</div>
+<section class="wallet-card">
 
-        <div class="balance">
-            <span id="totalBalance">10,000.00</span>
-            <small>USDT</small>
-        </div>
+ <div class="small-label">
+  Total Wallet Balance
+ </div>
 
-        <div class="sub-balance">
-            Available: <span id="availableBalance">10,000.00</span> USDT
-        </div>
+ <div class="big-balance">
+  <span id="totalBalance">10,000.00</span> USDT
+ </div>
 
-        <div class="quick-actions">
-            <button class="quick-btn" onclick="openWallet()">
-                💰 Wallet
-            </button>
+ <div class="small-label">
+  Available:
+  <span id="availableBalance">10,000.00</span>
+  USDT
+ </div>
 
-            <button class="quick-btn" onclick="showTab('portfolio')">
-                📊 Portfolio
-            </button>
+ <div class="wallet-buttons">
 
-            <button class="quick-btn" onclick="showTab('orders')">
-                📋 Orders
-            </button>
-        </div>
-    </section>
+  <button onclick="openWallet()">
+   💰 Wallet
+  </button>
 
-    <!-- MARKET -->
-    <section class="section">
+  <button onclick="showTab('portfolio')">
+   📊 Portfolio
+  </button>
 
-        <div class="section-title">
-            <h2>Markets</h2>
-            <span id="marketCount">Loading...</span>
-        </div>
+  <button onclick="showTab('orders')">
+   📋 Orders
+  </button>
 
-        <input
-            id="searchInput"
-            class="search"
-            type="text"
-            placeholder="Search BTC, ETH, GOLD24..."
-            oninput="renderMarkets()"
-        >
+ </div>
 
-        <div id="marketList" class="market-list">
-            <div class="loading">
-                Loading markets...
-            </div>
-        </div>
+</section>
 
-    </section>
+<section id="marketsSection">
 
-    <!-- TABS -->
+ <div class="section-head">
 
-    <div class="tabs">
+  <h2>Markets</h2>
 
-        <button
-            class="tab active"
-            onclick="showTab('markets')"
-            id="tabMarkets">
-            Markets
-        </button>
+  <span id="marketCount">
+   Loading...
+  </span>
 
-        <button
-            class="tab"
-            onclick="showTab('portfolio')"
-            id="tabPortfolio">
-            Portfolio
-        </button>
+ </div>
 
-        <button
-            class="tab"
-            onclick="showTab('orders')"
-            id="tabOrders">
-            Orders
-        </button>
+ <input
+  id="search"
+  class="search"
+  placeholder="Search BTC, ETH, GOLD24..."
+  oninput="renderMarkets()"
+ >
 
-        <button
-            class="tab"
-            onclick="showTab('history')"
-            id="tabHistory">
-            History
-        </button>
+ <div id="markets" class="market-list">
 
-    </div>
+  <div class="loading">
+   Loading markets...
+  </div>
 
-    <!-- PORTFOLIO -->
+ </div>
 
-    <section id="portfolioPanel" class="panel">
+</section>
 
-        <div class="section">
-            <div class="section-title">
-                <h2>My Portfolio</h2>
-                <span id="portfolioValue">0 USDT</span>
-            </div>
+<div class="tabs">
 
-            <div id="portfolioList">
-                <div class="empty">
-                    No assets yet.
-                </div>
-            </div>
-        </div>
+ <button
+  id="marketsTab"
+  class="tab active"
+  onclick="showTab('markets')">
+  Markets
+ </button>
 
-    </section>
+ <button
+  id="portfolioTab"
+  class="tab"
+  onclick="showTab('portfolio')">
+  Portfolio
+ </button>
 
-    <!-- ORDERS -->
+ <button
+  id="ordersTab"
+  class="tab"
+  onclick="showTab('orders')">
+  Orders
+ </button>
 
-    <section id="ordersPanel" class="panel">
+ <button
+  id="historyTab"
+  class="tab"
+  onclick="showTab('history')">
+  History
+ </button>
 
-        <div class="section">
+</div>
 
-            <div class="section-title">
-                <h2>Orders</h2>
-                <span id="ordersCount">0</span>
-            </div>
+<section id="portfolioPanel" class="panel">
 
-            <div id="ordersList">
-                <div class="empty">
-                    No orders.
-                </div>
-            </div>
+ <div class="section-head">
 
-        </div>
+  <h2>Portfolio</h2>
 
-    </section>
+  <span id="portfolioValue">
+   0 USDT
+  </span>
 
-    <!-- HISTORY -->
+ </div>
 
-    <section id="historyPanel" class="panel">
+ <div id="portfolio">
+  <div class="empty">
+   No assets yet.
+  </div>
+ </div>
 
-        <div class="section">
+</section>
 
-            <div class="section-title">
-                <h2>Trade History</h2>
-                <span id="historyCount">0</span>
-            </div>
+<section id="ordersPanel" class="panel">
 
-            <div id="historyList">
-                <div class="empty">
-                    No trades yet.
-                </div>
-            </div>
+ <div class="section-head">
 
-        </div>
+  <h2>Orders</h2>
 
-    </section>
+  <span id="ordersCount">0</span>
+
+ </div>
+
+ <div id="orders">
+  <div class="empty">
+   No orders yet.
+  </div>
+ </div>
+
+</section>
+
+<section id="historyPanel" class="panel">
+
+ <div class="section-head">
+
+  <h2>Trade History</h2>
+
+  <span id="historyCount">0</span>
+
+ </div>
+
+ <div id="history">
+  <div class="empty">
+   No trades yet.
+  </div>
+ </div>
+
+</section>
 
 </main>
 
-<!-- BOTTOM NAV -->
+<nav class="bottom">
 
-<nav class="bottom-nav">
+ <button
+  id="navMarkets"
+  class="nav active"
+  onclick="showTab('markets')">
+  <span>📈</span>
+  Markets
+ </button>
 
-    <button
-        class="nav-btn active"
-        id="navMarkets"
-        onclick="showTab('markets')">
+ <button
+  id="navPortfolio"
+  class="nav"
+  onclick="showTab('portfolio')">
+  <span>💼</span>
+  Portfolio
+ </button>
 
-        <span>📈</span>
-        Markets
+ <button
+  id="navOrders"
+  class="nav"
+  onclick="showTab('orders')">
+  <span>📋</span>
+  Orders
+ </button>
 
-    </button>
-
-    <button
-        class="nav-btn"
-        id="navPortfolio"
-        onclick="showTab('portfolio')">
-
-        <span>💼</span>
-        Portfolio
-
-    </button>
-
-    <button
-        class="nav-btn"
-        id="navOrders"
-        onclick="showTab('orders')">
-
-        <span>📋</span>
-        Orders
-
-    </button>
-
-    <button
-        class="nav-btn"
-        id="navHistory"
-        onclick="showTab('history')">
-
-        <span>📜</span>
-        History
-
-    </button>
+ <button
+  id="navHistory"
+  class="nav"
+  onclick="showTab('history')">
+  <span>📜</span>
+  History
+ </button>
 
 </nav>
 
-<!-- TRADE MODAL -->
+<!-- TRADE -->
 
-<div class="modal" id="tradeModal">
+<div id="tradeModal" class="modal">
 
-    <div class="modal-box">
+ <div class="modal-box">
 
-        <div class="modal-head">
+  <div class="modal-head">
 
-            <h3 id="tradeTitle">
-                Trade
-            </h3>
+   <h3 id="tradeTitle">
+    Trade
+   </h3>
 
-            <button
-                class="close"
-                onclick="closeTrade()">
-                ×
-            </button>
+   <button
+    class="close"
+    onclick="closeTrade()">
+    ×
+   </button>
 
-        </div>
+  </div>
 
-        <div class="trade-info">
+  <div class="info">
 
-            <div class="row">
-                <div>
-                    <div class="label">Asset</div>
-                    <div class="value" id="tradeSymbol">BTC</div>
-                </div>
+   <div class="row">
 
-                <div style="text-align:right">
-                    <div class="label">Price</div>
-                    <div class="value" id="tradePrice">0</div>
-                </div>
-            </div>
+    <div>
 
-        </div>
+     <div class="small-label">
+      Asset
+     </div>
 
-        <div class="trade-type">
-
-            <button
-                id="buyType"
-                class="active-buy"
-                onclick="setTradeType('BUY')">
-                BUY
-            </button>
-
-            <button
-                id="sellType"
-                onclick="setTradeType('SELL')">
-                SELL
-            </button>
-
-        </div>
-
-        <div class="input-group">
-
-            <label>
-                Amount in USDT
-            </label>
-
-            <input
-                id="tradeAmount"
-                class="input"
-                type="number"
-                min="0"
-                step="0.00000001"
-                placeholder="100"
-                oninput="calculateTrade()"
-            >
-
-        </div>
-
-        <div class="trade-info">
-
-            <div class="row">
-
-                <div class="label">
-                    You receive
-                </div>
-
-                <div class="value" id="receiveAmount">
-                    0
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="label">
-                    USDT balance
-                </div>
-
-                <div class="value" id="tradeBalance">
-                    10,000
-                </div>
-
-            </div>
-
-        </div>
-
-        <button
-            id="tradeSubmit"
-            class="trade-button"
-            onclick="executeTrade()">
-            BUY
-        </button>
+     <div
+      id="tradeSymbol"
+      class="value">
+      BTC
+     </div>
 
     </div>
 
-</div>
+    <div style="text-align:right">
 
-<!-- WALLET MODAL -->
+     <div class="small-label">
+      Price
+     </div>
 
-<div class="modal" id="walletModal">
-
-    <div class="modal-box">
-
-        <div class="modal-head">
-
-            <h3>💰 Wallet</h3>
-
-            <button
-                class="close"
-                onclick="closeWallet()">
-                ×
-            </button>
-
-        </div>
-
-        <div class="asset-card">
-
-            <div class="label">
-                Available USDT
-            </div>
-
-            <div
-                class="value"
-                style="font-size:30px;margin-top:8px">
-
-                <span id="walletUsdt">
-                    10,000.00
-                </span>
-
-                USDT
-
-            </div>
-
-        </div>
-
-        <div class="asset-card">
-
-            <div class="row">
-
-                <div>
-                    <div class="label">
-                        Portfolio Value
-                    </div>
-
-                    <div class="value">
-                        <span id="walletPortfolio">
-                            0
-                        </span>
-                        USDT
-                    </div>
-                </div>
-
-                <div>
-                    <div class="label">
-                        Total
-                    </div>
-
-                    <div class="value">
-                        <span id="walletTotal">
-                            10,000
-                        </span>
-                        USDT
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="asset-card">
-
-            <div class="label">
-                Wallet
-            </div>
-
-            <div
-                style="
-                margin-top:10px;
-                color:#71899d;
-                font-size:12px;
-                line-height:1.7;
-                ">
-
-                Your Digital Finance demo wallet starts
-                with 10,000 USDT.
-
-                <br>
-
-                Trading is calculated automatically from
-                the market prices received from the Backend.
-
-            </div>
-
-        </div>
+     <div
+      id="tradePrice"
+      class="value">
+      0
+     </div>
 
     </div>
 
+   </div>
+
+  </div>
+
+  <div class="trade-types">
+
+   <button
+    id="buyType"
+    class="buy-active"
+    onclick="setTradeType('BUY')">
+    BUY
+   </button>
+
+   <button
+    id="sellType"
+    onclick="setTradeType('SELL')">
+    SELL
+   </button>
+
+  </div>
+
+  <div class="input-group">
+
+   <label>
+    Amount USDT
+   </label>
+
+   <input
+    id="tradeAmount"
+    class="input"
+    type="number"
+    min="0"
+    step="any"
+    placeholder="100"
+    oninput="calculateTrade()"
+   >
+
+  </div>
+
+  <div class="info">
+
+   <div class="row">
+
+    <div class="small-label">
+     Receive
+    </div>
+
+    <div
+     id="receive"
+     class="value">
+     0
+    </div>
+
+   </div>
+
+   <br>
+
+   <div class="row">
+
+    <div class="small-label">
+     USDT Balance
+    </div>
+
+    <div
+     id="tradeBalance"
+     class="value">
+     10,000
+    </div>
+
+   </div>
+
+  </div>
+
+  <button
+   id="submitTrade"
+   class="trade-submit"
+   onclick="executeTrade()">
+   BUY
+  </button>
+
+ </div>
+
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- WALLET -->
+
+<div id="walletModal" class="modal">
+
+ <div class="modal-box">
+
+  <div class="modal-head">
+
+   <h3>💰 Wallet</h3>
+
+   <button
+    class="close"
+    onclick="closeWallet()">
+    ×
+   </button>
+
+  </div>
+
+  <div class="card">
+
+   <div class="small-label">
+    Available USDT
+   </div>
+
+   <div
+    id="walletUsdt"
+    style="
+     font-size:28px;
+     font-weight:800;
+     margin-top:7px;
+    ">
+    10,000.00
+   </div>
+
+  </div>
+
+  <div class="card">
+
+   <div class="row">
+
+    <div>
+
+     <div class="small-label">
+      Portfolio
+     </div>
+
+     <div class="value">
+      <span id="walletPortfolio">
+       0
+      </span>
+      USDT
+     </div>
+
+    </div>
+
+    <div style="text-align:right">
+
+     <div class="small-label">
+      Total
+     </div>
+
+     <div class="value">
+      <span id="walletTotal">
+       10,000
+      </span>
+      USDT
+     </div>
+
+    </div>
+
+   </div>
+
+  </div>
+
+  <div class="card">
+
+   <div class="small-label">
+    Digital Finance Wallet
+   </div>
+
+   <p style="
+    color:#71899d;
+    font-size:12px;
+    line-height:1.7;
+    margin-top:8px;
+   ">
+    Starting demo balance:
+    10,000 USDT.
+    <br><br>
+    Buy and sell transactions are
+    calculated using the market prices
+    received from the Backend.
+   </p>
+
+  </div>
+
+ </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script>
 
 /* =========================================================
-   DIGITAL FINANCE
-   FRONTEND
+   DIGITAL FINANCE CONFIG
    ========================================================= */
+
+/*
+ IMPORTANT:
+ We use the current page origin.
+
+ Example:
+ https://finance-digital-eta.vercel.app
+
+ API:
+ https://finance-digital-eta.vercel.app/api/markets
+*/
 
 const API_BASE =
-    "https://finance-digital-eta.vercel.app";
-
-const tg =
-    window.Telegram &&
-    window.Telegram.WebApp
-        ? window.Telegram.WebApp
-        : null;
-
-if(tg){
-    try{
-        tg.ready();
-        tg.expand();
-    }catch(e){}
-}
+    window.location.origin;
 
 /* =========================================================
-   USER
+   TELEGRAM
    ========================================================= */
 
-let telegramId = "123456789";
+let telegramId =
+    "123456789";
 
 try{
 
-    if(
-        tg &&
-        tg.initDataUnsafe &&
-        tg.initDataUnsafe.user &&
-        tg.initDataUnsafe.user.id
-    ){
+ if(
+  window.Telegram &&
+  Telegram.WebApp
+ ){
 
-        telegramId =
-            String(
-                tg.initDataUnsafe.user.id
-            );
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
 
-    }
+  if(
+   Telegram.WebApp.initDataUnsafe &&
+   Telegram.WebApp.initDataUnsafe.user &&
+   Telegram.WebApp.initDataUnsafe.user.id
+  ){
 
-}catch(e){}
+   telegramId =
+    String(
+     Telegram.WebApp
+      .initDataUnsafe
+      .user
+      .id
+    );
+
+  }
+
+ }
+
+}catch(error){
+
+ console.log(
+  "Telegram error:",
+  error
+ );
+
+}
 
 /* =========================================================
-   STORAGE KEY
+   STORAGE
    ========================================================= */
 
 const STORAGE_KEY =
-    "digital_finance_wallet_" +
-    telegramId;
+ "digital_finance_" +
+ telegramId;
 
 /* =========================================================
    STATE
@@ -1031,61 +1017,78 @@ const STORAGE_KEY =
 
 let markets = [];
 
-let wallet = {
-    usdt:10000,
-    assets:{},
-    orders:[],
-    history:[]
-};
-
 let selectedMarket = null;
 
 let tradeType = "BUY";
 
+let wallet = {
+
+ usdt:10000,
+
+ assets:{},
+
+ orders:[],
+
+ history:[]
+
+};
+
 /* =========================================================
-   LOAD LOCAL DATA
+   LOAD WALLET
    ========================================================= */
 
 function loadWallet(){
 
-    try{
+ try{
 
-        const saved =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
+  const saved =
+   localStorage.getItem(
+    STORAGE_KEY
+   );
 
-        if(saved){
+  if(saved){
 
-            const data =
-                JSON.parse(saved);
+   const data =
+    JSON.parse(
+     saved
+    );
 
-            wallet = {
+   wallet = {
 
-                usdt:
-                    Number(data.usdt ?? 10000),
+    usdt:
+     Number(
+      data.usdt
+     ) || 10000,
 
-                assets:
-                    data.assets || {},
+    assets:
+     data.assets || {},
 
-                orders:
-                    data.orders || [],
+    orders:
+     Array.isArray(
+      data.orders
+     )
+      ? data.orders
+      : [],
 
-                history:
-                    data.history || []
+    history:
+     Array.isArray(
+      data.history
+     )
+      ? data.history
+      : []
 
-            };
+   };
 
-        }
+  }
 
-    }catch(error){
+ }catch(error){
 
-        console.log(
-            "Wallet load error",
-            error
-        );
+  console.log(
+   "Wallet load error",
+   error
+  );
 
-    }
+ }
 
 }
 
@@ -1095,202 +1098,197 @@ function loadWallet(){
 
 function saveWallet(){
 
-    try{
+ try{
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(wallet)
-        );
+  localStorage.setItem(
+   STORAGE_KEY,
+   JSON.stringify(
+    wallet
+   )
+  );
 
-    }catch(error){
+ }catch(error){
 
-        console.log(
-            "Wallet save error",
-            error
-        );
+  console.log(
+   "Wallet save error",
+   error
+  );
 
-    }
-
-}
-
-/* =========================================================
-   FORMAT
-   ========================================================= */
-
-function numberFormat(value){
-
-    const n =
-        Number(value) || 0;
-
-    if(n >= 1000){
-
-        return n.toLocaleString(
-            "en-US",
-            {
-                minimumFractionDigits:2,
-                maximumFractionDigits:2
-            }
-        );
-
-    }
-
-    if(n >= 1){
-
-        return n.toLocaleString(
-            "en-US",
-            {
-                minimumFractionDigits:2,
-                maximumFractionDigits:8
-            }
-        );
-
-    }
-
-    return n.toLocaleString(
-        "en-US",
-        {
-            minimumFractionDigits:2,
-            maximumFractionDigits:12
-        }
-    );
+ }
 
 }
 
 /* =========================================================
-   FETCH MARKETS
+   LOAD MARKETS
    ========================================================= */
 
 async function loadMarkets(){
 
-    setStatus(
-        "Loading..."
-    );
+ setStatus(
+  "Connecting..."
+ );
 
-    try{
+ const marketsUrl =
+  API_BASE +
+  "/api/markets";
 
-        const response =
-            await fetch(
-                API_BASE +
-                "/api/markets",
-                {
-                    method:"GET",
-                    cache:"no-store"
-                }
-            );
+ console.log(
+  "Markets URL:",
+  marketsUrl
+ );
 
-        if(!response.ok){
+ try{
 
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-
-        }
-
-        const data =
-            await response.json();
-
-        if(
-            !data ||
-            data.success !== true
-        ){
-
-            throw new Error(
-                data?.error ||
-                "Markets API failed"
-            );
-
-        }
-
-        markets =
-            Array.isArray(data.markets)
-                ? data.markets
-                : [];
-
-        markets =
-            markets.map(
-                (market,index)=>({
-
-                    id:
-                        market.id ??
-                        index + 1,
-
-                    symbol:
-                        String(
-                            market.symbol ||
-                            ""
-                        ).toUpperCase(),
-
-                    name:
-                        market.name ||
-                        market.symbol ||
-                        "Unknown",
-
-                    price:
-                        Number(
-                            market.price
-                        ) || 0,
-
-                    active:
-                        market.active !== false
-
-                })
-            );
-
-        setStatus(
-            "● Online"
-        );
-
-        document
-            .getElementById(
-                "marketCount"
-            )
-            .textContent =
-                markets.length +
-                " assets";
-
-        renderMarkets();
-        renderPortfolio();
-        updateWalletUI();
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-
-        setStatus(
-            "Offline"
-        );
-
-        document
-            .getElementById(
-                "marketCount"
-            )
-            .textContent =
-                "Error";
-
-        document
-            .getElementById(
-                "marketList"
-            )
-            .innerHTML = `
-
-                <div class="error">
-
-                    Failed to load markets.
-
-                    <br><br>
-
-                    ${escapeHtml(
-                        error.message
-                    )}
-
-                </div>
-
-            `;
-
+  const response =
+   await fetch(
+    marketsUrl,
+    {
+     method:"GET",
+     cache:"no-store",
+     headers:{
+      "Accept":
+       "application/json"
+     }
     }
+   );
+
+  console.log(
+   "API status:",
+   response.status
+  );
+
+  if(!response.ok){
+
+   throw new Error(
+    "HTTP " +
+    response.status
+   );
+
+  }
+
+  const data =
+   await response.json();
+
+  console.log(
+   "Markets response:",
+   data
+  );
+
+  if(
+   !data ||
+   data.success !== true
+  ){
+
+   throw new Error(
+    data &&
+    data.error
+     ? data.error
+     : "API returned an error"
+   );
+
+  }
+
+  markets =
+   Array.isArray(
+    data.markets
+   )
+    ? data.markets
+    : [];
+
+  markets =
+   markets.map(
+    (m,index)=>({
+
+     id:
+      m.id ??
+      index+1,
+
+     symbol:
+      String(
+       m.symbol ||
+       ""
+      ).toUpperCase(),
+
+     name:
+      m.name ||
+      m.symbol ||
+      "Unknown",
+
+     price:
+      Number(
+       m.price
+      ) || 0,
+
+     active:
+      m.active !== false
+
+    })
+   );
+
+  setStatus(
+   "● Online"
+  );
+
+  document
+   .getElementById(
+    "marketCount"
+   )
+   .textContent =
+    markets.length +
+    " assets";
+
+  renderMarkets();
+
+  updateWallet();
+
+  renderPortfolio();
+
+ }catch(error){
+
+  console.error(
+   "MARKET ERROR:",
+   error
+  );
+
+  setStatus(
+   "Offline"
+  );
+
+  document
+   .getElementById(
+    "marketCount"
+   )
+   .textContent =
+    "API Error";
+
+  document
+   .getElementById(
+    "markets"
+   )
+   .innerHTML = `
+
+    <div class="error">
+
+     <b>خطا در ارتباط با سرور</b>
+
+     <br><br>
+
+     ${escapeHtml(
+      error.message
+     )}
+
+     <br><br>
+
+     API:
+     ${escapeHtml(
+      marketsUrl
+     )}
+
+    </div>
+
+   `;
+
+ }
 
 }
 
@@ -1300,209 +1298,60 @@ async function loadMarkets(){
 
 function setStatus(text){
 
-    const el =
-        document.getElementById(
-            "connectionStatus"
-        );
+ const el =
+  document.getElementById(
+   "status"
+  );
 
-    if(el){
+ if(el){
 
-        el.textContent =
-            text;
+  el.textContent =
+   text;
 
-    }
-
-}
-
-/* =========================================================
-   RENDER MARKETS
-   ========================================================= */
-
-function renderMarkets(){
-
-    const container =
-        document.getElementById(
-            "marketList"
-        );
-
-    const search =
-        (
-            document.getElementById(
-                "searchInput"
-            )?.value || ""
-        )
-        .trim()
-        .toLowerCase();
-
-    let list =
-        markets.filter(
-            market=>{
-
-                if(!market.active){
-
-                    return false;
-
-                }
-
-                if(!search){
-
-                    return true;
-
-                }
-
-                return (
-
-                    market.symbol
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    market.name
-                        .toLowerCase()
-                        .includes(search)
-
-                );
-
-            }
-        );
-
-    if(!list.length){
-
-        container.innerHTML = `
-
-            <div class="empty">
-                No assets found.
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-    container.innerHTML =
-        list
-            .map(
-                market =>
-                    marketHTML(
-                        market
-                    )
-            )
-            .join("");
+ }
 
 }
 
 /* =========================================================
-   MARKET HTML
+   FORMAT NUMBER
    ========================================================= */
 
-function marketHTML(market){
+function formatNumber(value){
 
-    const symbol =
-        escapeHtml(
-            market.symbol
-        );
+ const n =
+  Number(value) || 0;
 
-    const name =
-        escapeHtml(
-            market.name
-        );
+ if(n >= 1000){
 
-    const price =
-        numberFormat(
-            market.price
-        );
+  return n.toLocaleString(
+   "en-US",
+   {
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+   }
+  );
 
-    const isGold =
-        market.symbol ===
-        "GOLD24";
+ }
 
-    return `
+ if(n >= 1){
 
-        <div class="market ${
-            isGold ? "gold" : ""
-        }">
+  return n.toLocaleString(
+   "en-US",
+   {
+    minimumFractionDigits:2,
+    maximumFractionDigits:8
+   }
+  );
 
-            <div class="market-left">
+ }
 
-                <div class="coin-icon">
-
-                    ${
-                        isGold
-                        ? "🥇"
-                        : escapeHtml(
-                            market.symbol
-                              .slice(0,4)
-                          )
-                    }
-
-                </div>
-
-                <div class="market-name">
-
-                    <div class="market-symbol">
-
-                        ${symbol}
-
-                    </div>
-
-                    <div class="market-full">
-
-                        ${name}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="market-right">
-
-                <div class="
-                    price
-                    ${
-                        isGold
-                        ? "gold-text"
-                        : ""
-                    }
-                ">
-
-                    ${price}
-
-                </div>
-
-                <div class="market-buttons">
-
-                    <button
-                        class="mini-buy"
-                        onclick="openTrade(
-                            '${safeJs(market.symbol)}',
-                            'BUY'
-                        )">
-
-                        Buy
-
-                    </button>
-
-                    <button
-                        class="mini-sell"
-                        onclick="openTrade(
-                            '${safeJs(market.symbol)}',
-                            'SELL'
-                        )">
-
-                        Sell
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
+ return n.toLocaleString(
+  "en-US",
+  {
+   minimumFractionDigits:2,
+   maximumFractionDigits:12
+  }
+ );
 
 }
 
@@ -1512,11 +1361,187 @@ function marketHTML(market){
 
 function findMarket(symbol){
 
-    return markets.find(
-        market =>
-            market.symbol ===
-            symbol
+ return markets.find(
+  m =>
+   m.symbol ===
+   symbol
+ );
+
+}
+
+/* =========================================================
+   RENDER MARKETS
+   ========================================================= */
+
+function renderMarkets(){
+
+ const box =
+  document.getElementById(
+   "markets"
+  );
+
+ const search =
+  (
+   document.getElementById(
+    "search"
+   ).value || ""
+  )
+  .toLowerCase()
+  .trim();
+
+ const list =
+  markets.filter(
+   market=>{
+
+    if(!market.active){
+
+     return false;
+
+    }
+
+    if(!search){
+
+     return true;
+
+    }
+
+    return (
+
+     market.symbol
+      .toLowerCase()
+      .includes(search)
+
+     ||
+
+     market.name
+      .toLowerCase()
+      .includes(search)
+
     );
+
+   }
+  );
+
+ if(!list.length){
+
+  box.innerHTML = `
+
+   <div class="empty">
+    No assets found.
+   </div>
+
+  `;
+
+  return;
+
+ }
+
+ box.innerHTML =
+  list
+   .map(
+    market =>
+     createMarketHTML(
+      market
+     )
+   )
+   .join("");
+
+}
+
+/* =========================================================
+   MARKET HTML
+   ========================================================= */
+
+function createMarketHTML(market){
+
+ const gold =
+  market.symbol ===
+  "GOLD24";
+
+ return `
+
+  <div class="market ${
+   gold ? "gold" : ""
+  }">
+
+   <div class="market-left">
+
+    <div class="icon">
+
+     ${
+      gold
+       ? "🥇"
+       : escapeHtml(
+          market.symbol
+           .slice(0,4)
+         )
+     }
+
+    </div>
+
+    <div>
+
+     <div class="symbol">
+      ${escapeHtml(
+       market.symbol
+      )}
+     </div>
+
+     <div class="name">
+      ${escapeHtml(
+       market.name
+      )}
+     </div>
+
+    </div>
+
+   </div>
+
+   <div class="market-right">
+
+    <div class="${
+     gold
+      ? "price gold-price"
+      : "price"
+    }">
+
+     ${formatNumber(
+      market.price
+     )}
+
+    </div>
+
+    <div class="actions">
+
+     <button
+      class="buy"
+      onclick="openTrade(
+       '${safeJs(
+        market.symbol
+       )}',
+       'BUY'
+      )">
+      Buy
+     </button>
+
+     <button
+      class="sell"
+      onclick="openTrade(
+       '${safeJs(
+        market.symbol
+       )}',
+       'SELL'
+      )">
+      Sell
+     </button>
+
+    </div>
+
+   </div>
+
+  </div>
+
+ `;
 
 }
 
@@ -1525,63 +1550,63 @@ function findMarket(symbol){
    ========================================================= */
 
 function openTrade(
-    symbol,
-    type="BUY"
+ symbol,
+ type
 ){
 
-    const market =
-        findMarket(
-            symbol
-        );
+ const market =
+  findMarket(
+   symbol
+  );
 
-    if(!market){
+ if(!market){
 
-        showToast(
-            "Asset not found."
-        );
+  showToast(
+   "Asset not found"
+  );
 
-        return;
+  return;
 
-    }
+ }
 
-    selectedMarket =
-        market;
+ selectedMarket =
+  market;
 
-    setTradeType(
-        type
-    );
+ document
+  .getElementById(
+   "tradeSymbol"
+  )
+  .textContent =
+   market.symbol;
 
-    document
-        .getElementById(
-            "tradeSymbol"
-        )
-        .textContent =
-            market.symbol;
+ document
+  .getElementById(
+   "tradePrice"
+  )
+  .textContent =
+   formatNumber(
+    market.price
+   );
 
-    document
-        .getElementById(
-            "tradePrice"
-        )
-        .textContent =
-            numberFormat(
-                market.price
-            );
+ document
+  .getElementById(
+   "tradeAmount"
+  )
+  .value = "";
 
-    document
-        .getElementById(
-            "tradeAmount"
-        )
-        .value = "";
+ setTradeType(
+  type
+ );
 
-    document
-        .getElementById(
-            "tradeModal"
-        )
-        .classList.add(
-            "show"
-        );
+ document
+  .getElementById(
+   "tradeModal"
+  )
+  .classList.add(
+   "show"
+  );
 
-    updateTradeBalance();
+ updateTradeBalance();
 
 }
 
@@ -1591,16 +1616,16 @@ function openTrade(
 
 function closeTrade(){
 
-    document
-        .getElementById(
-            "tradeModal"
-        )
-        .classList.remove(
-            "show"
-        );
+ document
+  .getElementById(
+   "tradeModal"
+  )
+  .classList.remove(
+   "show"
+  );
 
-    selectedMarket =
-        null;
+ selectedMarket =
+  null;
 
 }
 
@@ -1610,117 +1635,117 @@ function closeTrade(){
 
 function setTradeType(type){
 
-    tradeType =
-        type;
+ tradeType =
+  type;
 
-    const buy =
-        document.getElementById(
-            "buyType"
-        );
+ const buy =
+  document.getElementById(
+   "buyType"
+  );
 
-    const sell =
-        document.getElementById(
-            "sellType"
-        );
+ const sell =
+  document.getElementById(
+   "sellType"
+  );
 
-    const submit =
-        document.getElementById(
-            "tradeSubmit"
-        );
+ const submit =
+  document.getElementById(
+   "submitTrade"
+  );
 
-    if(type === "BUY"){
+ if(type === "BUY"){
 
-        buy.className =
-            "active-buy";
+  buy.className =
+   "buy-active";
 
-        sell.className =
-            "";
+  sell.className =
+   "";
 
-        submit.className =
-            "trade-button";
+  submit.className =
+   "trade-submit";
 
-        submit.textContent =
-            "BUY";
+  submit.textContent =
+   "BUY";
 
-    }else{
+ }else{
 
-        buy.className =
-            "";
+  buy.className =
+   "";
 
-        sell.className =
-            "active-sell";
+  sell.className =
+   "sell-active";
 
-        submit.className =
-            "trade-button sell";
+  submit.className =
+   "trade-submit sell-button";
 
-        submit.textContent =
-            "SELL";
+  submit.textContent =
+   "SELL";
 
-    }
+ }
 
-    calculateTrade();
+ calculateTrade();
 
 }
 
 /* =========================================================
-   CALCULATE TRADE
+   CALCULATE
    ========================================================= */
 
 function calculateTrade(){
 
-    if(!selectedMarket){
+ if(!selectedMarket){
 
-        return;
+  return;
 
-    }
+ }
 
-    const amount =
-        Number(
-            document
-                .getElementById(
-                    "tradeAmount"
-                )
-                .value
-        ) || 0;
+ const amount =
+  Number(
+   document
+    .getElementById(
+     "tradeAmount"
+    )
+    .value
+  ) || 0;
 
-    const price =
-        Number(
-            selectedMarket.price
-        ) || 0;
+ const price =
+  Number(
+   selectedMarket.price
+  );
 
-    const coins =
-        price > 0
-            ? amount / price
-            : 0;
+ const quantity =
+  price > 0
+   ? amount / price
+   : 0;
 
-    document
-        .getElementById(
-            "receiveAmount"
-        )
-        .textContent =
-            numberFormat(
-                coins
-            );
+ document
+  .getElementById(
+   "receive"
+  )
+  .textContent =
+   formatNumber(
+    quantity
+   );
 
-    updateTradeBalance();
+ updateTradeBalance();
 
 }
 
 /* =========================================================
-   TRADE BALANCE
+   BALANCE IN MODAL
    ========================================================= */
 
 function updateTradeBalance(){
 
-    document
-        .getElementById(
-            "tradeBalance"
-        )
-        .textContent =
-            numberFormat(
-                wallet.usdt
-            ) +
-            " USDT";
+ document
+  .getElementById(
+   "tradeBalance"
+  )
+  .textContent =
+   formatNumber(
+    wallet.usdt
+   ) +
+   " USDT";
 
 }
 
@@ -1730,228 +1755,196 @@ function updateTradeBalance(){
 
 function executeTrade(){
 
-    if(!selectedMarket){
+ if(!selectedMarket){
 
-        return;
+  return;
 
-    }
+ }
 
-    const amount =
-        Number(
-            document
-                .getElementById(
-                    "tradeAmount"
-                )
-                .value
-        );
+ const amount =
+  Number(
+   document
+    .getElementById(
+     "tradeAmount"
+    )
+    .value
+  );
 
-    if(!amount || amount <= 0){
+ if(!amount ||
+    amount <= 0){
 
-        showToast(
-            "Enter a valid amount."
-        );
+  showToast(
+   "Enter amount"
+  );
 
-        return;
+  return;
 
-    }
+ }
 
-    const price =
-        Number(
-            selectedMarket.price
-        );
+ const price =
+  Number(
+   selectedMarket.price
+  );
 
-    if(!price || price <= 0){
+ if(!price ||
+    price <= 0){
 
-        showToast(
-            "Invalid market price."
-        );
+  showToast(
+   "Invalid price"
+  );
 
-        return;
+  return;
 
-    }
+ }
 
-    const symbol =
-        selectedMarket.symbol;
+ const symbol =
+  selectedMarket.symbol;
 
-    const quantity =
-        amount / price;
+ const quantity =
+  amount / price;
 
-    if(tradeType === "BUY"){
+ if(tradeType === "BUY"){
 
-        if(amount > wallet.usdt){
+  if(
+   amount >
+   wallet.usdt
+  ){
 
-            showToast(
-                "Insufficient USDT balance."
-            );
+   showToast(
+    "Insufficient USDT"
+   );
 
-            return;
+   return;
 
-        }
+  }
 
-        wallet.usdt -=
-            amount;
+  wallet.usdt -=
+   amount;
 
-        wallet.assets[symbol] =
-            (
-                Number(
-                    wallet.assets[symbol]
-                ) || 0
-            ) +
-            quantity;
+  wallet.assets[
+   symbol
+  ] =
+   (
+    Number(
+     wallet.assets[
+      symbol
+     ]
+    ) || 0
+   ) +
+   quantity;
 
-        addOrder(
-            "BUY",
-            symbol,
-            quantity,
-            price,
-            amount
-        );
+ }else{
 
-        showToast(
-            "Buy order completed."
-        );
+  const current =
+   Number(
+    wallet.assets[
+     symbol
+    ]
+   ) || 0;
 
-    }else{
+  if(
+   quantity >
+   current
+  ){
 
-        const currentQuantity =
-            Number(
-                wallet.assets[symbol]
-            ) || 0;
+   showToast(
+    "Insufficient asset"
+   );
 
-        if(quantity >
-            currentQuantity
-        ){
+   return;
 
-            showToast(
-                "Insufficient asset balance."
-            );
+  }
 
-            return;
+  wallet.assets[
+   symbol
+  ] =
+   current -
+   quantity;
 
-        }
+  wallet.usdt +=
+   amount;
 
-        wallet.assets[symbol] =
-            currentQuantity -
-            quantity;
+  if(
+   wallet.assets[
+    symbol
+   ] < 0.0000000001
+  ){
 
-        wallet.usdt +=
-            amount;
+   delete wallet.assets[
+    symbol
+   ];
 
-        if(
-            wallet.assets[symbol] <
-            0.0000000001
-        ){
+  }
 
-            delete wallet.assets[
-                symbol
-            ];
+ }
 
-        }
+ const order = {
 
-        addOrder(
-            "SELL",
-            symbol,
-            quantity,
-            price,
-            amount
-        );
+  id:
+   "ORD-" +
+   Date.now(),
 
-        showToast(
-            "Sell order completed."
-        );
+  type:
+   tradeType,
 
-    }
+  symbol:
+   symbol,
 
-    saveWallet();
+  quantity:
+   quantity,
 
-    closeTrade();
+  price:
+   price,
 
-    updateWalletUI();
+  total:
+   amount,
 
-    renderPortfolio();
+  status:
+   "FILLED",
 
-    renderOrders();
+  time:
+   new Date()
+    .toISOString()
 
-    renderHistory();
+ };
 
-}
+ wallet.orders.unshift(
+  order
+ );
 
-/* =========================================================
-   ADD ORDER
-   ========================================================= */
+ wallet.history.unshift(
+  order
+ );
 
-function addOrder(
-    type,
-    symbol,
-    quantity,
-    price,
-    total
-){
+ wallet.orders =
+  wallet.orders.slice(
+   0,
+   100
+  );
 
-    const id =
-        "ORD-" +
-        Date.now();
+ wallet.history =
+  wallet.history.slice(
+   0,
+   100
+  );
 
-    const order = {
+ saveWallet();
 
-        id:id,
+ closeTrade();
 
-        type:type,
+ updateWallet();
 
-        symbol:symbol,
+ renderPortfolio();
 
-        quantity:Number(
-            quantity
-        ),
+ renderOrders();
 
-        price:Number(
-            price
-        ),
+ renderHistory();
 
-        total:Number(
-            total
-        ),
-
-        status:"FILLED",
-
-        time:new Date()
-            .toISOString()
-
-    };
-
-    wallet.orders.unshift(
-        order
-    );
-
-    wallet.history.unshift(
-        order
-    );
-
-    if(
-        wallet.orders.length >
-        100
-    ){
-
-        wallet.orders =
-            wallet.orders.slice(
-                0,
-                100
-            );
-
-    }
-
-    if(
-        wallet.history.length >
-        100
-    ){
-
-        wallet.history =
-            wallet.history.slice(
-                0,
-                100
-            );
-
-    }
+ showToast(
+  tradeType === "BUY"
+   ? "Buy completed"
+   : "Sell completed"
+ );
 
 }
 
@@ -1959,115 +1952,101 @@ function addOrder(
    PORTFOLIO VALUE
    ========================================================= */
 
-function calculatePortfolioValue(){
+function portfolioValue(){
 
-    let total = 0;
+ let total = 0;
 
-    Object.keys(
-        wallet.assets
-    ).forEach(
-        symbol=>{
+ Object.keys(
+  wallet.assets
+ ).forEach(
+  symbol=>{
 
-            const quantity =
-                Number(
-                    wallet.assets[
-                        symbol
-                    ]
-                ) || 0;
+   const quantity =
+    Number(
+     wallet.assets[
+      symbol
+     ]
+    ) || 0;
 
-            const market =
-                findMarket(
-                    symbol
-                );
-
-            if(market){
-
-                total +=
-                    quantity *
-                    Number(
-                        market.price
-                    );
-
-            }
-
-        }
+   const market =
+    findMarket(
+     symbol
     );
 
-    return total;
+   if(market){
+
+    total +=
+     quantity *
+     Number(
+      market.price
+     );
+
+   }
+
+  }
+ );
+
+ return total;
 
 }
 
 /* =========================================================
-   TOTAL WALLET
+   UPDATE WALLET
    ========================================================= */
 
-function calculateTotalBalance(){
+function updateWallet(){
 
-    return (
-        Number(
-            wallet.usdt
-        ) || 0
-    ) +
-    calculatePortfolioValue();
+ const portfolio =
+  portfolioValue();
 
-}
+ const total =
+  wallet.usdt +
+  portfolio;
 
-/* =========================================================
-   UPDATE WALLET UI
-   ========================================================= */
+ document
+  .getElementById(
+   "availableBalance"
+  )
+  .textContent =
+   formatNumber(
+    wallet.usdt
+   );
 
-function updateWalletUI(){
+ document
+  .getElementById(
+   "totalBalance"
+  )
+  .textContent =
+   formatNumber(
+    total
+   );
 
-    const portfolio =
-        calculatePortfolioValue();
+ document
+  .getElementById(
+   "walletUsdt"
+  )
+  .textContent =
+   formatNumber(
+    wallet.usdt
+   );
 
-    const total =
-        calculateTotalBalance();
+ document
+  .getElementById(
+   "walletPortfolio"
+  )
+  .textContent =
+   formatNumber(
+    portfolio
+   );
 
-    document
-        .getElementById(
-            "availableBalance"
-        )
-        .textContent =
-            numberFormat(
-                wallet.usdt
-            );
-
-    document
-        .getElementById(
-            "totalBalance"
-        )
-        .textContent =
-            numberFormat(
-                total
-            );
-
-    document
-        .getElementById(
-            "walletUsdt"
-        )
-        .textContent =
-            numberFormat(
-                wallet.usdt
-            );
-
-    document
-        .getElementById(
-            "walletPortfolio"
-        )
-        .textContent =
-            numberFormat(
-                portfolio
-            );
-
-    document
-        .getElementById(
-            "walletTotal"
-        )
-        .textContent =
-            numberFormat(
-                total
-            );
+ document
+  .getElementById(
+   "walletTotal"
+  )
+  .textContent =
+   formatNumber(
+    total
+   );
 
 }
 
@@ -2077,141 +2056,125 @@ function updateWalletUI(){
 
 function renderPortfolio(){
 
-    const container =
-        document.getElementById(
-            "portfolioList"
-        );
+ const box =
+  document.getElementById(
+   "portfolio"
+  );
 
-    const symbols =
-        Object.keys(
-            wallet.assets
-        ).filter(
-            symbol =>
-                Number(
-                    wallet.assets[
-                        symbol
-                    ]
-                ) > 0
-        );
+ const value =
+  portfolioValue();
 
-    const portfolio =
-        calculatePortfolioValue();
+ document
+  .getElementById(
+   "portfolioValue"
+  )
+  .textContent =
+   formatNumber(
+    value
+   ) +
+   " USDT";
 
-    document
-        .getElementById(
-            "portfolioValue"
+ const assets =
+  Object.keys(
+   wallet.assets
+  ).filter(
+   symbol =>
+    Number(
+     wallet.assets[
+      symbol
+     ]
+    ) > 0
+  );
+
+ if(!assets.length){
+
+  box.innerHTML = `
+
+   <div class="empty">
+    No assets yet.<br><br>
+    Buy an asset from Markets.
+   </div>
+
+  `;
+
+  return;
+
+ }
+
+ box.innerHTML =
+  assets.map(
+   symbol=>{
+
+    const quantity =
+     Number(
+      wallet.assets[
+       symbol
+      ]
+     );
+
+    const market =
+     findMarket(
+      symbol
+     );
+
+    const price =
+     market
+      ? Number(
+         market.price
         )
-        .textContent =
-            numberFormat(
-                portfolio
-            ) +
-            " USDT";
+      : 0;
 
-    if(!symbols.length){
+    const value =
+     quantity *
+     price;
 
-        container.innerHTML = `
+    return `
 
-            <div class="empty">
+     <div class="card">
 
-                No assets yet.
+      <div class="row">
 
-                <br><br>
+       <div>
 
-                Buy an asset from Markets.
+        <div class="value">
+         ${escapeHtml(
+          symbol
+         )}
+        </div>
 
-            </div>
+        <div class="small-label">
+         ${formatNumber(
+          quantity
+         )} units
+        </div>
 
-        `;
+       </div>
 
-        return;
+       <div style="text-align:right">
 
-    }
+        <div class="value">
+         ${formatNumber(
+          value
+         )} USDT
+        </div>
 
-    container.innerHTML =
-        symbols.map(
-            symbol=>{
+        <div class="small-label">
+         Price:
+         ${formatNumber(
+          price
+         )}
+        </div>
 
-                const quantity =
-                    Number(
-                        wallet.assets[
-                            symbol
-                        ]
-                    );
+       </div>
 
-                const market =
-                    findMarket(
-                        symbol
-                    );
+      </div>
 
-                const price =
-                    market
-                        ? Number(
-                            market.price
-                          )
-                        : 0;
+     </div>
 
-                const value =
-                    quantity *
-                    price;
+    `;
 
-                return `
-
-                    <div class="asset-card">
-
-                        <div class="row">
-
-                            <div>
-
-                                <div class="value">
-
-                                    ${escapeHtml(
-                                        symbol
-                                    )}
-
-                                </div>
-
-                                <div class="label">
-
-                                    ${numberFormat(
-                                        quantity
-                                    )}
-                                    units
-
-                                </div>
-
-                            </div>
-
-                            <div
-                                style="text-align:right">
-
-                                <div class="value">
-
-                                    ${numberFormat(
-                                        value
-                                    )}
-                                    USDT
-
-                                </div>
-
-                                <div class="label">
-
-                                    Price:
-                                    ${numberFormat(
-                                        price
-                                    )}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-        ).join("");
+   }
+  ).join("");
 
 }
 
@@ -2221,98 +2184,90 @@ function renderPortfolio(){
 
 function renderOrders(){
 
-    const container =
-        document.getElementById(
-            "ordersList"
-        );
+ const box =
+  document.getElementById(
+   "orders"
+  );
 
-    const orders =
-        wallet.orders || [];
+ const orders =
+  wallet.orders || [];
 
-    document
-        .getElementById(
-            "ordersCount"
-        )
-        .textContent =
-            orders.length;
+ document
+  .getElementById(
+   "ordersCount"
+  )
+  .textContent =
+   orders.length;
 
-    if(!orders.length){
+ if(!orders.length){
 
-        container.innerHTML = `
+  box.innerHTML = `
 
-            <div class="empty">
-                No orders yet.
-            </div>
+   <div class="empty">
+    No orders yet.
+   </div>
 
-        `;
+  `;
 
-        return;
+  return;
 
-    }
+ }
 
-    container.innerHTML =
-        orders.map(
-            order=>`
+ box.innerHTML =
+  orders.map(
+   order=>`
 
-                <div class="order-card">
+    <div class="card">
 
-                    <div class="row">
+     <div class="row">
 
-                        <div>
+      <div>
 
-                            <div class="value ${
-                                order.type ===
-                                "BUY"
-                                ? "green"
-                                : "red"
-                            }">
+       <div class="value ${
+        order.type === "BUY"
+         ? "green"
+         : "red"
+       }">
 
-                                ${order.type}
-                                ${escapeHtml(
-                                    order.symbol
-                                )}
+        ${order.type}
+        ${escapeHtml(
+         order.symbol
+        )}
 
-                            </div>
+       </div>
 
-                            <div class="label">
+       <div class="small-label">
+        ${formatDate(
+         order.time
+        )}
+       </div>
 
-                                ${formatDate(
-                                    order.time
-                                )}
+      </div>
 
-                            </div>
+      <div style="text-align:right">
 
-                        </div>
+       <div class="value">
+        ${formatNumber(
+         order.total
+        )}
+        USDT
+       </div>
 
-                        <div
-                            style="text-align:right">
+       <div class="small-label">
+        ${formatNumber(
+         order.quantity
+        )}
+        units
+       </div>
 
-                            <div class="value">
+      </div>
 
-                                ${numberFormat(
-                                    order.total
-                                )}
-                                USDT
+     </div>
 
-                            </div>
+    </div>
 
-                            <div class="label">
-
-                                ${numberFormat(
-                                    order.quantity
-                                )}
-                                units
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `
-        ).join("");
+   `
+  ).join("");
 
 }
 
@@ -2322,99 +2277,90 @@ function renderOrders(){
 
 function renderHistory(){
 
-    const container =
-        document.getElementById(
-            "historyList"
-        );
+ const box =
+  document.getElementById(
+   "history"
+  );
 
-    const history =
-        wallet.history || [];
+ const history =
+  wallet.history || [];
 
-    document
-        .getElementById(
-            "historyCount"
-        )
-        .textContent =
-            history.length;
+ document
+  .getElementById(
+   "historyCount"
+  )
+  .textContent =
+   history.length;
 
-    if(!history.length){
+ if(!history.length){
 
-        container.innerHTML = `
+  box.innerHTML = `
 
-            <div class="empty">
-                No trades yet.
-            </div>
+   <div class="empty">
+    No trades yet.
+   </div>
 
-        `;
+  `;
 
-        return;
+  return;
 
-    }
+ }
 
-    container.innerHTML =
-        history.map(
-            trade=>`
+ box.innerHTML =
+  history.map(
+   trade=>`
 
-                <div class="history-card">
+    <div class="card">
 
-                    <div class="row">
+     <div class="row">
 
-                        <div>
+      <div>
 
-                            <div class="value ${
-                                trade.type ===
-                                "BUY"
-                                ? "green"
-                                : "red"
-                            }">
+       <div class="value ${
+        trade.type === "BUY"
+         ? "green"
+         : "red"
+       }">
 
-                                ${trade.type}
+        ${trade.type}
+        ${escapeHtml(
+         trade.symbol
+        )}
 
-                                ${escapeHtml(
-                                    trade.symbol
-                                )}
+       </div>
 
-                            </div>
+       <div class="small-label">
+        ${formatDate(
+         trade.time
+        )}
+       </div>
 
-                            <div class="label">
+      </div>
 
-                                ${formatDate(
-                                    trade.time
-                                )}
+      <div style="text-align:right">
 
-                            </div>
+       <div class="value">
+        ${formatNumber(
+         trade.total
+        )}
+        USDT
+       </div>
 
-                        </div>
+       <div class="small-label">
+        Price:
+        ${formatNumber(
+         trade.price
+        )}
+       </div>
 
-                        <div
-                            style="text-align:right">
+      </div>
 
-                            <div class="value">
+     </div>
 
-                                ${numberFormat(
-                                    trade.total
-                                )}
-                                USDT
+    </div>
 
-                            </div>
-
-                            <div class="label">
-
-                                Price:
-                                ${numberFormat(
-                                    trade.price
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `
-        ).join("");
+   `
+  ).join("");
 
 }
 
@@ -2424,191 +2370,159 @@ function renderHistory(){
 
 function showTab(tab){
 
-    const panels = {
+ const panels = [
 
-        markets:null,
+  "portfolioPanel",
+  "ordersPanel",
+  "historyPanel"
 
-        portfolio:
-            document.getElementById(
-                "portfolioPanel"
-            ),
+ ];
 
-        orders:
-            document.getElementById(
-                "ordersPanel"
-            ),
+ panels.forEach(
+  id=>{
+   document
+    .getElementById(
+     id
+    )
+    .classList.remove(
+     "active"
+    );
+  }
+ );
 
-        history:
-            document.getElementById(
-                "historyPanel"
-            )
+ if(tab === "portfolio"){
 
-    };
+  document
+   .getElementById(
+    "portfolioPanel"
+   )
+   .classList.add(
+    "active"
+   );
 
-    document
-        .getElementById(
-            "portfolioPanel"
-        )
-        .classList.remove(
-            "active"
-        );
+  renderPortfolio();
 
-    document
-        .getElementById(
-            "ordersPanel"
-        )
-        .classList.remove(
-            "active"
-        );
+ }
 
-    document
-        .getElementById(
-            "historyPanel"
-        )
-        .classList.remove(
-            "active"
-        );
+ if(tab === "orders"){
 
-    if(tab === "portfolio"){
+  document
+   .getElementById(
+    "ordersPanel"
+   )
+   .classList.add(
+    "active"
+   );
 
-        panels.portfolio
-            .classList.add(
-                "active"
-            );
+  renderOrders();
 
-        renderPortfolio();
+ }
 
-    }
+ if(tab === "history"){
 
-    if(tab === "orders"){
+  document
+   .getElementById(
+    "historyPanel"
+   )
+   .classList.add(
+    "active"
+   );
 
-        panels.orders
-            .classList.add(
-                "active"
-            );
+  renderHistory();
 
-        renderOrders();
+ }
 
-    }
+ document
+  .querySelectorAll(
+   ".tab"
+  )
+  .forEach(
+   el =>
+    el.classList.remove(
+     "active"
+    )
+  );
 
-    if(tab === "history"){
+ const tabMap = {
 
-        panels.history
-            .classList.add(
-                "active"
-            );
+  markets:"marketsTab",
 
-        renderHistory();
+  portfolio:"portfolioTab",
 
-    }
+  orders:"ordersTab",
 
-    if(tab === "markets"){
+  history:"historyTab"
 
-        renderMarkets();
+ };
 
-    }
+ document
+  .getElementById(
+   tabMap[tab]
+  )
+  .classList.add(
+   "active"
+  );
 
-    document
-        .querySelectorAll(
-            ".tab"
-        )
-        .forEach(
-            button =>
-                button.classList.remove(
-                    "active"
-                )
-        );
+ document
+  .querySelectorAll(
+   ".nav"
+  )
+  .forEach(
+   el =>
+    el.classList.remove(
+     "active"
+    )
+  );
 
-    const tabMap = {
+ const navMap = {
 
-        markets:"tabMarkets",
+  markets:"navMarkets",
 
-        portfolio:"tabPortfolio",
+  portfolio:"navPortfolio",
 
-        orders:"tabOrders",
+  orders:"navOrders",
 
-        history:"tabHistory"
+  history:"navHistory"
 
-    };
+ };
 
-    const activeTab =
-        document.getElementById(
-            tabMap[tab]
-        );
-
-    if(activeTab){
-
-        activeTab.classList.add(
-            "active"
-        );
-
-    }
-
-    document
-        .querySelectorAll(
-            ".nav-btn"
-        )
-        .forEach(
-            button =>
-                button.classList.remove(
-                    "active"
-                )
-        );
-
-    const navMap = {
-
-        markets:"navMarkets",
-
-        portfolio:"navPortfolio",
-
-        orders:"navOrders",
-
-        history:"navHistory"
-
-    };
-
-    const activeNav =
-        document.getElementById(
-            navMap[tab]
-        );
-
-    if(activeNav){
-
-        activeNav.classList.add(
-            "active"
-        );
-
-    }
+ document
+  .getElementById(
+   navMap[tab]
+  )
+  .classList.add(
+   "active"
+  );
 
 }
 
 /* =========================================================
-   WALLET
+   WALLET MODAL
    ========================================================= */
 
 function openWallet(){
 
-    updateWalletUI();
+ updateWallet();
 
-    document
-        .getElementById(
-            "walletModal"
-        )
-        .classList.add(
-            "show"
-        );
+ document
+  .getElementById(
+   "walletModal"
+  )
+  .classList.add(
+   "show"
+  );
 
 }
 
 function closeWallet(){
 
-    document
-        .getElementById(
-            "walletModal"
-        )
-        .classList.remove(
-            "show"
-        );
+ document
+  .getElementById(
+   "walletModal"
+  )
+  .classList.remove(
+   "show"
+  );
 
 }
 
@@ -2616,35 +2530,35 @@ function closeWallet(){
    TOAST
    ========================================================= */
 
-let toastTimer = null;
+let toastTimer;
 
 function showToast(message){
 
-    const toast =
-        document.getElementById(
-            "toast"
-        );
+ const toast =
+  document.getElementById(
+   "toast"
+  );
 
-    toast.textContent =
-        message;
+ toast.textContent =
+  message;
 
-    toast.classList.add(
-        "show"
+ toast.classList.add(
+  "show"
+ );
+
+ clearTimeout(
+  toastTimer
+ );
+
+ toastTimer =
+  setTimeout(
+   ()=>{
+    toast.classList.remove(
+     "show"
     );
-
-    clearTimeout(
-        toastTimer
-    );
-
-    toastTimer =
-        setTimeout(
-            ()=>{
-                toast.classList.remove(
-                    "show"
-                );
-            },
-            2500
-        );
+   },
+   2500
+  );
 
 }
 
@@ -2654,128 +2568,128 @@ function showToast(message){
 
 function formatDate(date){
 
-    try{
+ try{
 
-        return new Date(
-            date
-        ).toLocaleString(
-            "en-US",
-            {
-                year:"numeric",
-                month:"short",
-                day:"numeric",
-                hour:"2-digit",
-                minute:"2-digit"
-            }
-        );
+  return new Date(
+   date
+  ).toLocaleString(
+   "en-US",
+   {
+    year:"numeric",
+    month:"short",
+    day:"numeric",
+    hour:"2-digit",
+    minute:"2-digit"
+   }
+  );
 
-    }catch(e){
+ }catch(error){
 
-        return "";
+  return "";
 
-    }
+ }
 
 }
 
 /* =========================================================
-   SECURITY HELPERS
+   ESCAPE
    ========================================================= */
 
 function escapeHtml(value){
 
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+ return String(
+  value ?? ""
+ )
+ .replace(
+  /&/g,
+  "&amp;"
+ )
+ .replace(
+  /</g,
+  "&lt;"
+ )
+ .replace(
+  />/g,
+  "&gt;"
+ )
+ .replace(
+  /"/g,
+  "&quot;"
+ )
+ .replace(
+  /'/g,
+  "&#039;"
+ );
 
 }
 
 function safeJs(value){
 
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /\\/g,
-        "\\\\"
-    )
-    .replace(
-        /'/g,
-        "\\'"
-    );
+ return String(
+  value ?? ""
+ )
+ .replace(
+  /\\/g,
+  "\\\\"
+ )
+ .replace(
+  /'/g,
+  "\\'"
+ );
 
 }
 
 /* =========================================================
-   MODAL CLICK OUTSIDE
+   MODAL CLICK
    ========================================================= */
 
 document
-    .getElementById(
-        "tradeModal"
-    )
-    .addEventListener(
-        "click",
-        function(event){
+ .getElementById(
+  "tradeModal"
+ )
+ .addEventListener(
+  "click",
+  function(e){
 
-            if(
-                event.target ===
-                this
-            ){
+   if(
+    e.target ===
+    this
+   ){
 
-                closeTrade();
+    closeTrade();
 
-            }
+   }
 
-        }
-    );
+  }
+ );
 
 document
-    .getElementById(
-        "walletModal"
-    )
-    .addEventListener(
-        "click",
-        function(event){
+ .getElementById(
+  "walletModal"
+ )
+ .addEventListener(
+  "click",
+  function(e){
 
-            if(
-                event.target ===
-                this
-            ){
+   if(
+    e.target ===
+    this
+   ){
 
-                closeWallet();
+    closeWallet();
 
-            }
+   }
 
-        }
-    );
+  }
+ );
 
 /* =========================================================
-   INITIALIZE
+   START
    ========================================================= */
 
 loadWallet();
 
-updateWalletUI();
+updateWallet();
 
 renderPortfolio();
 
@@ -2786,16 +2700,12 @@ renderHistory();
 loadMarkets();
 
 /* =========================================================
-   REFRESH MARKETS
+   REFRESH
    ========================================================= */
 
 setInterval(
-    async ()=>{
-
-        await loadMarkets();
-
-    },
-    30000
+ loadMarkets,
+ 30000
 );
 
 </script>
