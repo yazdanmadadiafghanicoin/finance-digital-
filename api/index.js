@@ -4,129 +4,92 @@ const sql = neon(process.env.DF_DATABASE_URL);
 
 const DEMO_STARTING_USDT = 10000;
 
-// =====================================================
-// 100 DIGITAL FINANCE ASSETS
-// Demo prices only
-// =====================================================
-
+// =========================
+// ASSETS
+// =========================
 const ASSETS = [
   ["BTC", "Bitcoin", 65000],
-  ["ETH", "Ethereum", 2500],
+  ["ETH", "Ethereum", 3500],
   ["BNB", "BNB", 600],
   ["SOL", "Solana", 150],
   ["XRP", "XRP", 0.55],
   ["DOGE", "Dogecoin", 0.12],
-  ["ADA", "Cardano", 0.35],
+  ["ADA", "Cardano", 0.45],
   ["AVAX", "Avalanche", 25],
-  ["TRX", "TRON", 0.25],
-  ["LINK", "Chainlink", 14],
-  ["DOT", "Polkadot", 4.5],
-  ["MATIC", "Polygon", 0.30],
-  ["SHIB", "Shiba Inu", 0.000012],
+  ["TRX", "TRON", 0.12],
+  ["LINK", "Chainlink", 15],
+  ["DOT", "Polkadot", 7],
+  ["MATIC", "Polygon", 0.4],
   ["LTC", "Litecoin", 70],
   ["BCH", "Bitcoin Cash", 350],
-  ["UNI", "Uniswap", 7],
-  ["ATOM", "Cosmos", 5],
-  ["ETC", "Ethereum Classic", 20],
-  ["XLM", "Stellar", 0.10],
-  ["FIL", "Filecoin", 3.5],
-  ["APT", "Aptos", 5],
-  ["ARB", "Arbitrum", 0.45],
-  ["OP", "Optimism", 0.65],
-  ["NEAR", "NEAR Protocol", 3],
-  ["ALGO", "Algorand", 0.18],
-  ["VET", "VeChain", 0.025],
-  ["ICP", "Internet Computer", 7],
-  ["HBAR", "Hedera", 0.09],
-  ["SAND", "The Sandbox", 0.25],
-  ["MANA", "Decentraland", 0.30],
-  ["AAVE", "Aave", 120],
-  ["MKR", "Maker", 1500],
-  ["GRT", "The Graph", 0.12],
-  ["THETA", "Theta Network", 0.60],
-  ["EOS", "EOS", 0.70],
-  ["XTZ", "Tezos", 0.65],
-  ["FLOW", "Flow", 0.40],
-  ["EGLD", "MultiversX", 25],
-  ["AXS", "Axie Infinity", 4.5],
-  ["SNX", "Synthetix", 1.5],
-  ["CRV", "Curve DAO", 0.45],
-  ["LDO", "Lido DAO", 1.1],
-  ["RUNE", "THORChain", 3],
-  ["MKR2", "Maker Token", 2],
-  ["INJ", "Injective", 15],
+  ["ATOM", "Cosmos", 6],
+  ["UNI", "Uniswap", 8],
+  ["ETC", "Ethereum Classic", 25],
+  ["XLM", "Stellar", 0.1],
+  ["FIL", "Filecoin", 4],
+  ["APT", "Aptos", 8],
+  ["ARB", "Arbitrum", 0.8],
+  ["OP", "Optimism", 1.5],
+  ["NEAR", "NEAR Protocol", 5],
+  ["ALGO", "Algorand", 0.2],
+  ["VET", "VeChain", 0.03],
+  ["ICP", "Internet Computer", 10],
+  ["SAND", "The Sandbox", 0.3],
+  ["MANA", "Decentraland", 0.35],
+  ["AXS", "Axie Infinity", 5],
+  ["AAVE", "Aave", 150],
+  ["MKR", "Maker", 2000],
+  ["CRV", "Curve", 0.5],
+  ["LDO", "Lido DAO", 2],
+  ["PEPE", "Pepe", 0.00001],
+  ["SHIB", "Shiba Inu", 0.00002],
+  ["FLOKI", "Floki", 0.0001],
+  ["BONK", "Bonk", 0.00002],
+  ["INJ", "Injective", 25],
   ["SUI", "Sui", 2],
-  ["SEI", "Sei", 0.35],
-  ["TIA", "Celestia", 3],
-  ["KAS", "Kaspa", 0.10],
-  ["PEPE", "Pepe", 0.000009],
-  ["FLOKI", "FLOKI", 0.00012],
-  ["BONK", "Bonk", 0.000018],
-  ["WIF", "dogwifhat", 1.2],
-  ["JASMY", "JasmyCoin", 0.025],
-  ["IOTA", "IOTA", 0.20],
-  ["NEO", "NEO", 9],
-  ["QTUM", "Qtum", 3],
-  ["DASH", "Dash", 25],
-  ["ZEC", "Zcash", 40],
-  ["XMR", "Monero", 150],
-  ["KAVA", "Kava", 0.45],
-  ["ONE", "Harmony", 0.015],
-  ["BAT", "Basic Attention Token", 0.20],
-  ["ENJ", "Enjin Coin", 0.16],
-  ["CHZ", "Chiliz", 0.06],
-  ["HOT", "Holo", 0.002],
-  ["ZIL", "Zilliqa", 0.02],
-  ["CELO", "Celo", 0.50],
-  ["MINA", "Mina Protocol", 0.40],
-  ["ROSE", "Oasis Network", 0.06],
-  ["KSM", "Kusama", 20],
-  ["COMP", "Compound", 45],
-  ["YFI", "yearn.finance", 5000],
-  ["SUSHI", "SushiSwap", 1],
-  ["1INCH", "1inch", 0.25],
-  ["ENS", "Ethereum Name Service", 20],
-  ["IMX", "Immutable", 0.90],
-  ["GALA", "Gala", 0.02],
-  ["APE", "ApeCoin", 0.80],
-  ["GMT", "STEPN", 0.08],
-  ["LUNC", "Terra Luna Classic", 0.00008],
-  ["USTC", "TerraClassicUSD", 0.015],
-  ["FTM", "Fantom", 0.45],
-  ["SFP", "SafePal", 0.70],
-  ["CAKE", "PancakeSwap", 2],
-  ["TWT", "Trust Wallet Token", 1],
-  ["MASK", "Mask Network", 2.5],
-  ["WOO", "WOO Network", 0.20],
-  ["ANKR", "Ankr", 0.03],
-  ["SKL", "SKALE", 0.04],
-  ["LPT", "Livepeer", 10],
-  ["AR", "Arweave", 15],
+  ["SEI", "Sei", 0.5],
+  ["TIA", "Celestia", 5],
   ["STX", "Stacks", 1.5],
-  ["RPL", "Rocket Pool", 10],
-  ["BLUR", "Blur", 0.20],
-  ["CYBER", "CyberConnect", 2],
-  ["JUP", "Jupiter", 0.80],
-  ["WLD", "Worldcoin", 1.5],
-  ["ONDO", "Ondo", 1],
-  ["PYTH", "Pyth Network", 0.30],
-  ["ENA", "Ethena", 0.50],
+  ["HBAR", "Hedera", 0.1],
+  ["EGLD", "MultiversX", 30],
+  ["THETA", "Theta Network", 1.5],
+  ["XTZ", "Tezos", 1],
+  ["EOS", "EOS", 0.8],
+  ["FLOW", "Flow", 0.6],
+  ["QNT", "Quant", 100],
+  ["KAS", "Kaspa", 0.15],
+  ["RUNE", "THORChain", 5],
+  ["GRT", "The Graph", 0.2],
+  ["IMX", "Immutable", 2],
+  ["MANTA", "Manta Network", 1],
+  ["JASMY", "JasmyCoin", 0.03],
+  ["AR", "Arweave", 20],
+  ["MINA", "Mina", 0.7],
+  ["FLOW", "Flow", 0.6],
+  ["WIF", "dogwifhat", 2],
+  ["FET", "Fetch.ai", 1.5],
+  ["RNDR", "Render", 7],
   ["TAO", "Bittensor", 300],
   ["AFC", "Afghani Coin", 1]
 ];
 
-// =====================================================
+// =========================
 // HELPERS
-// =====================================================
-
+// =========================
 function json(res, status, data) {
   res.status(status).json(data);
 }
 
 function cors(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
 }
 
 function getTelegramId(req) {
@@ -145,22 +108,22 @@ function getAction(req) {
   ).toLowerCase();
 }
 
-// =====================================================
-// SETUP DATABASE
-// =====================================================
-
+// =========================
+// DATABASE SETUP
+// =========================
 async function setupDatabase() {
+
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       telegram_id TEXT UNIQUE NOT NULL,
       username TEXT,
-      balance NUMERIC(30,8) DEFAULT 0,
+      balance NUMERIC DEFAULT 0,
       energy INTEGER DEFAULT 100,
       level INTEGER DEFAULT 1,
       power INTEGER DEFAULT 1,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      energy_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW(),
+      energy_updated_at TIMESTAMP DEFAULT NOW()
     )
   `;
 
@@ -169,9 +132,9 @@ async function setupDatabase() {
       id SERIAL PRIMARY KEY,
       symbol TEXT UNIQUE NOT NULL,
       name TEXT NOT NULL,
-      price NUMERIC(30,12) NOT NULL DEFAULT 0,
+      price NUMERIC NOT NULL DEFAULT 0,
       active BOOLEAN DEFAULT TRUE,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW()
     )
   `;
 
@@ -180,8 +143,7 @@ async function setupDatabase() {
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       asset_id INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-      amount NUMERIC(40,18) NOT NULL DEFAULT 0,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      amount NUMERIC DEFAULT 0,
       UNIQUE(user_id, asset_id)
     )
   `;
@@ -191,12 +153,11 @@ async function setupDatabase() {
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       asset_id INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-      side TEXT NOT NULL CHECK (side IN ('buy','sell')),
-      quantity NUMERIC(40,18) NOT NULL,
-      price NUMERIC(30,12) NOT NULL,
-      total NUMERIC(40,18) NOT NULL,
-      status TEXT NOT NULL DEFAULT 'filled',
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      side TEXT NOT NULL,
+      amount NUMERIC NOT NULL,
+      price NUMERIC NOT NULL,
+      status TEXT DEFAULT 'filled',
+      created_at TIMESTAMP DEFAULT NOW()
     )
   `;
 
@@ -205,34 +166,19 @@ async function setupDatabase() {
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       asset_id INTEGER NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-      side TEXT NOT NULL CHECK (side IN ('buy','sell')),
-      quantity NUMERIC(40,18) NOT NULL,
-      price NUMERIC(30,12) NOT NULL,
-      total NUMERIC(40,18) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      side TEXT NOT NULL,
+      amount NUMERIC NOT NULL,
+      price NUMERIC NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
     )
   `;
 
-  await sql`
-    CREATE INDEX IF NOT EXISTS idx_balances_user
-    ON balances(user_id)
-  `;
-
-  await sql`
-    CREATE INDEX IF NOT EXISTS idx_orders_user
-    ON orders(user_id)
-  `;
-
-  await sql`
-    CREATE INDEX IF NOT EXISTS idx_trades_user
-    ON trades(user_id)
-  `;
-
-  // Seed 100 assets
   for (const [symbol, name, price] of ASSETS) {
     await sql`
-      INSERT INTO assets (symbol, name, price)
-      VALUES (${symbol}, ${name}, ${price})
+      INSERT INTO assets
+        (symbol, name, price, active)
+      VALUES
+        (${symbol}, ${name}, ${price}, TRUE)
       ON CONFLICT (symbol)
       DO UPDATE SET
         name = EXCLUDED.name,
@@ -244,11 +190,11 @@ async function setupDatabase() {
   return true;
 }
 
-// =====================================================
-// FIND / CREATE USER
-// =====================================================
-
+// =========================
+// USER
+// =========================
 async function getOrCreateUser(telegramId, username = null) {
+
   if (!telegramId) {
     throw new Error("telegram_id is required");
   }
@@ -260,69 +206,65 @@ async function getOrCreateUser(telegramId, username = null) {
     LIMIT 1
   `;
 
-  if (users.length) {
+  if (users.length > 0) {
     return users[0];
   }
 
   const created = await sql`
-    INSERT INTO users (
-      telegram_id,
-      username,
-      balance,
-      energy,
-      level,
-      power
-    )
-    VALUES (
-      ${String(telegramId)},
-      ${username},
-      0,
-      100,
-      1,
-      1
-    )
+    INSERT INTO users
+      (
+        telegram_id,
+        username,
+        balance,
+        energy,
+        level,
+        power
+      )
+    VALUES
+      (
+        ${String(telegramId)},
+        ${username},
+        0,
+        100,
+        1,
+        1
+      )
     RETURNING *
   `;
 
   const user = created[0];
 
-  // Create demo USDT balance
+  // USDT
   const usdt = await sql`
-    SELECT id
-    FROM assets
-    WHERE symbol = 'USDT'
-    LIMIT 1
+    INSERT INTO assets
+      (symbol, name, price, active)
+    VALUES
+      ('USDT', 'Tether USD', 1, TRUE)
+    ON CONFLICT (symbol)
+    DO UPDATE SET
+      name = 'Tether USD',
+      price = 1,
+      active = TRUE
+    RETURNING *
   `;
 
-  // USDT isn't in the 100 coins above, so create it as base currency.
-  let usdtId;
-
-  if (!usdt.length) {
-    const inserted = await sql`
-      INSERT INTO assets (symbol, name, price, active)
-      VALUES ('USDT', 'Tether USD', 1, TRUE)
-      ON CONFLICT (symbol) DO UPDATE SET active = TRUE
-      RETURNING id
-    `;
-    usdtId = inserted[0].id;
-  } else {
-    usdtId = usdt[0].id;
-  }
-
   await sql`
-    INSERT INTO balances (user_id, asset_id, amount)
-    VALUES (${user.id}, ${usdtId}, ${DEMO_STARTING_USDT})
-    ON CONFLICT (user_id, asset_id) DO NOTHING
+    INSERT INTO balances
+      (user_id, asset_id, amount)
+    VALUES
+      (${user.id}, ${usdt[0].id}, ${DEMO_STARTING_USDT})
+    ON CONFLICT (user_id, asset_id)
+    DO NOTHING
   `;
 
   return user;
 }
 
-// =====================================================
+// =========================
 // MARKETS
-// =====================================================
-
+// =========================
 async function getMarkets() {
+
   return await sql`
     SELECT
       id,
@@ -337,55 +279,59 @@ async function getMarkets() {
   `;
 }
 
-// =====================================================
-// USER BALANCES
-// =====================================================
+// =========================
+// GOLD
+// =========================
+async function getGold() {
 
+  return {
+    symbol: "GOLD",
+    name: "24K Gold",
+    price: 6850,
+    currency: "AFN",
+    unit: "gram",
+    purity: "24K"
+  };
+}
+
+// =========================
+// BALANCES
+// =========================
 async function getBalances(telegramId) {
+
   const user = await getOrCreateUser(telegramId);
 
-  const rows = await sql`
+  return await sql`
     SELECT
+      b.id,
       a.symbol,
       a.name,
       a.price,
       b.amount,
       (b.amount * a.price) AS value
     FROM balances b
-    JOIN assets a ON a.id = b.asset_id
+    JOIN assets a
+      ON a.id = b.asset_id
     WHERE b.user_id = ${user.id}
-      AND b.amount > 0
-    ORDER BY
-      CASE WHEN a.symbol = 'USDT' THEN 0 ELSE 1 END,
-      b.amount DESC
+    ORDER BY a.id ASC
   `;
-
-  return {
-    userId: user.id,
-    telegramId: user.telegram_id,
-    balances: rows
-  };
 }
 
-// =====================================================
+// =========================
 // BUY
-// =====================================================
-
-async function buyAsset(telegramId, symbol, quantity) {
-  if (!symbol) throw new Error("symbol is required");
-
-  const qty = Number(quantity);
-
-  if (!Number.isFinite(qty) || qty <= 0) {
-    throw new Error("Invalid quantity");
-  }
+// =========================
+async function buyAsset(
+  telegramId,
+  symbol,
+  amount
+) {
 
   const user = await getOrCreateUser(telegramId);
 
   const assets = await sql`
     SELECT *
     FROM assets
-    WHERE symbol = ${String(symbol).toUpperCase()}
+    WHERE symbol = ${symbol}
       AND active = TRUE
     LIMIT 1
   `;
@@ -395,324 +341,306 @@ async function buyAsset(telegramId, symbol, quantity) {
   }
 
   const asset = assets[0];
-  const price = Number(asset.price);
-  const total = price * qty;
 
-  const usdt = await sql`
-    SELECT b.id, b.amount
-    FROM balances b
-    JOIN assets a ON a.id = b.asset_id
-    WHERE b.user_id = ${user.id}
-      AND a.symbol = 'USDT'
-    LIMIT 1
-  `;
+  const numericAmount = Number(amount);
 
-  if (!usdt.length) {
-    throw new Error("USDT balance not found");
+  if (
+    !numericAmount ||
+    numericAmount <= 0
+  ) {
+    throw new Error("Invalid amount");
   }
 
-  const usdtAmount = Number(usdt[0].amount);
+  const totalCost =
+    numericAmount * Number(asset.price);
 
-  if (usdtAmount < total) {
-    throw new Error(
-      `Insufficient USDT balance. Required ${total}, available ${usdtAmount}`
-    );
-  }
-
-  // Decrease USDT
-  await sql`
-    UPDATE balances
-    SET
-      amount = amount - ${total},
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = ${usdt[0].id}
-  `;
-
-  // Add asset
-  await sql`
-    INSERT INTO balances (
-      user_id,
-      asset_id,
-      amount
-    )
-    VALUES (
-      ${user.id},
-      ${asset.id},
-      ${qty}
-    )
-    ON CONFLICT (user_id, asset_id)
-    DO UPDATE SET
-      amount = balances.amount + ${qty},
-      updated_at = CURRENT_TIMESTAMP
-  `;
-
-  // Order
-  const order = await sql`
-    INSERT INTO orders (
-      user_id,
-      asset_id,
-      side,
-      quantity,
-      price,
-      total,
-      status
-    )
-    VALUES (
-      ${user.id},
-      ${asset.id},
-      'buy',
-      ${qty},
-      ${price},
-      ${total},
-      'filled'
-    )
-    RETURNING *
-  `;
-
-  // Trade
-  await sql`
-    INSERT INTO trades (
-      user_id,
-      asset_id,
-      side,
-      quantity,
-      price,
-      total
-    )
-    VALUES (
-      ${user.id},
-      ${asset.id},
-      'buy',
-      ${qty},
-      ${price},
-      ${total}
-    )
-  `;
-
-  return {
-    success: true,
-    side: "buy",
-    symbol: asset.symbol,
-    quantity: qty,
-    price,
-    total,
-    order: order[0]
-  };
-}
-
-// =====================================================
-// SELL
-// =====================================================
-
-async function sellAsset(telegramId, symbol, quantity) {
-  if (!symbol) throw new Error("symbol is required");
-
-  const qty = Number(quantity);
-
-  if (!Number.isFinite(qty) || qty <= 0) {
-    throw new Error("Invalid quantity");
-  }
-
-  const user = await getOrCreateUser(telegramId);
-
-  const assets = await sql`
+  const usdtAssets = await sql`
     SELECT *
     FROM assets
-    WHERE symbol = ${String(symbol).toUpperCase()}
-      AND active = TRUE
+    WHERE symbol = 'USDT'
     LIMIT 1
   `;
 
-  if (!assets.length) {
-    throw new Error("Asset not found");
-  }
-
-  const asset = assets[0];
-  const price = Number(asset.price);
-  const total = price * qty;
+  const usdt = usdtAssets[0];
 
   const balances = await sql`
-    SELECT id, amount
+    SELECT *
+    FROM balances
+    WHERE user_id = ${user.id}
+      AND asset_id = ${usdt.id}
+    LIMIT 1
+  `;
+
+  const currentUSDT =
+    balances.length
+      ? Number(balances[0].amount)
+      : 0;
+
+  if (currentUSDT < totalCost) {
+    throw new Error("Insufficient USDT balance");
+  }
+
+  await sql`
+    UPDATE balances
+    SET amount = amount - ${totalCost}
+    WHERE user_id = ${user.id}
+      AND asset_id = ${usdt.id}
+  `;
+
+  await sql`
+    INSERT INTO balances
+      (user_id, asset_id, amount)
+    VALUES
+      (${user.id}, ${asset.id}, ${numericAmount})
+    ON CONFLICT (user_id, asset_id)
+    DO UPDATE SET
+      amount =
+        balances.amount +
+        EXCLUDED.amount
+  `;
+
+  await sql`
+    INSERT INTO orders
+      (
+        user_id,
+        asset_id,
+        side,
+        amount,
+        price,
+        status
+      )
+    VALUES
+      (
+        ${user.id},
+        ${asset.id},
+        'buy',
+        ${numericAmount},
+        ${asset.price},
+        'filled'
+      )
+  `;
+
+  await sql`
+    INSERT INTO trades
+      (
+        user_id,
+        asset_id,
+        side,
+        amount,
+        price
+      )
+    VALUES
+      (
+        ${user.id},
+        ${asset.id},
+        'buy',
+        ${numericAmount},
+        ${asset.price}
+      )
+  `;
+
+  return true;
+}
+
+// =========================
+// SELL
+// =========================
+async function sellAsset(
+  telegramId,
+  symbol,
+  amount
+) {
+
+  const user = await getOrCreateUser(telegramId);
+
+  const assets = await sql`
+    SELECT *
+    FROM assets
+    WHERE symbol = ${symbol}
+      AND active = TRUE
+    LIMIT 1
+  `;
+
+  if (!assets.length) {
+    throw new Error("Asset not found");
+  }
+
+  const asset = assets[0];
+
+  const numericAmount = Number(amount);
+
+  if (
+    !numericAmount ||
+    numericAmount <= 0
+  ) {
+    throw new Error("Invalid amount");
+  }
+
+  const balances = await sql`
+    SELECT *
     FROM balances
     WHERE user_id = ${user.id}
       AND asset_id = ${asset.id}
     LIMIT 1
   `;
 
-  if (!balances.length) {
-    throw new Error("You don't own this asset");
+  const currentAmount =
+    balances.length
+      ? Number(balances[0].amount)
+      : 0;
+
+  if (currentAmount < numericAmount) {
+    throw new Error("Insufficient asset balance");
   }
 
-  const owned = Number(balances[0].amount);
+  const totalValue =
+    numericAmount * Number(asset.price);
 
-  if (owned < qty) {
-    throw new Error(
-      `Insufficient ${asset.symbol} balance. Available ${owned}`
-    );
-  }
-
-  // Decrease asset
   await sql`
     UPDATE balances
-    SET
-      amount = amount - ${qty},
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = ${balances[0].id}
+    SET amount = amount - ${numericAmount}
+    WHERE user_id = ${user.id}
+      AND asset_id = ${asset.id}
   `;
 
-  // Add USDT
-  const usdt = await sql`
-    SELECT id
+  const usdtAssets = await sql`
+    SELECT *
     FROM assets
     WHERE symbol = 'USDT'
     LIMIT 1
   `;
 
-  if (!usdt.length) {
-    throw new Error("USDT asset not found");
-  }
+  const usdt = usdtAssets[0];
 
   await sql`
-    INSERT INTO balances (
-      user_id,
-      asset_id,
-      amount
-    )
-    VALUES (
-      ${user.id},
-      ${usdt[0].id},
-      ${total}
-    )
+    INSERT INTO balances
+      (user_id, asset_id, amount)
+    VALUES
+      (${user.id}, ${usdt.id}, ${totalValue})
     ON CONFLICT (user_id, asset_id)
     DO UPDATE SET
-      amount = balances.amount + ${total},
-      updated_at = CURRENT_TIMESTAMP
+      amount =
+        balances.amount +
+        EXCLUDED.amount
   `;
 
-  // Order
-  const order = await sql`
-    INSERT INTO orders (
-      user_id,
-      asset_id,
-      side,
-      quantity,
-      price,
-      total,
-      status
-    )
-    VALUES (
-      ${user.id},
-      ${asset.id},
-      'sell',
-      ${qty},
-      ${price},
-      ${total},
-      'filled'
-    )
-    RETURNING *
-  `;
-
-  // Trade
   await sql`
-    INSERT INTO trades (
-      user_id,
-      asset_id,
-      side,
-      quantity,
-      price,
-      total
-    )
-    VALUES (
-      ${user.id},
-      ${asset.id},
-      'sell',
-      ${qty},
-      ${price},
-      ${total}
-    )
+    INSERT INTO orders
+      (
+        user_id,
+        asset_id,
+        side,
+        amount,
+        price,
+        status
+      )
+    VALUES
+      (
+        ${user.id},
+        ${asset.id},
+        'sell',
+        ${numericAmount},
+        ${asset.price},
+        'filled'
+      )
   `;
 
-  return {
-    success: true,
-    side: "sell",
-    symbol: asset.symbol,
-    quantity: qty,
-    price,
-    total,
-    order: order[0]
-  };
+  await sql`
+    INSERT INTO trades
+      (
+        user_id,
+        asset_id,
+        side,
+        amount,
+        price
+      )
+    VALUES
+      (
+        ${user.id},
+        ${asset.id},
+        'sell',
+        ${numericAmount},
+        ${asset.price}
+      )
+  `;
+
+  return true;
 }
 
-// =====================================================
-// TRADE HISTORY
-// =====================================================
-
+// =========================
+// TRADES
+// =========================
 async function getTrades(telegramId) {
+
   const user = await getOrCreateUser(telegramId);
 
   return await sql`
     SELECT
       t.id,
-      t.side,
-      t.quantity,
-      t.price,
-      t.total,
-      t.created_at,
       a.symbol,
-      a.name
+      a.name,
+      t.side,
+      t.amount,
+      t.price,
+      t.created_at
     FROM trades t
-    JOIN assets a ON a.id = t.asset_id
+    JOIN assets a
+      ON a.id = t.asset_id
     WHERE t.user_id = ${user.id}
-    ORDER BY t.created_at DESC
+    ORDER BY t.id DESC
     LIMIT 100
   `;
 }
 
-// =====================================================
+// =========================
 // ORDERS
-// =====================================================
-
+// =========================
 async function getOrders(telegramId) {
+
   const user = await getOrCreateUser(telegramId);
 
   return await sql`
     SELECT
       o.id,
-      o.side,
-      o.quantity,
-      o.price,
-      o.total,
-      o.status,
-      o.created_at,
       a.symbol,
-      a.name
+      a.name,
+      o.side,
+      o.amount,
+      o.price,
+      o.status,
+      o.created_at
     FROM orders o
-    JOIN assets a ON a.id = o.asset_id
+    JOIN assets a
+      ON a.id = o.asset_id
     WHERE o.user_id = ${user.id}
-    ORDER BY o.created_at DESC
+    ORDER BY o.id DESC
     LIMIT 100
   `;
 }
 
-// =====================================================
+// =========================
 // MAIN API
-// =====================================================
-
+// =========================
 module.exports = async (req, res) => {
+
   cors(res);
 
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return json(res, 200, {
+      success: true
+    });
   }
 
   try {
-    // -----------------------------------------------
-    // ROOT
-    // -----------------------------------------------
 
+    const action = getAction(req);
+
+    // =========================
+    // ROOT
+    // =========================
     if (
       req.method === "GET" &&
-      !req.query.action &&
+      !action &&
       !req.query.telegram_id
     ) {
       return json(res, 200, {
@@ -720,84 +648,41 @@ module.exports = async (req, res) => {
         message: "Digital Finance Backend is running!",
         service: "Digital Finance",
         currency: "AFN",
-        gold: "24K",
-        exchange: "Demo Exchange",
-        assets: 100
+        gold: "24K"
       });
     }
 
-    // -----------------------------------------------
+    // =========================
     // SETUP
-    // GET /api/setup
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "GET" &&
       req.query.setup === "1"
     ) {
+
       await setupDatabase();
 
       return json(res, 200, {
         success: true,
-        message: "Digital Finance database and 100 assets are ready!"
+        message: "Digital Finance database is ready!"
       });
     }
 
-    const action = getAction(req);
-    // -----------------------------------------------
-    // DIRECT MARKETS ENDPOINT
-    // GET /api/markets
-    // -----------------------------------------------
-
-    const requestPath = (req.url || "").split("?")[0];
-
-    if (
-      req.method === "GET" &&
-      requestPath.endsWith("/markets")
-    ) {
-      await setupDatabase();
-
-      const markets = await getMarkets();
-
-      return json(res, 200, {
-        success: true,
-        count: markets.length,
-        markets
-      });
-    }
-
-    // -----------------------------------------------
-    // GOLD
-    // GET /api/gold
-    // -----------------------------------------------
-
-    if (
-      req.method === "GET" &&
-      requestPath.endsWith("/gold")
-    ) {
-      return json(res, 200, {
-        success: true,
-        symbol: "GOLD",
-        name: "24K Gold",
-        price: 6850,
-        currency: "AFN",
-        unit: "gram",
-        purity: "24K"
-      });
-    }
-
-    // -----------------------------------------------
+    // =========================
     // MARKETS
-    // GET /api?action=markets
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "GET" &&
-      (action === "markets" || req.query.markets === "1")
+      (
+        action === "markets" ||
+        req.query.markets === "1"
+      )
     ) {
+
       await setupDatabase();
 
-      const markets = await getMarkets();
+      const markets =
+        await getMarkets();
 
       return json(res, 200, {
         success: true,
@@ -806,21 +691,45 @@ module.exports = async (req, res) => {
       });
     }
 
-    // -----------------------------------------------
-    // USER
-    // GET /api/user?telegram_id=123
-    // -----------------------------------------------
-
+    // =========================
+    // GOLD
+    // =========================
     if (
       req.method === "GET" &&
-      req.query.telegram_id &&
-      !action
+      action === "gold"
     ) {
+
+      return json(res, 200, {
+        success: true,
+        ...await getGold()
+      });
+    }
+
+    // =========================
+    // USER
+    // =========================
+    if (
+      req.method === "GET" &&
+      action === "user"
+    ) {
+
+      const telegramId =
+        getTelegramId(req);
+
+      if (!telegramId) {
+        return json(res, 400, {
+          success: false,
+          error: "telegram_id is required"
+        });
+      }
+
       await setupDatabase();
 
-      const user = await getOrCreateUser(
-        req.query.telegram_id
-      );
+      const user =
+        await getOrCreateUser(
+          telegramId,
+          req.query.username || null
+        );
 
       return json(res, 200, {
         success: true,
@@ -828,18 +737,16 @@ module.exports = async (req, res) => {
       });
     }
 
-    // -----------------------------------------------
+    // =========================
     // BALANCES
-    // GET /api?action=balances&telegram_id=123
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "GET" &&
       action === "balances"
     ) {
-      await setupDatabase();
 
-      const telegramId = getTelegramId(req);
+      const telegramId =
+        getTelegramId(req);
 
       if (!telegramId) {
         return json(res, 400, {
@@ -848,27 +755,27 @@ module.exports = async (req, res) => {
         });
       }
 
-      return json(
-        res,
-        200,
-        {
-          success: true,
-          ...(await getBalances(telegramId))
-        }
-      );
+      await setupDatabase();
+
+      const balances =
+        await getBalances(telegramId);
+
+      return json(res, 200, {
+        success: true,
+        balances
+      });
     }
 
-    // -----------------------------------------------
+    // =========================
     // TRADES
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "GET" &&
       action === "trades"
     ) {
-      await setupDatabase();
 
-      const telegramId = getTelegramId(req);
+      const telegramId =
+        getTelegramId(req);
 
       if (!telegramId) {
         return json(res, 400, {
@@ -877,7 +784,10 @@ module.exports = async (req, res) => {
         });
       }
 
-      const trades = await getTrades(telegramId);
+      await setupDatabase();
+
+      const trades =
+        await getTrades(telegramId);
 
       return json(res, 200, {
         success: true,
@@ -885,17 +795,16 @@ module.exports = async (req, res) => {
       });
     }
 
-    // -----------------------------------------------
+    // =========================
     // ORDERS
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "GET" &&
       action === "orders"
     ) {
-      await setupDatabase();
 
-      const telegramId = getTelegramId(req);
+      const telegramId =
+        getTelegramId(req);
 
       if (!telegramId) {
         return json(res, 400, {
@@ -904,7 +813,10 @@ module.exports = async (req, res) => {
         });
       }
 
-      const orders = await getOrders(telegramId);
+      await setupDatabase();
+
+      const orders =
+        await getOrders(telegramId);
 
       return json(res, 200, {
         success: true,
@@ -912,79 +824,91 @@ module.exports = async (req, res) => {
       });
     }
 
-    // -----------------------------------------------
+    // =========================
     // BUY
-    // POST /api?action=buy
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "POST" &&
       action === "buy"
     ) {
-      await setupDatabase();
+
+      const telegramId =
+        getTelegramId(req);
 
       const {
-        telegram_id,
         symbol,
-        quantity
+        amount
       } = req.body || {};
 
-      if (!telegram_id || !symbol || quantity === undefined) {
+      if (!telegramId) {
         return json(res, 400, {
           success: false,
-          error: "telegram_id, symbol and quantity are required"
+          error: "telegram_id is required"
         });
       }
 
-      const result = await buyAsset(
-        telegram_id,
+      await setupDatabase();
+
+      await buyAsset(
+        telegramId,
         symbol,
-        quantity
+        amount
       );
 
-      return json(res, 200, result);
+      return json(res, 200, {
+        success: true,
+        message: "Buy order completed"
+      });
     }
 
-    // -----------------------------------------------
+    // =========================
     // SELL
-    // POST /api?action=sell
-    // -----------------------------------------------
-
+    // =========================
     if (
       req.method === "POST" &&
       action === "sell"
     ) {
-      await setupDatabase();
+
+      const telegramId =
+        getTelegramId(req);
 
       const {
-        telegram_id,
         symbol,
-        quantity
+        amount
       } = req.body || {};
 
-      if (!telegram_id || !symbol || quantity === undefined) {
+      if (!telegramId) {
         return json(res, 400, {
           success: false,
-          error: "telegram_id, symbol and quantity are required"
+          error: "telegram_id is required"
         });
       }
 
-      const result = await sellAsset(
-        telegram_id,
+      await setupDatabase();
+
+      await sellAsset(
+        telegramId,
         symbol,
-        quantity
+        amount
       );
 
-      return json(res, 200, result);
+      return json(res, 200, {
+        success: true,
+        message: "Sell order completed"
+      });
     }
 
+    // =========================
+    // NOT FOUND
+    // =========================
     return json(res, 404, {
       success: false,
       error: "Endpoint not found"
     });
 
   } catch (error) {
-    console.error("Digital Finance API Error:", error);
+
+    console.error(error);
 
     return json(res, 500, {
       success: false,
